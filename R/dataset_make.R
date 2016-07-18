@@ -17,16 +17,15 @@ physeq = import_biom(biomFile) #treeFile)
 ## loading sample metadata
 sample.data = import_qiime_sample_data(metadataFile)
 physeq = merge_phyloseq(physeq,sample.data)
-#tax_table(physeq) = NULL
 physeq.m = physeq %>% sample_data
 
-#print(physeq)
 
 # Partitioning dataset
 ## con + cel + xyl
 exp_types = c('SIP')
 sub_types = c('12C-Con', '13C-Cel', '13C-Xyl')
 physeq.p = prune_samples(physeq.m$Exp_type %in% exp_types &
+                         physeq.m$core_dataset == TRUE &
                          physeq.m$Substrate %in% sub_types,
                          physeq) %>%
   filter_taxa(function(x) sum(x) > 0, TRUE)
