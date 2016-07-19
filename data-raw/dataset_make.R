@@ -32,9 +32,20 @@ physeq.p = prune_samples(physeq.m$Exp_type %in% exp_types &
 physeq.p
 ### saving
 setwd(file.path(getwd(), 'data-raw'))
-saveRDS(physeq.p, 'fullCyc_con-cel-xyl.rds')
+saveRDS(physeq.p, 'fullCyc_con-cel-xyl.RData')
 
 # making smaller dataset
 physeq.p.r = rarefy_even_depth(physeq.p, 1000)
-saveRDS(physeq.p.r, 'fullCyc_con-cel-xyl_r1000.rds')
+saveRDS(physeq.p.r, 'fullCyc_con-cel-xyl_r1000.RData')
 
+# small sample size dataset
+exp_types = c('SIP')
+sub_types = c('12C-Con', '13C-Cel', '13C-Glu')
+days = c(14)
+physeq.p = prune_samples(physeq.m$Exp_type %in% exp_types &
+                         physeq.m$core_dataset == TRUE &
+                         physeq.m$Substrate %in% sub_types &
+                         physeq.m$Day %in% days,
+                         physeq) %>%
+  filter_taxa(function(x) sum(x) > 0, TRUE)
+saveRDS(physeq.p, 'fullCyc_con-cel-glu.RData')

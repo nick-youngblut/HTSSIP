@@ -1,9 +1,3 @@
-###
-###  This is an approach to string interpolation in R.
-###  First a few utility functions, then the actual function (stringterpolate): A shorter name
-###  is probably desirable. Finally a few examples to show its use.
-###
-
 #' Utility Function for Matching a Closing Brace
 #'
 #' Given positions of opening and closing braces \code{match_brace} identifies
@@ -147,6 +141,8 @@ evaluate_matches <- function(matches, env){
 #' @param string A template character string.
 #' @param env The environment in which to evaluate the expressions.
 #'
+#' @export
+#'
 #' @return An interpolated character string.
 stringterpolate <- function(string, env = parent.frame()){
   # Find expression placeholders
@@ -160,23 +156,3 @@ stringterpolate <- function(string, env = parent.frame()){
 }
 
 
-### Examples
-user_name <- "smbache"
-amount <- 6.656
-account <- 1337
-
-stringterpolate("User ${user_name} (account $[08d]{account}) has $$[.2f]{amount}.")
-#> "User smbache (account 00001337) has $6.66."
-
-
-stringterpolate("Nasty } nested { example $ : $[.2f]{{{2 + 2}*{amount}}}")
-#> "Nasty } nested { example $ : 26.62"
-
-
-stringterpolate("One value, ${value1}, and then another, ${value2*2}.",
-                list(value1 = 10, value2 = 20))
-#> "One value, 10, and then another, 40."
-
-stringterpolate(
-  "Min and max are $[.2f]{max(Sepal.Width)} and $[.2f]{min(Sepal.Width)}.", iris)
-#> "Min and max are 4.40 and 2.00."

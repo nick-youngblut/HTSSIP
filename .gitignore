@@ -1,5 +1,6 @@
 .Rproj.user
 .Rhistory
-.RData
-.Ruserdata
-./data-raw/
+*.RData
+*.Ruserdata
+data-raw/
+inst/doc

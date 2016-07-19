@@ -4,28 +4,40 @@
 \alias{HRSIP}
 \title{HR-SIP analysis}
 \usage{
-HRSIP(physeq, sparsity_threshold, density_min, density_max, design,
-  l2fc_threshold = 0.25, sparsity_apply = "all", ...)
+HRSIP(physeq, density_min, density_max, design, sparsity_threshold = seq(0,
+  0.5, 0.1), sparsity_apply = "all", l2fc_threshold = 0.25,
+  padj_cutoff = 0.1, pairwise_expr = NULL, pairwise_params = NULL,
+  .parallel = FALSE, ...)
 }
 \arguments{
 \item{physeq}{Phyloseq object}
 
-\item{sparsity_threshold}{All OTUs observed in less than this portion (fraction: 0-1)
-of gradient fraction samples are pruned}
+\item{density_min}{Minimum buoyant density of the 'heavy' gradient fractions}
 
-\item{l2fc_threshold}{DESeq2 log2 fold change threshold}
+\item{density_max}{Maximum buoyant density of the 'heavy' gradient fractions}
+
+\item{design}{\code{design} parameter used for DESeq2 analysis.
+See \code{DESeq2::DESeq} for more details.}
+
+\item{sparsity_threshold}{A vector of values (range=0-1).
+All OTUs observed in less than this portion (fraction: 0-1)
+of gradient fraction samples are pruned. A a form of indepedent filtering,
+The sparsity cutoff with the most rejected hypotheses is used.}
 
 \item{sparsity_apply}{Apply sparsity threshold to all gradient fraction samples ('all')
 or just heavy fraction samples ('heavy')}
+
+\item{l2fc_threshold}{DESeq2 log2 fold change threshold}
+
+\item{l2fc_threshold}{log2 fold change (l2fc) values must be significantly above this
+threshold in order to reject the hypothesis of equal counts.}
 }
 \value{
 dataframe of HRSIP results
 }
 \description{
-\code{HRSIP} conducts HR-SIP analysis on phyloseq object
-}
-\details{
-blah blah blah
+\code{HRSIP} conducts high resolution stable isotope probing (HR-SIP)
+  analysis on phyloseq object.
 }
 \examples{
 HRSIP()
