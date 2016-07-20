@@ -13,7 +13,8 @@ Imports:
     dplyr (>= 0.5.0),
     tidyr (>= 0.5.1),
     phyloseq (>= 1.14.0),
-    DESeq2 (>= 1.10.1)
+    DESeq2 (>= 1.10.1),
+    uuid (>= 0.1.2)
 RoxygenNote: 5.0.1
 Suggests:
     testthat,

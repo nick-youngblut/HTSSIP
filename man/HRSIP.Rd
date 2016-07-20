@@ -4,17 +4,13 @@
 \alias{HRSIP}
 \title{HR-SIP analysis}
 \usage{
-HRSIP(physeq, density_min, density_max, design, sparsity_threshold = seq(0,
-  0.3, 0.1), sparsity_apply = "all", l2fc_threshold = 0.25,
-  padj_cutoff = 0.1, pairwise_expr = NULL, pairwise_params = NULL,
-  .parallel = FALSE, ...)
+HRSIP(physeq, density_windows, design, sparsity_threshold = seq(0, 0.3, 0.1),
+  sparsity_apply = "all", l2fc_threshold = 0.25, pairwise_expr = NULL,
+  pairwise_params = NULL, padj_cutoff = 0.1, padj_method = "BH",
+  parallel = FALSE, ...)
 }
 \arguments{
 \item{physeq}{Phyloseq object}
-
-\item{density_min}{Minimum buoyant density of the 'heavy' gradient fractions}
-
-\item{density_max}{Maximum buoyant density of the 'heavy' gradient fractions}
 
 \item{design}{\code{design} parameter used for DESeq2 analysis.
 See \code{DESeq2::DESeq} for more details.}
@@ -29,10 +25,12 @@ or just heavy fraction samples ('heavy')}
 \item{l2fc_threshold}{log2 fold change (l2fc) values must be significantly above this
 threshold in order to reject the hypothesis of equal counts.}
 
-\item{padj_cutoff}{Adjusted P-value cutoff for identifying rejected hypotheses,
-which is in turn used to select the sparsity cutoff with the most rejected hypotheses.}
+\item{padj_cutoff}{Adjusted p-value cutoff for rejecting the null hypothesis
+that l2fc values were not greater than the l2fc_threshold.}
 
-\item{.parallel}{Run in parallel. See plyr::adply for more information.}
+\item{padj_method}{Method for global p-value adjustment (See \code{p.adjust})}
+
+\item{parallel}{Run in parallel. See plyr::mdply for more information (.parallel flag).}
 }
 \description{
 \code{HRSIP} conducts high resolution stable isotope probing (HR-SIP)
@@ -41,7 +39,8 @@ which is in turn used to select the sparsity cutoff with the most rejected hypot
 \examples{
 data(physeq)
 # This will compare all 13C treatments to the 12C controls (all time points combined)
-df_l2fc = HRSIP(physeq, density_min=1.71, density_max=1.75, design=~Substrate)
+density_windows = data.frame(start=c(1.70), end=c(1.75))
+df_l2fc = HRSIP(physeq, density_windows=density_windows, design=~Substrate)
 head(df_l2fc)
 
 # This will conduct individual comparisons between 12C controls & 13C treatments (by time point)
@@ -52,14 +51,21 @@ params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-
 ## The first "()" is selecting the control; the second "()" is selecting a treatment.
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 ## HRSIP run on each comparison
-df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_min=1.71, density_max=1.75, design=~Substrate)
+density_windows = data.frame(start=c(1.70), end=c(1.75))
+df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_windows=density_windows, design=~Substrate)
+head(df_l2fc)
+
+# Same as above, using multiple buoyant density windows (MW-HR-SIP)
+density_windows = data.frame(start=c(1.70, 1.72), end=c(1.73, 1.75))
+df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_windows=density_windows, design=~Substrate)
 head(df_l2fc)
 
 # Same as above, but running in parallel
 library(doParallel)
 ncores=4
 registerDoParallel(ncores)
-df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_min=1.71, density_max=1.75, design=~Substrate, .parallel=TRUE)
+df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_windows=density_windows, design=~Substrate, .parallel=TRUE)
 head(df_l2fc)
+
 }
 
