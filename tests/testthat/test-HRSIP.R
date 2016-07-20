@@ -1,5 +1,5 @@
 # dataset
-physeq = readRDS('/home/nick/dev/HTSSIP/data-raw/fullCyc_con-cel-glu.RData')
+load('/home/nick/dev/HTSSIP/data/physeq.RData')
 physeq
 
 # phyloseq2df
@@ -49,17 +49,17 @@ test_that('DESeq2_l2fc_MS working with basic parameters',{
 
   expect_is(df_l2fc, 'data.frame')
   expect_false(is.null(df_l2fc$rej_hypo))
-  expect_false(is.null(df_l2fc$n_rej_hypo))
+  expect_true(is.null(df_l2fc$n_rej_hypo))
   expect_equal(length(unique(df_l2fc$sparsity_threshold)), 1)
 })
 
 
-test_that('DESeq2_l2fc_MS_PW working with basic parameters',{
+test_that('DESeq2_l2fc_MS_sub working with basic parameters',{
   params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
   params_l = apply(params, 1, as.list)
   ## HRSIP call
   ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-  df_l2fc = plyr::ldply(params_l, DESeq2_l2fc_MS_PW,
+  df_l2fc = plyr::ldply(params_l, DESeq2_l2fc_MS_sub,
                         ex=ex,
                         physeq=physeq,
                         density_min=1.71,
@@ -91,7 +91,6 @@ test_that('HRSIP runs with default',{
 })
 
 test_that('HRSIP runs pairwise with default',{
-  cat('\nHRSIP(ex, params)\n')
   params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
   ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
   df_l2fc = HRSIP(physeq,

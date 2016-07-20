@@ -9,8 +9,7 @@ phyloseq2df(physeq, table_func)
 \arguments{
 \item{physeq}{Phyloseq object}
 
-\item{table_func}{See Phyloseq::phyloseq-class for options
-(example: table_func=otu_table)}
+\item{table_func}{See \code{Phyloseq::phyloseq-class} for options}
 }
 \value{
 dataframe
@@ -20,7 +19,8 @@ Conducts conversion of 1 of the data objects
 in a phyloseq object (eg., tax_table) to a dataframe
 }
 \examples{
-phyloseq2df(physeq)
-
+data(physeq)
+df_otu = phyloseq2df(physeq, table_func=otu_table)
+head(df_otu)
 }
 

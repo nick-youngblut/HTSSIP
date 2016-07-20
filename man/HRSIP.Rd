@@ -5,7 +5,7 @@
 \title{HR-SIP analysis}
 \usage{
 HRSIP(physeq, density_min, density_max, design, sparsity_threshold = seq(0,
-  0.5, 0.1), sparsity_apply = "all", l2fc_threshold = 0.25,
+  0.3, 0.1), sparsity_apply = "all", l2fc_threshold = 0.25,
   padj_cutoff = 0.1, pairwise_expr = NULL, pairwise_params = NULL,
   .parallel = FALSE, ...)
 }
@@ -19,28 +19,47 @@ HRSIP(physeq, density_min, density_max, design, sparsity_threshold = seq(0,
 \item{design}{\code{design} parameter used for DESeq2 analysis.
 See \code{DESeq2::DESeq} for more details.}
 
-\item{sparsity_threshold}{A vector of values (range=0-1).
-All OTUs observed in less than this portion (fraction: 0-1)
+\item{sparsity_threshold}{All OTUs observed in less than this portion (fraction: 0-1)
 of gradient fraction samples are pruned. A a form of indepedent filtering,
 The sparsity cutoff with the most rejected hypotheses is used.}
 
 \item{sparsity_apply}{Apply sparsity threshold to all gradient fraction samples ('all')
 or just heavy fraction samples ('heavy')}
 
-\item{l2fc_threshold}{DESeq2 log2 fold change threshold}
-
 \item{l2fc_threshold}{log2 fold change (l2fc) values must be significantly above this
 threshold in order to reject the hypothesis of equal counts.}
-}
-\value{
-dataframe of HRSIP results
+
+\item{padj_cutoff}{Adjusted P-value cutoff for identifying rejected hypotheses,
+which is in turn used to select the sparsity cutoff with the most rejected hypotheses.}
+
+\item{.parallel}{Run in parallel. See plyr::adply for more information.}
 }
 \description{
 \code{HRSIP} conducts high resolution stable isotope probing (HR-SIP)
   analysis on phyloseq object.
 }
 \examples{
-HRSIP()
+data(physeq)
+# This will compare all 13C treatments to the 12C controls (all time points combined)
+df_l2fc = HRSIP(physeq, density_min=1.71, density_max=1.75, design=~Substrate)
+head(df_l2fc)
 
+# This will conduct individual comparisons between 12C controls & 13C treatments (by time point)
+## Get a listing of the parameters used for subsetting the phyloseq object for each comparison
+params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
+## Make an expression for subsetting the phyloseq object.
+## The values in braces will be replaced by values in the param.
+## The first "()" is selecting the control; the second "()" is selecting a treatment.
+ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
+## HRSIP run on each comparison
+df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_min=1.71, density_max=1.75, design=~Substrate)
+head(df_l2fc)
+
+# Same as above, but running in parallel
+library(doParallel)
+ncores=4
+registerDoParallel(ncores)
+df_l2fc = HRSIP(physeq, pairwise_expr=ex, pairwise_params=params, density_min=1.71, density_max=1.75, design=~Substrate, .parallel=TRUE)
+head(df_l2fc)
 }
 
