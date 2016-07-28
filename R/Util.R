@@ -104,18 +104,29 @@ phyloseq2table = function(physeq, include_sample_data=FALSE, sample_col_keep=NUL
 #' data(physeq)
 #' # making subsets by substrate and time point
 #' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' ex = "Substrate=='${Substrate}' & Day == '${Day}'"
+#' params = dplyr::filter(params, Substrate!='12C-Con')
+#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 #' physeq_l = phyloseq_subset(physeq, params, ex)
 #'
 phyloseq_subset = function(physeq, params, ex){
   if(is.data.frame(params)){
     params = apply(params, 1, as.list)
   }
-  bool_l = lapply(params, function(x){
+  # subsetting phyloseq object
+  physeq_l = lapply(params, function(x){
     # x should be a list of parameters
     exx = stringterpolate(ex, x)
     physeq.m = phyloseq2df(physeq, phyloseq::sample_data)
     bool = mutate_(physeq.m, exx)[,ncol(physeq.m)+1]
     phyloseq::prune_samples(bool, physeq)
   })
+  # adding names to list
+  ## names based on subsetting expression
+  n = lapply(params, function(x){
+    # x should be a list of parameters
+    exx = stringterpolate(ex, x)
+  })
+  names(physeq_l) = do.call(rbind, n)
+
+  return(physeq_l)
 }
