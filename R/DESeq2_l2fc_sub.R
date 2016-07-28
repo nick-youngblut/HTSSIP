@@ -61,8 +61,7 @@ get_treatment_params = function(physeq, exp_params, treatment=NULL){
 #' @param params  data.frame of parameters supplies to \code{ex}
 #' @param ex  Expression for subsetting the phyloseq object
 #' @param physeq  Phyloseq object
-#' @param density_min  Minimum buoyant density of the 'heavy' gradient fractions
-#' @param density_max  Maximum buoyant density of the 'heavy' gradient fractions
+#' @param density_windows  Min/max windows for selecting gradient fractions for l2fc calculations.
 #' @param design  \code{design} parameter used for DESeq2 analysis.
 #'   See \code{DESeq2::DESeq} for more details.
 #' @param l2fc_threshold  log2 fold change (l2fc) values must be significantly above this
@@ -77,8 +76,8 @@ get_treatment_params = function(physeq, exp_params, treatment=NULL){
 #' @examples
 #' data(physeq)
 #' params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
+#' params_l = apply(params, 1, as.list)
 #' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' #
 #' df_l2fc = plyr::ldply(params_l, DESeq2_l2fc_multi_sub, ex=ex, physeq=physeq)
 #' head(df_l2fc)
 #'

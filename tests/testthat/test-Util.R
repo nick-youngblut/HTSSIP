@@ -1,4 +1,4 @@
-load('/home/nick/dev/HTSSIP/data/physeq.RData')
+#load('/home/nick/dev/HTSSIP/data/physeq.RData')
 
 test_that('phyloseq sample_data can be converted to dataframe',{
   df1 = phyloseq2df(physeq, phyloseq::sample_data)
