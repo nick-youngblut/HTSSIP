@@ -14,12 +14,7 @@
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' params = dplyr::filter(params, Substrate!='12C-Con')
-#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' data(physeq_l)
 #' physeq_l_d = physeq_list_betaDiv(physeq_l)
 #'
 physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
@@ -32,9 +27,9 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
                 weighted=weighted,
                 fast=fast,
                 normalized=normalized,
-                parallel=TRUE)
+                parallel=parallel)
+  return(physeq_l_d)
 }
-
 
 #' calculating beta diversity for a list of phyloseq objects
 #'
@@ -48,12 +43,7 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' params = dplyr::filter(params, Substrate!='12C-Con')
-#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' data(physeq_l)
 #' physeq_l_d = physeq_list_betaDiv(physeq_l)
 #' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
 #'
@@ -80,12 +70,7 @@ physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' params = dplyr::filter(params, Substrate!='12C-Con')
-#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' data(physeq_l)
 #' physeq_l_d = physeq_list_betaDiv(physeq_l)
 #' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
 #' physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_l, physeq_l_d_ord)
@@ -157,12 +142,7 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' params = dplyr::filter(params, Substrate!='12C-Con')
-#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' data(physeq_l)
 #' physeq_l_d = physeq_list_betaDiv(physeq_l)
 #' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
 #' physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_l, physeq_l_d_ord)
@@ -188,20 +168,12 @@ phyloseq_list_ord_plot = function(physeq_l_ord_df, parallel=FALSE, ...){
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
-#' params = dplyr::filter(params, Substrate!='12C-Con')
-#' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' data(physeq_l)
 #' physeq_l_p = SIP_betaDiv(physeq_l)
-#' physeq_l_p[[1]]
-#' physeq_l_p[[2]]
+#' do.call(gridExtra::grid.arrange, c(physeq_l_p))
 #'
-#' # do.call(gridExtra::grid.arrange, c(physeq_l_p))
-#'
-SIP_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
-                       fast=TRUE, normalized=TRUE, parallel=FALSE){
+SIP_betaDiv_ord = function(physeq_l, method='unifrac', weighted=TRUE,
+                          fast=TRUE, normalized=TRUE, parallel=FALSE){
   physeq_l_d = physeq_list_betaDiv(physeq_l)
   physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
   physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_l, physeq_l_d_ord)

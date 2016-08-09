@@ -1,3 +1,5 @@
+as.Num = function(x) x %>% as.character %>% as.numeric
+
 #' phyloseq data object conversion to data.frame
 #'
 #' Conducts conversion of 1 of the data objects
@@ -13,11 +15,16 @@
 #' data(physeq)
 #' df_otu = phyloseq2df(physeq, table_func=otu_table)
 #' head(df_otu)
+#'
+#' df_sample = phyloseq2df(physeq, table_func=sample_data)
+#' head(df_sample)
+#'
 phyloseq2df = function(physeq, table_func){
   physeq.md = table_func(physeq)
   physeq.md = suppressWarnings(as.data.frame(as.matrix(physeq.md)))
   physeq.md = as.matrix(data.frame(lapply(physeq.md, as.character)))
   physeq.md = as.data.frame(apply(physeq.md, 2, trimws))
+  rownames(physeq.md) = rownames(table_func(physeq))
   return(physeq.md)
 }
 
@@ -96,7 +103,7 @@ phyloseq2table = function(physeq, include_sample_data=FALSE, sample_col_keep=NUL
 #' @param params  data.frame of parameters supplies to \code{ex}
 #' @param ex  Expression for subsetting the phyloseq object
 #'
-#' @return  a list of Phyloseq objects
+#' @return A list of Phyloseq objects
 #'
 #' @export
 #'
