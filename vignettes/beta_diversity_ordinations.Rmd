@@ -1,0 +1,83 @@
+---
+title: "HTSSIP: beta diversity ordinations"
+author: "Nick Youngblut"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Beta diversity ordinations
+
+## Dataset
+
+First, let's load some packages including \code{HTSSIP}. Also let's get an overview of the phyloseq object that we're going to use.
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(HTSSIP)
+physeq
+```
+
+## Parsing the dataset
+
+The first task is to split apart the dataset so that we can compare
+gradient fractions of each labeled-treatment (e.g., 13C-Cellulose) 
+to their corresponding unlabeled control in order to identify
+buoyant density ranges with high beta-diversity, which would suggest
+a BD "shift" of "heavy" DNA in the labeled treatment due to
+isotope incorporation.
+
+Now, let's get the parameters that can be used to subset the dataset into
+subsets that contain fractions from just one gradient. 
+
+```{r}
+params = get_treatment_params(physeq, c('Substrate', 'Day'))
+params
+```
+
+We just need the parameters for each treatment, so let's filter out the controls.
+In this case, the controls are all '12C-Con'. 
+
+```{r}
+params = dplyr::filter(params, Substrate!='12C-Con')
+```
+
+Now, we will use an expression that will subset the phyloseq object into the comparisons
+that we want to make. 
+
+\code{ex} is an expression that will be used for pruning the phyloseq object
+
+```{r}
+ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
+physeq_l = phyloseq_subset(physeq, params, ex)
+physeq_l
+```
+
+
+## Calculating ordinations
+
+Now, let's actually make ordinations of each treatment compared to the control. 
+
+```{r, message=FALSE, warning=FALSE}
+physeq_l_p = SIP_betaDiv_ord(physeq_l)
+```
+
+We now have a list of ggplot figures:
+
+```{r, fig.height=4, fig.width=6.5, warning=FALSE}
+n = names(physeq_l_p)
+physeq_l_p[[1]]
+physeq_l_p[[2]]
+```
+
+
+
+# Session info
+
+```{r}
+sessionInfo()
+```

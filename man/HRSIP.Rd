@@ -2,7 +2,7 @@
 % Please edit documentation in R/HRSIP.R
 \name{HRSIP}
 \alias{HRSIP}
-\title{HR-SIP analysis}
+\title{(MW)-HR-SIP analysis}
 \usage{
 HRSIP(physeq, density_windows, design, sparsity_threshold = seq(0, 0.3, 0.1),
   sparsity_apply = "all", l2fc_threshold = 0.25, pairwise_expr = NULL,
@@ -11,6 +11,10 @@ HRSIP(physeq, density_windows, design, sparsity_threshold = seq(0, 0.3, 0.1),
 }
 \arguments{
 \item{physeq}{Phyloseq object}
+
+\item{density_windows}{2-column data.frame with min & max buoyant densities of 'heavy' gradient
+fraction windows (1 window per row). The gradient fractions in each window are used to calculate
+log2 fold change values.}
 
 \item{design}{\code{design} parameter used for DESeq2 analysis.
 See \code{DESeq2::DESeq} for more details.}

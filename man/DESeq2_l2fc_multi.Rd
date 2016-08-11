@@ -11,6 +11,10 @@ DESeq2_l2fc_multi(physeq, density_windows, design, l2fc_threshold = 0.25,
 \arguments{
 \item{physeq}{Phyloseq object}
 
+\item{density_windows}{2-column data.frame with min & max buoyant densities of 'heavy' gradient
+fraction windows (1 window per row). The gradient fractions in each window are used to calculate
+log2 fold change values.}
+
 \item{design}{\code{design} parameter used for DESeq2 analysis.
 See \code{DESeq2::DESeq} for more details.}
 
@@ -25,10 +29,6 @@ The sparsity cutoff with the most rejected hypotheses is used.}
 or just heavy fraction samples ('heavy')}
 
 \item{parallel}{Run in parallel. See plyr::mdply for more information (.parallel flag).}
-
-\item{density_min}{Minimum buoyant density of the 'heavy' gradient fractions}
-
-\item{density_max}{Maximum buoyant density of the 'heavy' gradient fractions}
 }
 \value{
 dataframe of HRSIP results

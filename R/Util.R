@@ -55,7 +55,8 @@ phyloseq2df = function(physeq, table_func){
 #' df_OTU = phyloseq2table(physeq, include_sample_data=TRUE, sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'),include_tax_table=TRUE)
 #' head(df_OTU)
 #'
-phyloseq2table = function(physeq, include_sample_data=FALSE, sample_col_keep=NULL,
+phyloseq2table = function(physeq, include_sample_data=FALSE,
+                          sample_col_keep=NULL,
                           include_tax_table=FALSE, tax_col_keep=NULL){
   # OTU table
   df_OTU = otu_table(physeq)
@@ -107,7 +108,7 @@ phyloseq2table = function(physeq, include_sample_data=FALSE, sample_col_keep=NUL
 #'
 #' @export
 #'
-#' @example
+#' @examples
 #' data(physeq)
 #' # making subsets by substrate and time point
 #' params = get_treatment_params(physeq, c('Substrate', 'Day'))

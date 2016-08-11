@@ -12,7 +12,7 @@ phyloseq2df(physeq, table_func)
 \item{table_func}{See \code{Phyloseq::phyloseq-class} for options}
 }
 \value{
-dataframe
+data.frame
 }
 \description{
 Conducts conversion of 1 of the data objects
@@ -22,6 +22,9 @@ in a phyloseq object (eg., tax_table) to a dataframe
 data(physeq)
 df_otu = phyloseq2df(physeq, table_func=otu_table)
 head(df_otu)
+
+df_sample = phyloseq2df(physeq, table_func=sample_data)
+head(df_sample)
 
 }
 
