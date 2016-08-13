@@ -12,13 +12,13 @@ test_that('Beta diversity from a list of phyloseq objects (parallel)',{
 })
 
 
-test_that('Can make a data.frame to plot',{
+test_that('Make a data.frame for ordination plotting',{
   # params for subseting
   doParallel::registerDoParallel(4)
   physeq_l_d = physeq_list_betaDiv(physeq_S2D2_l, parallel=TRUE)
   physeq_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_l_d)
   physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_l_d_ord)
-  expect_true('phyloseq_subsets' %in% colnames(physeq_l_d_ord_df))
+  expect_true('phyloseq_subset' %in% colnames(physeq_l_d_ord_df))
 })
 
 test_that('Plots created from phyloseq object',{
@@ -37,15 +37,14 @@ test_that('Plots created from phyloseq object',{
   expect_equal(length(physeq_S2D2_l), 4)
 
   # calculating beta diversity
-  physeq_S2D2_p = SIP_betaDiv_ord(physeq_S2D2_l)
-  expect_is(physeq_S2D2_p, 'data.frame')
+  physeq_S2D2_df = SIP_betaDiv_ord(physeq_S2D2_l)
+  expect_is(physeq_S2D2_df, 'data.frame')
+  ## plotting
+  physeq_S2D2_df_p = phyloseq_ord_plot(physeq_S2D2_df)
+  expect_is(physeq_S2D2_df_p, 'ggplot')
 
-  ## plot output
+  ## alternative plot output
   physeq_S2D2_p = SIP_betaDiv_ord(physeq_S2D2_l, plot=TRUE)
   expect_is(physeq_S2D2_p, 'ggplot')
 
-  #expect_equal(length(physeq_S2D2_l_p), 4)
-  #lapply(physeq_S2D2_l_p, expect_is, class='ggplot')
-  #expect_is(physeq_S2D2_l_p[[1]], 'ggplot')
-  #expect_is(physeq_S2D2_l_p[[2]], 'ggplot')
 })

@@ -80,25 +80,17 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
   names(n) = n
 
   df = plyr::adply(n, .margins=1, .fun=function(x,physeq_l,physeq_l_ords){
-    plot_ordination(physeq_l[[x]], physeq_l_ords[[x]], justDF=TRUE)
-  }, physeq_l=physeq_l,
+     plot_ordination(physeq_l[[x]], physeq_l_ords[[x]], justDF=TRUE)
+    }, physeq_l=physeq_l,
   physeq_l_ords=physeq_l_ords,
-  .id='phyloseq_subsets',
+  .id='phyloseq_subset',
   .parallel=parallel)
-  return(df)
 
-  #plot_l = list()
-  #n = names(physeq_l_ords)
-  #for (X in names(physeq_l_ords)){
-  #  plot_l[[X]] = plot_ordination(physeq_l[[X]],
-  #                                physeq_l_ords[[X]],
-  #                                justDF = TRUE)
-  #}
-  #return(plot_l)
+  return(df)
 }
 
 
-#' Plotting ordinations
+#' Plotting beta diversity ordination
 #'
 #' For each data.frame object in a list (coverted from ordination objects),
 #' creates a ggplot figure.
@@ -139,11 +131,8 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                   pch=21, alpha=point_alpha) +
     scale_size(range=c(2,8)) +
     labs(title=title) +
-    facet_wrap(~ phyloseq_subsets) +
-    theme_bw() +
-    theme(
-      text = element_text(size=16)
-    )
+    facet_wrap(~ phyloseq_subset) +
+    theme_bw()
 
   return(p)
 }

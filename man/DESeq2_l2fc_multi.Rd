@@ -2,7 +2,7 @@
 % Please edit documentation in R/DESeq2_l2fc.R
 \name{DESeq2_l2fc_multi}
 \alias{DESeq2_l2fc_multi}
-\title{\code{DESeq2_l2fc}: multiple sparsity thresholds}
+\title{Calculating l2fc for multiple sparsity thresholds}
 \usage{
 DESeq2_l2fc_multi(physeq, density_windows, design, l2fc_threshold = 0.25,
   sparsity_threshold = seq(0, 0.5, 0.1), sparsity_apply = "all",

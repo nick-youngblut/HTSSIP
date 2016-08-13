@@ -27,6 +27,7 @@ params = get_treatment_params(physeq, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 physeq_l = phyloseq_subset(physeq, params, ex)
+physeq_l
 
 }
 

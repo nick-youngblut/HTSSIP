@@ -43,6 +43,7 @@ In this case, the controls are all '12C-Con'.
 
 ```{r}
 params = dplyr::filter(params, Substrate!='12C-Con')
+params
 ```
 
 Now, we will use an expression that will subset the phyloseq object into the comparisons that we want to make. 
@@ -51,8 +52,8 @@ Now, we will use an expression that will subset the phyloseq object into the com
 
 ```{r}
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-physeq_l = phyloseq_subset(physeq, params, ex)
-physeq_l
+physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
+physeq_S2D2_l
 ```
 
 ## Calculating ordinations
@@ -60,16 +61,30 @@ physeq_l
 Now, let's actually make ordinations of each treatment compared to the control. This will return a \code{data.frame} object for plotting. 
 
 ```{r, message=FALSE, warning=FALSE}
-physeq_df = SIP_betaDiv_ord(physeq_l)
-physeq_df %>% head(n=3)
+physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l)
+physeq_S2D2_l_df %>% head(n=3)
 ```
 
-Let's plot them. 
+Each specific phyloseq subset (treatment-control comparison) is delimited with the "phyloseq_subset" column.
 
-```{r, fig.height=4, fig.width=5, warning=FALSE}
-phyloseq_ord_plot(physeq_df)
+```{r, message=FALSE, warning=FALSE}
+physeq_S2D2_l_df %>% .$phyloseq_subset %>% unique
 ```
 
+For clarity, I'm going edit these long strings to make them more readable.
+
+```{r}
+physeq_S2D2_l_df = physeq_S2D2_l_df %>%
+  dplyr::mutate(phyloseq_subset = gsub(' \\| ', '\n', phyloseq_subset))
+physeq_S2D2_l_df %>% .$phyloseq_subset %>% unique
+```
+
+
+Let's plot the data!
+
+```{r, fig.height=6, fig.width=7.5}
+phyloseq_ord_plot(physeq_S2D2_l_df)
+```
 
 
 
