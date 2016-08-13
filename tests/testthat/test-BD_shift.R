@@ -19,21 +19,21 @@ expect_wmean = function(wmean){
   expect_gt(wmean_max, 0)
   expect_lte(wmean_max, 1)
 
-  cat('\n\n--Weighted mean distance summary--\n')
+  cat('\n--Weighted mean distance summary--\n')
   wmean$distance %>% summary %>% print
-  cat('\n\n')
+  cat('\n')
 }
 
 test_that('BD_shift runs w/ default',{
   ## basic call
-  data(physeq_l)
+  data(physeq_S2D2_l)
 
   # dataset 1
-  wmean = BD_shift(physeq_l[[1]])
+  wmean = BD_shift(physeq_S2D2_l[[1]])
   expect_wmean(wmean)
 
   # dataset 2
-  wmean = BD_shift(physeq_l[[2]])
+  wmean = BD_shift(physeq_S2D2_l[[2]])
   expect_wmean(wmean)
 
   # ggplot
@@ -44,10 +44,10 @@ test_that('BD_shift runs w/ default',{
 
 test_that('BD_shift runs w/ Bray-Curtis',{
   ## basic call
-  data(physeq_l)
+  data(physeq_S2D2_l)
 
   # dataset 1
-  wmean = BD_shift(physeq_l[[1]], method='bray')
+  wmean = BD_shift(physeq_S2D2_l[[1]], method='bray')
   expect_wmean(wmean)
 
   # ggplot

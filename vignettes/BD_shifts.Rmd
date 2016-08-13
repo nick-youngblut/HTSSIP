@@ -57,43 +57,45 @@ beta diversity is calculated between the gradient fraction communities.
 
 ## Dataset
 
-First, let's load some packages including \code{HTSSIP}. Also let's get an overview of the phyloseq object that we're going to use.
+First, let's load some packages including \code{HTSSIP}. 
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(HTSSIP)
-physeq
 ```
+
+Also let's get an overview of the phyloseq object that we're going to use.
+
+```{r, message=FALSE, warning=FALSE}
+physeq_S2D2
+```
+
 
 ## Subsetting the phyloseq object
 
-As with the [beta diversity ordinations](beta_diversity_ordinations.html), 
-we are going to split up the dataset
-into individual labeled-treamtent + corresponding unlabeled-control comparisons. 
+As with the [beta diversity ordinations](beta_diversity_ordinations.html), we are going to split up the dataset into individual labeled-treamtent + corresponding unlabeled-control comparisons. Treatment-control correspondence is based on the day from substrate addition. So, we have to parse the dataset by Substrate & Day.
 
 ```{r}
-params = get_treatment_params(physeq, c('Substrate', 'Day'))
+params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-physeq_l = phyloseq_subset(physeq, params, ex)
-physeq_l
+physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
+physeq_S2D2_l
 ```
 
 ## Calculating BD shift 
 
-Now, let's just measure BD shift for just 1 subset 
-(1 item in the list of phyloseq objects)
+Now, let's just measure BD shift for just 1 subset (1 item in the list of phyloseq objects).
 
 ```{r}
-wmean1 = BD_shift(physeq_l[[1]])
-wmean1 %>% head
+wmean1 = BD_shift(physeq_S2D2_l[[2]])
+cat('Subset:', names(physeq_S2D2_l)[2], '\n')
+wmean1 %>% head(n=3)
 ```
 
-Note that the treatment that we assessed is the 13C-Cel (13C-labeled cellulose). 
-
-Also note that the \code{sample.x} column is all 12C-Con control samples, while the comparison column (\code{sample.y}) is the treatment gradient fraction samples.
+Note that the \code{sample.x} column is all 12C-Con control samples, while the comparison column (\code{sample.y}) is the treatment gradient fraction samples.
 
 **OK.** Let's plot the results!
 
@@ -102,10 +104,11 @@ x_lab = 'Buoyant density (g/ml^-1)'
 y_lab = 'Weighted mean of\nweighted-Unifrac distances'
 ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
   geom_point() +
-  labs(x=x_lab, y=y_lab, title='Beta diversity of 13C-Cel\nrelative to 12C-Con') +
-  theme_bw() +
-  theme(text = element_text(size=16))
+  labs(x=x_lab, y=y_lab, title='Beta diversity of 13C-treatment relative to 12C-Con') +
+  theme_bw() 
 ```
+
+Each point represents the weighted mean of beta diversity values between all 13C-treatment fractions that overlap a particular 12C-control fraction, so there should be 1 point per 12C-control gradient fraction. 
 
 Note the 2 spikes in beta diversity. The 2nd spike is larger than the first, 
 which is likely due to more taxa at the 'light' gradient fractions (1st spike),
@@ -114,35 +117,33 @@ than at 'heavy' gradient fractions, where there's less taxa.
 
 ## Calculating BD shift for all treatments
 
-Now let's run \code{BD_shift()} on all phyloseq objects in our list.
-We'll use \code{ldply} for this because it preserves the list names
-in the resulting data.frame (list names are assigned to \code{.id} by default).
+Now let's run \code{BD_shift()} on all phyloseq objects in our list. We'll use \code{ldply} for this because it preserves the list names in the resulting data.frame (list names are assigned to \code{.id} by default).
 
 ```{r}
-wmean = plyr::ldply(physeq_l, BD_shift)
+wmean = plyr::ldply(physeq_S2D2_l, BD_shift)
 wmean %>% head(n=3)
 ```
 
-OK. Let's plot!
+Alright, let's plot the data!
 
 ```{r, fig.height=5, fig.width=7}
 # formatting the treatment names to look a bit better as facet labels
 wmean = wmean %>%
-  mutate(.id = gsub('.+(13C-[A-z]+).+', '\\1', .id))
+  mutate(Substrate = gsub('.+(13C-[A-z]+).+', '\\1', .id),
+         Day = gsub('.+Day ==[ \']*([0-9]+).+', '\\1', .id),
+         Day = Day %>% reorder(Day %>% as.numeric))
 
 # plotting, with facetting by 13C-treatment
 ggplot(wmean, aes(BD_min.x, wmean_dist)) +
   geom_point() +
   labs(x=x_lab, y=y_lab, 
-       title='Beta diversity of 13C-treatments\nrelative to 12C-Con') +
+       title='Beta diversity of 13C-treatments relative to 12C-Con') +
+  facet_grid(Day ~ Substrate) +
   theme_bw() +
-  theme(text = element_text(size=16)) +
-  facet_grid(.id ~ .)
+  theme(axis.text.x = element_text(angle=45, hjust=1))
 ```
 
-As you can see, the 'heavy' beta diversity spike is stronger for 13C-Cel versus
-13C-Glu, which you'd probably expect, given that these samples were from
-a 14 day incubation with substrate.
+As you can see, the 'heavy' beta diversity spike is stronger for 13C-Glucose at day 3 versus 13C-Cellulose, but this pattern reverses at day 14 of the substrate incubation. These results are to be expected, given that glucose is more labile than cellulose.
 
 
 # Session info

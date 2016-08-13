@@ -242,6 +242,7 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, parallel=FALSE){
   # wrapper function
   ## formatting metadata
+  physeq = physeq_format(physeq)
   metadata = format_metadata(physeq)
   ## fraction overlpa
   metadata = fraction_overlap(metadata)

@@ -94,6 +94,14 @@ HRSIP = function(physeq,
                   ...){
 
   # assertions
+  if(is.factor(density_windows)){
+    density_windows = as.vector(density_windows)
+  }
+  if(is.vector(density_windows)){
+    stopifnot(length(density_windows)>=2)
+    density_windows = data.frame(start=c(density_windows[1]),
+                                 end=c(density_windows[2]))
+  }
   stopifnot(is.numeric(l2fc_threshold))
   stopifnot(is.character(sparsity_apply))
   stopifnot(all(sapply(sparsity_threshold, function(x) x>=0 & x<=1))==TRUE)

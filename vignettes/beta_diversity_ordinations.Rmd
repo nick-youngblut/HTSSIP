@@ -13,29 +13,28 @@ vignette: >
 
 ## Dataset
 
-First, let's load some packages including \code{HTSSIP}. Also let's get an overview of the phyloseq object that we're going to use.
+First, let's load some packages including \code{HTSSIP}. 
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggplot2)
 library(HTSSIP)
-physeq
+```
+
+Also let's get an overview of the phyloseq object that we're going to use.
+
+```{r, message=FALSE, warning=FALSE}
+physeq_S2D2
 ```
 
 ## Parsing the dataset
 
-The first task is to split apart the dataset so that we can compare
-gradient fractions of each labeled-treatment (e.g., 13C-Cellulose) 
-to their corresponding unlabeled control in order to identify
-buoyant density ranges with high beta-diversity, which would suggest
-a BD "shift" of "heavy" DNA in the labeled treatment due to
-isotope incorporation.
+See [HTSSIP introduction vignette](HTSSIP_intro.html) for a description on why dataset parsing is needed.
 
-Now, let's get the parameters that can be used to subset the dataset into
-subsets that contain fractions from just one gradient. 
+Let's the parameters for parsing the dataset into individual treatment-control comparisons. 
 
 ```{r}
-params = get_treatment_params(physeq, c('Substrate', 'Day'))
+params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params
 ```
 
@@ -46,10 +45,9 @@ In this case, the controls are all '12C-Con'.
 params = dplyr::filter(params, Substrate!='12C-Con')
 ```
 
-Now, we will use an expression that will subset the phyloseq object into the comparisons
-that we want to make. 
+Now, we will use an expression that will subset the phyloseq object into the comparisons that we want to make. 
 
-\code{ex} is an expression that will be used for pruning the phyloseq object
+\code{ex} is the expression that will be used for pruning the phyloseq object
 
 ```{r}
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
@@ -57,22 +55,21 @@ physeq_l = phyloseq_subset(physeq, params, ex)
 physeq_l
 ```
 
-
 ## Calculating ordinations
 
-Now, let's actually make ordinations of each treatment compared to the control. 
+Now, let's actually make ordinations of each treatment compared to the control. This will return a \code{data.frame} object for plotting. 
 
 ```{r, message=FALSE, warning=FALSE}
-physeq_l_p = SIP_betaDiv_ord(physeq_l)
+physeq_df = SIP_betaDiv_ord(physeq_l)
+physeq_df %>% head(n=3)
 ```
 
-We now have a list of ggplot figures:
+Let's plot them. 
 
-```{r, fig.height=4, fig.width=6.5, warning=FALSE}
-n = names(physeq_l_p)
-physeq_l_p[[1]]
-physeq_l_p[[2]]
+```{r, fig.height=4, fig.width=5, warning=FALSE}
+phyloseq_ord_plot(physeq_df)
 ```
+
 
 
 

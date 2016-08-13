@@ -95,7 +95,7 @@ DESeq2_l2fc = function(physeq,
 }
 
 
-#' \code{DESeq2_l2fc}: multiple sparsity thresholds
+#' Calculating l2fc for multiple sparsity thresholds
 #'
 #' Calls \code{DESeq2_l2fc} with different sparsity thresholds
 #' and uses the l2fc results of the sparsity threshold that produced
@@ -137,7 +137,7 @@ DESeq2_l2fc_multi = function(physeq,
   colnames(density_windows)[1:2] = c('density_min', 'density_max')
   density_windows$JOINING = 1
   sparsity_threshold$JOINING = 1
-  sparsity_window = left_join(density_windows, sparsity_threshold, c('JOINING'))
+  sparsity_window = dplyr::left_join(density_windows, sparsity_threshold, c('JOINING'))
   sparsity_window$JOINING = NULL
 
   # DESeq2 on each parameter set
