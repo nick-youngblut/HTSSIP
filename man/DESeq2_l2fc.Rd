@@ -34,8 +34,8 @@ dataframe of HRSIP results
 Conducts the actual trimming of the phyloseq dataset & calling of DESeq2
 }
 \examples{
-data(physeq)
-df_l2fc = DESeq2_l2fc(physeq, density_min=1.71, density_max=1.75, design=~Substrate)
+data(physeq_S2D2)
+df_l2fc = DESeq2_l2fc(physeq_S2D2, density_min=1.71, density_max=1.75, design=~Substrate)
 head(df_l2fc)
 
 }

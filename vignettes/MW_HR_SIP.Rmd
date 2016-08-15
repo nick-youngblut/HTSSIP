@@ -4,50 +4,53 @@ author: "Nick Youngblut"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{MW-HR-SIP}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 # Introduction
 
-## HR-SIP method basics:
+## HR-SIP method workflow:
 
 * Remove sparsely occuring OTUs under the assumption that they are sequencing errors.
     * This is assuming that an OTU should at least be seen in a set number of fractions from the same gradient, since it's DNA should be (approximately) normally distributed. 
-* Subset the dataset into treatment + corresponding control comparisions.
-    * For instance, all fractions from a 13C-cellulose gradient versus all fractions from a 12C-cellulose gradient. 
 * For each OTU, use DESeq2 to detect significant enrichment of in 'heavy' gradient fractions.
     * 'heavy' gradients are selected *ad hoc*
     * Multiple hypotheses are adjusted for. 
     * Significantly enriched OTUs are considered to have incorporated isotope (incorporators)
 
-## MW-HR-SIP method basics:
+## MW-HR-SIP method workflow:
 
 * The method is similar to HR-SIP, except instead of 1 'heavy' BD window used, multiple windows are used, but the tradeoff is the higher number of multiple hypotheses that must be corrected for. 
+    * For each OTU, the BD window with highest log2 fold change (l2fc) value is used, so the BD window can vary among OTUs. 
 * This method has been shown to be generally more sensitive (more true positives) than HR-SIP and more specific (less false positives) than q-SIP. See the manuscript "Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP)" for more information. 
 
 # Dataset 
 
-First, let's load some packages including \code{HTSSIP}. 
+First, let's load some packages including `HTSSIP`. 
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggplot2)
-library(doParallel)
 library(HTSSIP)
 ```
 
-Also, let's look at the phyloseq object that we will be using for this example. 
 
-```{r, message=FALSE, warning=FALSE}
-physeq
+## Dataset
+
+See [HTSSIP introduction vignette](HTSSIP_intro.html) for a description on why dataset parsing (all treatment-control comparisons) is needed.
+
+Let's see the already parsed dataset
+
+```{r}
+physeq_S2D2_l
 ```
 
 
 # HR-SIP
 
-Let's set some parameters
+Let's set some parameters used later.
 
 ```{r}
 # adjusted P-value cutoff 
@@ -56,62 +59,49 @@ padj_cutoff = 0.1
 ncores = 8
 ```
 
-## Parsing the dataset
+## One treatment-control comparison
 
-The first step is to subset the dataset so that we can compare each 13C-treatment to its corresponding 12C-control. For this dataset, the comparisons are simple:
-
-* 13C-glucose vs 12C-control 
-* 13C-cellulose vs 12C-control
-
-Note that the same 12C-control is used for both because both treatments recieved both glucose & cellulose, but only 1 substrate was isotopically labeled.
-
-So to subset the data with phyloseq, we can use the \code{prune_samples()} function to subset the dataset:
+First, we'll just run HR-SIP on 1 treatment-control comparison. Let's get the individual phyloseq object. 
 
 ```{r}
-physeq_13C_glu = "(Substrate=='12C-Con') | (Substrate=='${Substrate}')"
+physeq = physeq_S2D2_l[[1]]
+physeq
 ```
 
+Let's check that the samples belong to either a 13C-treatment or 12C-control. 
 
 ```{r}
-ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
+physeq %>% sample_data %>% .$Substrate %>% table
 ```
 
+OK, we should be ready to run HR-SIP!
 
-```{r}
-params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
-params
-
-```
-
-
+Note that the `design` parameter for `HRSIP()` is the experimental design parameter for calculating log2 fold change (l2fc) values with DESeq. Here, it's used to distinguish label-treatment and unlabel-control samples. 
 
 ```{r, message=FALSE}
 df_l2fc = HRSIP(physeq,
-                pairwise_expr=ex,
-                pairwise_params=params,
-                sparsity_threshold=c(0, 0.1),
-                density_windows=c(1.71, 1.75),
-                design=~Substrate)
+                design = ~Substrate,
+                padj_cutoff = padj_cutoff)
 df_l2fc %>% head(n=3)
 ```
 
-Number of incorporators per substrate
+How many "incorporators"" (rejected hypotheses)?
 
 ```{r}
 df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
-  group_by(Substrate) %>%
+  group_by() %>%
   summarize(n_incorp_OTUs = OTU %>% unique %>% length)
 ```
 
-Breakdown of incorporators for each substrate. 
+Let's plot a breakdown of incorporators for each phylum. 
 
 ```{r, fig.width=7, fig.height=4}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
   mutate(Rank2 = gsub('^__', '', Rank2)) %>%
-  group_by(Substrate, Rank2) %>%
+  group_by(Rank2) %>%
   summarize(n_incorp_OTUs = OTU %>% unique %>% length) %>%
   ungroup()
 
@@ -122,65 +112,165 @@ ggplot(df_l2fc_s, aes(Rank2, n_incorp_OTUs)) +
     theme_bw() +
     theme(
       axis.text.x = element_text(angle=45, hjust=1)
+    )
+```
+
+
+## All treatment-control comparisons
+
+Let's now run HR-SIP on all treatment-control comparisons in the dataset:
+
+```{r}
+# Number of comparisons
+physeq_S2D2_l %>% length
+```
+
+The function `plyr::ldply()` is useful (compared to `lapply()`) beccause it can be run in parallel and returns a data.frame object.
+
+```{r, message=FALSE}
+# Running in parallel; you may need to change the backend for your environment.
+# Or you can just set .parallel=FALSE. 
+doParallel::registerDoParallel(ncores)
+
+df_l2fc = plyr::ldply(physeq_S2D2_l, 
+                      HRSIP, 
+                      design = ~Substrate, 
+                      padj_cutoff = padj_cutoff,
+                      .parallel=TRUE)
+df_l2fc %>% head(n=3)
+```
+
+Each specific phyloseq subset (treatment-control comparison) is delimited with the ".id" column.
+
+```{r}
+df_l2fc %>% .$.id %>% unique
+```
+
+For clarity, I'm going edit these long strings to make them more readable when plotted.
+
+```{r}
+df_l2fc = df_l2fc %>%
+  mutate(.id = gsub(' \\| ', '\n', .id))
+df_l2fc %>% .$.id %>% unique
+```
+
+How many incorporators (rejected hypotheses) & which sparsity cutoff was used for each comparison?
+
+Note: you could set one sparsity cutoff for all comparisons by setting the `sparsity_cutoff` to a specific value. 
+
+```{r}
+df_l2fc %>% 
+  filter(padj < padj_cutoff) %>%
+  group_by(.id, sparsity_threshold) %>%
+  summarize(n_incorp_OTUs = OTU %>% unique %>% length) %>%
+  as.data.frame
+```
+
+How about a breakdown of incorporators for each phylum in each comparision. 
+
+```{r, fig.width=7, fig.height=7}
+# summarizing
+df_l2fc_s = df_l2fc %>% 
+  filter(padj < padj_cutoff) %>%
+  mutate(Rank2 = gsub('^__', '', Rank2)) %>%
+  group_by(.id, Rank2) %>%
+  summarize(n_incorp_OTUs = OTU %>% unique %>% length) %>%
+  ungroup()
+
+# plotting
+ggplot(df_l2fc_s, aes(Rank2, n_incorp_OTUs)) +
+    geom_bar(stat='identity') +
+    labs(x='Phylum', y='Number of incorporators') +
+    facet_wrap(~ .id, scales='free') +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle=55, hjust=1)
     )
 ```
 
 
 # MW-HR-SIP
 
-Same as above. 
+MW-HR-SIP is run very similarly to HRSIP, but it uses multiple buoyant density (BD) windows. MW-HR-SIP is performed with the `HRSIP()` function, but multiple BD windows are specified. 
+
+Let's use 3 buoyant density windows (g/ml^-1):
+
+> 1.70-1.73, 1.72-1.75, 1.74-1.77
 
 ```{r}
-params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
-ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-```
-
-Now using 3 buoyant density windows: (1.70-1.73, 1.72-1.75, 1.74-1.77)
-
-```{r}
-windows = data.frame(start=c(1.70, 1.72, 1.74), end=c(1.73, 1.75, 1.77))
+windows = data.frame(density_min=c(1.70, 1.72, 1.74), 
+                     density_max=c(1.73, 1.75, 1.77))
 windows
 ```
 
 Running HRSIP with all 3 BD windows. Let's run this in parallel to speed things up.
-You can turn off parallel processing by setting the \code{parallel} option to \code{FALSE}.
+
+You can turn off parallel processing by setting the `parallel` option to `FALSE`. Also, there's 2 different levels that could be parallelized: either the `ldply()` or `HRSIP()`. Here, I'm running HRSIP in parallel, but it may make sence in other situations (eg., many comparisons but few density windows and/or sparsity cutoffs).
 
 ```{r, message=FALSE}
+doParallel::registerDoParallel(ncores)
 
-registerDoParallel(ncores)
-
-df_l2fc = HRSIP(physeq,
-                pairwise_expr=ex,
-                pairwise_params=params,
-                sparsity_threshold=c(0, 0.1),
-                density_windows=windows,
-                design=~Substrate,
-                parallel=TRUE)
+df_l2fc = plyr::ldply(physeq_S2D2_l, 
+                      HRSIP, 
+                      density_windows=windows,
+                      design = ~Substrate, 
+                      padj_cutoff = padj_cutoff,
+                      parallel=TRUE)
 df_l2fc %>% head(n=3)
 ```
 
+Let's check that we have all treatment-control comparisons. 
 
-Number of incorporators per substrate. 
+```{r}
+df_l2fc %>% .$.id %>% unique
+```
+
+How many incorporators (rejected hypotheses) & which sparsity cutoff was used for each comparison?
+
+Note: one sparsity cutoff could be set for all comparisons by setting the `sparsity_cutoff` to a specific value. 
 
 ```{r}
 df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
-  group_by(Substrate) %>%
-  summarize(n_incorp_OTUs = OTU %>% unique %>% length)
+  group_by(.id, sparsity_threshold) %>%
+  summarize(n_incorp_OTUs = OTU %>% unique %>% length) %>%
+  as.data.frame
 ```
 
-Note that the MW-HR-SIP method identifies more incorporators than the HR-SIP method (which uses just one BD window). This is especially true for 13C-glucose. 
+The density windows can vary for each OTU. Let's plot which density windows were used.
 
-MW-HR-SIP detects more taxa because taxa vary in G+C content, so using only 1 BD window likely encompasses BD shifts for taxa of certain G+C contents (eg., ~50% G+C), but may miss other taxa with higher or lower G+C content. 
-
-Okay. Let's plot the number of incorporators for each labeled substrate. 
-
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=7, fig.height=5}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
+  mutate(.id = gsub(' \\| ', '\n', .id)) %>%
+  filter(padj < padj_cutoff) %>%
+  mutate(density_range = paste(density_min, density_max, sep='-')) %>% 
+  group_by(.id, sparsity_threshold, density_range) %>%
+  summarize(n_incorp_OTUs = OTU %>% unique %>% length) 
+
+#plotting
+ggplot(df_l2fc_s, aes(.id, n_incorp_OTUs, fill=density_range)) +
+    geom_bar(stat='identity', position='fill') +
+    labs(y='Fraction of incorporators') +
+    scale_y_continuous(expand=c(0,0)) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle=45, hjust=1)
+    )
+```
+
+
+Different BD windows were used for different treatment-control comparisons because the amount of BD shift likely varied among taxa. For example, if a taxon incorporates 100% 13C isotope, then a very 'heavy' BD window may show a larger l2fc than a less 'heavy' BD window.
+
+Let's look at a breakdown of incorporators for each phylum in each comparision. 
+
+```{r, fig.width=7, fig.height=7}
+# summarizing
+df_l2fc_s = df_l2fc %>% 
+  mutate(.id = gsub(' \\| ', '\n', .id)) %>%
   filter(padj < padj_cutoff) %>%
   mutate(Rank2 = gsub('^__', '', Rank2)) %>%
-  group_by(Substrate, Rank2) %>%
+  group_by(.id, Rank2) %>%
   summarize(n_incorp_OTUs = OTU %>% unique %>% length) %>%
   ungroup()
 
@@ -188,13 +278,18 @@ df_l2fc_s = df_l2fc %>%
 ggplot(df_l2fc_s, aes(Rank2, n_incorp_OTUs)) +
     geom_bar(stat='identity') +
     labs(x='Phylum', y='Number of incorporators') +
+    facet_wrap(~ .id, scales='free') +
     theme_bw() +
     theme(
-      axis.text.x = element_text(angle=45, hjust=1)
+      axis.text.x = element_text(angle=55, hjust=1)
     )
 ```
 
-MW-HR-SIP detected incorporators in phyla not seen with HR-SIP (eg., Acidobacteria). 
+
+Note that the MW-HR-SIP method identifies more incorporators than the HR-SIP method (which uses just one BD window). 
+
+MW-HR-SIP detects more taxa for 2 main reasons. First, taxa vary in G+C content, so using only 1 BD window likely encompasses BD shifts for taxa of certain G+C contents (eg., ~50% G+C), but may miss other taxa with higher or lower G+C content. Second, taxa can vary in how much isotope was incorporated, which will affect where each taxon's DNA is in the density gradient. 
+
 
 
 # Session info

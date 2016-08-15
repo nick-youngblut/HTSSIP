@@ -4,7 +4,7 @@ HTSSIP is an R package for analyzing high throughput
 sequence data from nucleotide stable isotope probing 
 (DNA- & RNA-SIP) experiments. 
 
-### Available analyzes 
+## Available analyzes 
 
 * Identifying community-level isotope incorporatation
   * Ordinations of gradient fraction communities
@@ -16,15 +16,15 @@ sequence data from nucleotide stable isotope probing
   * Quantitative stable isotope probing (q-SIP)
 
 
-### Notes
+## Documentation
 
-* The package processes sequence data in the format of a Phyloseq object.
+A good place to start is the [HTSSIP introduction](./inst/doc/HTSSIP_intro.html) 
+vignette. 
 
 
-### Reference 
+## Reference 
 
-* If you use HTSSIP, please cite:
-
+See `References` in the [HTSSIP introduction](./inst/doc/HTSSIP_intro.html) 
 
 ## Installation
 

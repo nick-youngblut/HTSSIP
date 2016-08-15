@@ -14,7 +14,10 @@
 #' # should NOT be correctly formatted for HTSSIP
 #' library(phyloseq)
 #' data(GlobalPatterns)
-#' physeq_format(GlobalPatterns)
+#' tryCatch(
+#'  physeq_format(GlobalPatterns),
+#'  function(e) e
+#'  )
 #'
 physeq_format = function(physeq){
   meta = phyloseq::sample_data(physeq)

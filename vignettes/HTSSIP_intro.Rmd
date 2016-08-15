@@ -4,7 +4,7 @@ author: "Nick Youngblut"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{HTSSIP introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -73,15 +73,15 @@ For more information on SIP and HTS-SIP, check out these references:
 
 # HTSSIP package data
 
-The \code{phyloseq} R package provides some great functions for importing and analyzing microbiome data in R. So instead of reinventing the wheel, HTSSIP utilizes Phyloseq objects as input. See the [GitHub page](https://github.com/joey711/phyloseq) or the 
+The `phyloseq` R package provides some great functions for importing and analyzing microbiome data in R. So instead of reinventing the wheel, HTSSIP utilizes Phyloseq objects as input. See the [GitHub page](https://github.com/joey711/phyloseq) or the 
 [package website](http://joey711.github.io/phyloseq/) for more info about the phyloseq. 
 
-The basic HTS-SIP dataset in the \code{HTSSIP} package consists of three CsCl 3 gradients, each with ~24 samples (gradient fractions). There are 2 treatment gradients, which contained DNA extracted from microcosms recieving both cellulose and glucose, but only one substrate was 13C-labeled for each treatment. For example, the 13C-cellulose (13C-Cel) treatment recieved 13C-cellulose and 12C-glucose. This experimental design had the benefit of requiring only one 12C-control that recieved 12C-cellulose and 12C-glucose. 
+The basic HTS-SIP dataset in the `HTSSIP` package consists of three CsCl 3 gradients, each with ~24 samples (gradient fractions). There are 2 treatment gradients, which contained DNA extracted from microcosms recieving both cellulose and glucose, but only one substrate was 13C-labeled for each treatment. For example, the 13C-cellulose (13C-Cel) treatment recieved 13C-cellulose and 12C-glucose. This experimental design had the benefit of requiring only one 12C-control that recieved 12C-cellulose and 12C-glucose. 
 
-First, let's load some packages including \code{HTSSIP}. 
+First, let's load some packages including `HTSSIP`. 
 
 ```{r, message=FALSE, warning=FALSE}
-#library(dplyr)
+library(dplyr)
 #library(ggplot2)
 library(HTSSIP)
 ```
@@ -111,8 +111,8 @@ The dataset subset that we'll be using consists of samples 6 CsCl gradients:
 
 ### Sample metadata
 
-Here's a look at (some) of the sample metadata. Note that **'Bouyant_density'** is
-included. This is necessary for many of the analyses in \code{HTSSIP}!
+Here's a look at (some) of the sample metadata. Note that `Bouyant_density` is
+one of the columns. This is necessary for many of the analyses in `HTSSIP}`
 
 ```{r}
 physeq_S2D2 %>% sample_data %>% .[1:4,1:10]
@@ -129,14 +129,17 @@ physeq_S2D2 %>% sample_data %>% .[1:4,1:10]
 library(phyloseq)
 data(GlobalPatterns)
 GlobalPatterns %>% sample_data %>% .[1:4,1:ncol(.)]
-physeq_format(GlobalPatterns)
+tryCatch(
+  physeq_format(GlobalPatterns),
+  error = function(e) e
+  )
 ```
 
 
 
 ## Parsing the dataset
 
-For most of the analyses in \code{HTSSIP}, the gradient fraction samples of each labeled-treatment gradient is compared to its corresponding control. For example, the dataset that we've been looking at has 4 comparisons: 
+For most of the analyses in `HTSSIP`, the gradient fraction samples of each labeled-treatment gradient is compared to its corresponding control. For example, the dataset that we've been looking at has 4 comparisons: 
 
 1. 12C-Con\_Day3 vs 13C-Glu\_Day3
 2. 12C-Con\_Day3 vs 13C-Cel\_Day3
@@ -145,7 +148,7 @@ For most of the analyses in \code{HTSSIP}, the gradient fraction samples of each
 
 Note that the same 12C-control is used for both because both treatments recieved both glucose & cellulose, but only 1 substrate was isotopically labeled. 
 
-So to subset the data with phyloseq, we can use the \code{prune_samples()} function to subset the dataset:
+So to subset the data with phyloseq, we can use the `prune_samples()` function to subset the dataset:
 
 ```{r}
 m = sample_data(physeq_S2D2)
@@ -157,20 +160,18 @@ physeq_13C.Cel_D14 = prune_samples((m$Substrate=='12C-Con' & m$Day==3) | (m$Subs
 physeq_13C.Cel_D14
 ```
 
-Each subset includes 
+Writing a bunch of redundant code to make each subset is not a good method to subset the data if you have a bunch of subsets to make, so `HTSSIP` includes some functions to help. 
 
-Writing a bunch of redundant code to make each subset is not a good method to subset the data if you have a bunch of subsets to make, so \code{HTSSIP} includes some functions to help. 
-
-The expression used in the \code{prune_samples()} to subset the data can be generalized as:
+The expression used in the `prune_samples()` to subset the data can be generalized as:
 
 ```{r}
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 ```
 
-Now we need the parameters for each individual \code{prune_samples()} call. This can be accomplished with:
+Now we need the parameters for each individual `prune_samples()` call. Then, we can iteratively insert these parameters into the expression in order create all of the subsets. This can be accomplished with:
 
 ```{r}
-params = get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
+params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'), "Substrate != '12C-Con'")
 params
 ```
 
@@ -181,7 +182,7 @@ physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
 physeq_S2D2_l
 ```
 
-With a list of phyloseq objects (1 list item per treatment-control comparison), we can use \code{lapply} or a similar function to run analyses on each subset of the dataset. 
+With a list of phyloseq objects (1 list item per treatment-control comparison), we can use `lapply()` or a similar function to run analyses on each subset of the dataset. 
 
 
 # References for methods in HTSSIP

@@ -16,17 +16,15 @@
 #'   or just heavy fraction samples ('heavy')
 #' @return dataframe of HRSIP results
 #'
+#' @export
+#'
 #' @examples
-#' data(physeq)
-#' df_l2fc = DESeq2_l2fc(physeq, density_min=1.71, density_max=1.75, design=~Substrate)
+#' data(physeq_S2D2)
+#' df_l2fc = DESeq2_l2fc(physeq_S2D2, density_min=1.71, density_max=1.75, design=~Substrate)
 #' head(df_l2fc)
 #'
-DESeq2_l2fc = function(physeq,
-                       density_min,
-                       density_max,
-                       design,
-                       l2fc_threshold=0.25,
-                       sparsity_threshold=0.25,
+DESeq2_l2fc = function(physeq, density_min, density_max, design,
+                       l2fc_threshold=0.25, sparsity_threshold=0.25,
                        sparsity_apply='all', ...){
   # assertions
   l2fc_threshold = as.numeric(l2fc_threshold)
@@ -40,7 +38,7 @@ DESeq2_l2fc = function(physeq,
   cat('Sparsity threshold:', sparsity_threshold, '\n')
   cat('Density window:', paste(c(density_min, density_max), collapse='-'), '\n')
 
-  # sparcity cutoff applied to all gradient fractions
+  # sparsity cutoff applied to all gradient fractions
   prn = function(x) sum(x > 0) > sparsity_threshold * length(x)
   if(sparsity_apply=='all'){
     physeq = phyloseq::filter_taxa(physeq, prn, TRUE)
@@ -91,65 +89,7 @@ DESeq2_l2fc = function(physeq,
   d$density_max = density_max
   d$sparsity_threshold = sparsity_threshold
   d$sparsity_apply = sparsity_apply
+  d$l2fc_threshold = l2fc_threshold
   return(d)
 }
 
-
-#' Calculating l2fc for multiple sparsity thresholds
-#'
-#' Calls \code{DESeq2_l2fc} with different sparsity thresholds
-#' and uses the l2fc results of the sparsity threshold that produced
-#' the most rejected hypotheses
-#'
-#' @param physeq  Phyloseq object
-#' @param density_windows  2-column data.frame with min & max buoyant densities of 'heavy' gradient
-#' fraction windows (1 window per row). The gradient fractions in each window are used to calculate
-#' log2 fold change values.
-#' @param design  \code{design} parameter used for DESeq2 analysis.
-#'   See \code{DESeq2::DESeq} for more details.
-#' @param l2fc_threshold  log2 fold change (l2fc) values must be significantly above this
-#'   threshold in order to reject the hypothesis of equal counts.
-#' @param sparsity_threshold  All OTUs observed in less than this portion (fraction: 0-1)
-#'   of gradient fraction samples are pruned. A a form of indepedent filtering,
-#'   The sparsity cutoff with the most rejected hypotheses is used.
-#' @param sparsity_apply  Apply sparsity threshold to all gradient fraction samples ('all')
-#'   or just heavy fraction samples ('heavy')
-#' @param parallel  Run in parallel. See plyr::mdply for more information (.parallel flag).
-#' @return dataframe of HRSIP results
-#'
-#' @examples
-#' data(physeq)
-#' df_l2fc = DESeq2_l2fc_multi(physeq, density_min=1.71, density_max=1.75, design=~Substrate)
-#' head(df_l2fc)
-#'
-DESeq2_l2fc_multi = function(physeq,
-                             density_windows,
-                             design,
-                             l2fc_threshold=0.25,
-                             sparsity_threshold=seq(0, 0.5, 0.1),
-                             sparsity_apply='all',
-                             parallel=FALSE,
-                             ...){
-
-  # making an expanded table of parameter values
-  sparsity_threshold = as.data.frame(sparsity_threshold)
-  colnames(sparsity_threshold)[1] = c('sparsity_threshold')
-  colnames(density_windows)[1:2] = c('density_min', 'density_max')
-  density_windows$JOINING = 1
-  sparsity_threshold$JOINING = 1
-  sparsity_window = dplyr::left_join(density_windows, sparsity_threshold, c('JOINING'))
-  sparsity_window$JOINING = NULL
-
-  # DESeq2 on each parameter set
-  df_l2fc = plyr::mdply(sparsity_window, DESeq2_l2fc,
-                        physeq=physeq,
-                        design=design,
-                        l2fc_threshold=l2fc_threshold,
-                        sparsity_apply=sparsity_apply,
-                        .parallel=parallel)
-
-  # adding a GUID to this HR-SIP run to distinguish it from other runs
-  df_l2fc$xxGUIDxx = uuid::UUIDgenerate()
-
-  return(df_l2fc)
-}

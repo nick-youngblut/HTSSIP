@@ -1,10 +1,10 @@
 ---
-title: "HTSSIP: BD shifts"
+title: "BD shifts"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{BD shifts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,6 +13,8 @@ vignette: >
 
 **Note:** if you haven't checked out the [beta diversity ordinations](beta_diversity_ordinations.html) 
 vignette yet, I recommend looking at that one first. 
+
+## Introduction
 
 While the beta diversity ordinations of gradient fractions provides a nice
 overview of isotope incorporation at the whole-community level, it doesn't
@@ -57,7 +59,7 @@ beta diversity is calculated between the gradient fraction communities.
 
 ## Dataset
 
-First, let's load some packages including \code{HTSSIP}. 
+First, let's load some packages including `HTSSIP`. 
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -95,7 +97,7 @@ cat('Subset:', names(physeq_S2D2_l)[2], '\n')
 wmean1 %>% head(n=3)
 ```
 
-Note that the \code{sample.x} column is all 12C-Con control samples, while the comparison column (\code{sample.y}) is the treatment gradient fraction samples.
+Note that the `sample.x` column is all 12C-Con control samples, while the comparison column (`sample.y`) is the treatment gradient fraction samples.
 
 **OK.** Let's plot the results!
 
@@ -117,7 +119,7 @@ than at 'heavy' gradient fractions, where there's less taxa.
 
 ## Calculating BD shift for all treatments
 
-Now let's run \code{BD_shift()} on all phyloseq objects in our list. We'll use \code{ldply} for this because it preserves the list names in the resulting data.frame (list names are assigned to \code{.id} by default).
+Now let's run `BD_shift()` on all phyloseq objects in our list. We'll use `plyr::ldply()` for this because it preserves the list names in the resulting data.frame (list names are assigned to `.id` by default).
 
 ```{r}
 wmean = plyr::ldply(physeq_S2D2_l, BD_shift)

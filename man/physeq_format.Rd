@@ -24,7 +24,10 @@ physeq_format(physeq_S2D2)
 # should NOT be correctly formatted for HTSSIP
 library(phyloseq)
 data(GlobalPatterns)
-physeq_format(GlobalPatterns)
+tryCatch(
+ physeq_format(GlobalPatterns),
+ function(e) e
+ )
 
 }
 
