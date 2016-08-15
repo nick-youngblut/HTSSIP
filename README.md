@@ -18,13 +18,13 @@ sequence data from nucleotide stable isotope probing
 
 ## Documentation
 
-A good place to start is the [HTSSIP introduction](./inst/doc/HTSSIP_intro.html) 
+A good place to start is the [HTSSIP introduction](./vignettes/HTSSIP_intro.Rmd) 
 vignette. 
 
 
 ## Reference 
 
-See `References` in the [HTSSIP introduction](./inst/doc/HTSSIP_intro.html) 
+See `References` in the [HTSSIP introduction](./vignettes/HTSSIP_intro.Rmd) vignette.
 
 ## Installation
 

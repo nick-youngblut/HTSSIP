@@ -14,14 +14,14 @@ vignette: >
 I recommend starting with this introductory vignette, then checking out the other vignettes:
 
 * **Dataset exploration**
-    * [Beta diversity ordinations of gradient fraction communities](beta_diversity_ordinations.html)
-    * [Whole-community BD shift plots](BD_shifts.html)
+    * [Beta diversity ordinations of gradient fraction communities](beta_diversity_ordinations.Rmd)
+    * [Whole-community BD shift plots](BD_shifts.Rmd)
 * **Detecting incorporators**
-    * [HR-SIP & MW-HR-SIP](MW_HR_SIP.html)
+    * [HR-SIP & MW-HR-SIP](MW_HR_SIP.Rmd)
     * [q-SIP](qSIP.html)
 * **Calculating amount of incorporation**
-    * [delta-BD](delta_BD.html)
-    * [q-SIP](qSIP.html)
+    * [delta-BD](delta_BD.Rmd)
+    * [q-SIP](qSIP.Rmd)
 
 
 # HTS-SIP introduction
