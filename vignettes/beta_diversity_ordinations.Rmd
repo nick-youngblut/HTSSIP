@@ -29,7 +29,7 @@ physeq_S2D2
 
 ## Parsing the dataset
 
-See [HTSSIP introduction vignette](HTSSIP_intro.Rmd) for a description on why dataset parsing is needed.
+See [HTSSIP introduction vignette](HTSSIP_intro.html) for a description on why dataset parsing is needed.
 
 Let's the parameters for parsing the dataset into individual treatment-control comparisons. 
 

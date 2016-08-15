@@ -11,7 +11,7 @@ vignette: >
 
 # Making BD shift plots
 
-**Note:** if you haven't checked out the [beta diversity ordinations](beta_diversity_ordinations.Rmd) 
+**Note:** if you haven't checked out the [beta diversity ordinations](beta_diversity_ordinations.html) 
 vignette yet, I recommend looking at that one first. 
 
 ## Introduction

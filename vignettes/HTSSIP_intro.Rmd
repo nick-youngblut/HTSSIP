@@ -14,14 +14,14 @@ vignette: >
 I recommend starting with this introductory vignette, then checking out the other vignettes:
 
 * **Dataset exploration**
-    * [Beta diversity ordinations of gradient fraction communities](beta_diversity_ordinations.Rmd)
-    * [Whole-community BD shift plots](BD_shifts.Rmd)
+    * [Beta diversity ordinations of gradient fraction communities](beta_diversity_ordinations.html)
+    * [Whole-community BD shift plots](BD_shifts.html)
 * **Detecting incorporators**
-    * [HR-SIP & MW-HR-SIP](MW_HR_SIP.Rmd)
+    * [HR-SIP & MW-HR-SIP](MW_HR_SIP.html)
     * [q-SIP](qSIP.html)
 * **Calculating amount of incorporation**
-    * [delta-BD](delta_BD.Rmd)
-    * [q-SIP](qSIP.Rmd)
+    * [delta-BD](delta_BD.html)
+    * [q-SIP](qSIP.html)
 
 
 # HTS-SIP introduction
@@ -105,9 +105,11 @@ The dataset subset that we'll be using consists of samples 6 CsCl gradients:
 1. 13C-Glu, Day 14
 1. 13C-Cel, Day 14
 
-* "12C-Con" stands for the unlabeled control, 
+Notes:
+
+* "12C-Con" stands for the unlabeled control 
 * "13C-Glu" and "13C-Cel" stand for 13C-gluclose and 13C-cellulose, respectively
-* "Day" is the number of days from substrate addition. 
+* "Day" is the number of days from substrate addition
 
 ### Sample metadata
 
@@ -196,7 +198,7 @@ With a list of phyloseq objects (1 list item per treatment-control comparison), 
 * **MW-HR-SIP**
     * Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP) as described in Youngblut and Buckley *in review*
 
-* **qSIP**
+* **q-SIP**
     * Quantitative stable isotope probing (q-SIP) as described in [Hungate et al., 2015](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4592864/)
 
 
