@@ -20,8 +20,8 @@ I recommend starting with this introductory vignette, then checking out the othe
     * [HR-SIP & MW-HR-SIP](MW_HR_SIP.html)
     * [q-SIP](qSIP.html)
 * **Calculating amount of incorporation**
-    * [delta-BD](delta_BD.html)
-    * [q-SIP](qSIP.html)
+    * [delta-BD](delta_BD.html)  [TODO]
+    * [q-SIP](qSIP.html)  [TODO]
 
 
 # HTS-SIP introduction
