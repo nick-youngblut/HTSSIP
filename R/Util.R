@@ -12,11 +12,11 @@ as.Num = function(x) x %>% as.character %>% as.numeric
 #' @export
 #'
 #' @examples
-#' data(physeq)
-#' df_otu = phyloseq2df(physeq, table_func=otu_table)
+#' data(physeq_S2D1)
+#' df_otu = phyloseq2df(physeq_S2D1, table_func=otu_table)
 #' head(df_otu)
 #'
-#' df_sample = phyloseq2df(physeq, table_func=sample_data)
+#' df_sample = phyloseq2df(physeq_S2D1, table_func=sample_data)
 #' head(df_sample)
 #'
 phyloseq2df = function(physeq, table_func){

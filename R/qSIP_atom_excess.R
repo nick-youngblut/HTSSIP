@@ -19,6 +19,14 @@
 # Z = BD shift
 
 
+#' Calculate GC from unlabeled buoyant density
+#'
+#' See Hungate et al., 2015 for more details
+#'
+#' @param Wlight  A vector with >=1 weighted mean BD from
+#' 'light' gradient fractions
+#' @return numeric value (fractional G+C; Gi)
+#'
 calc_Gi = function(Wlight){
   if(length(Wlight) > 1){
     Gi = sapply(Wlight, calc_Gi)
@@ -28,7 +36,15 @@ calc_Gi = function(Wlight){
   return(Gi)
 }
 
-
+#' Calculate the theoretical maximum molecular weight of fully-labeled DNA
+#'
+#' See Hungate et al., 2015 for more details
+#'
+#' @param Mlight  The molecular wight of unlabeled DNA
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param Gi  The G+C content of unlabeled DNA
+#' @return numeric value: maximum molecular weight of fully-labeled DNA
+#'
 calc_Mheavymax = function(Mlight, isotope='13C', Gi=NA){
   isotope = toupper(isotope)
   if(isotope=='13C'){
@@ -42,7 +58,16 @@ calc_Mheavymax = function(Mlight, isotope='13C', Gi=NA){
   return(Mhm)
 }
 
-
+#' Calculate atom fraction excess
+#'
+#' See Hungate et al., 2015 for more details
+#'
+#' @param Mlab  The molecular wight of labeled DNA
+#' @param Mlight  The molecular wight of unlabeled DNA
+#' @param Mheavymax  The theoretical maximum molecular weight of fully-labeled DNA
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @return numeric value: atom fraction excess (A)
+#'
 calc_atom_excess = function(Mlab, Mlight, Mheavymax, isotope='13C'){
   isotope=toupper(isotope)
   if(isotope=='13C'){
@@ -57,9 +82,18 @@ calc_atom_excess = function(Mlab, Mlight, Mheavymax, isotope='13C'){
   return(A)
 }
 
-qSIP_atom_excess_format = function(physeq, control_expr, gradient_rep){
+#' Reformat a phyloseq object of qSIP_atom_excess analysis
+#'
+#' @param physeq  A phyloseq object
+#' @param control_expr  An expression for identifying unlabeled control
+#' samples in the phyloseq object (eg., "Substrate=='12C-Con'")
+#' @param  treatmenat_rep  Which column in the phyloseq sample data designates
+#' replicate treatments
+#' @return numeric value: atom fraction excess (A)
+#'
+qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
   # formatting input
-  cols = c('IS_CONTROL', 'Buoyant_density', gradient_rep)
+  cols = c('IS_CONTROL', 'Buoyant_density', treatment_rep)
   df_OTU = phyloseq2table(physeq,
                           include_sample_data=TRUE,
                           sample_col_keep=cols,
@@ -68,21 +102,48 @@ qSIP_atom_excess_format = function(physeq, control_expr, gradient_rep){
 }
 
 
-#' Calculate mean buoyant density shift
+#' Calculate atom fraction excess using q-SIP method
 #'
 #' @param physeq  A phyloseq object
-#' @param qPCR  A list of qPCR data from \code(qPCR_sim())
+#' @param control_expr  Expression used to identify control samples based on sample_data.
+#' @param  treatmenat_rep  Which column in the phyloseq sample data designates
+#' replicate treatments
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param df_OTU_W  Keep NULL
 #'
-#' @return A data.frame object
+#' @return A list of 2 data.frame objects. 'W' contains
+#' the weighted mean buoyant density (W) values for each OTU in
+#' each treatment/control. 'A' contains the atom fraction excess
+#' values for each OTU. For the 'A' table, the 'Z' column is buoyant
+#' density shift, and the 'A' column is atom fraction excess.
 #'
 #' @export
 #'
 #' @examples
+#' # qPCR data simulation
+#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
+#' control_sd_fun = function(x) control_mean_fun(x) / 3
+#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
 #'
+#' physeq = physeq_S2D2_l[[1]]
+#' qPCR = qPCR_sim(physeq,
+#'                 control_expr='Substrate=="12C-Con"',
+#'                 control_mean_fun=control_mean_fun,
+#'                 control_sd_fun=control_sd_fun,
+#'                 treat_mean_fun=treat_mean_fun,
+#'                 treat_sd_fun=treat_sd_fun)
+#' # OTU table transformation
+#' physeq_t = OTU_qPCR_trans(physeq, qPCR)
+#'
+#' #BD shift (Z) & atom excess (A)
+#' atomX = qSIP_atom_excess(physeq_t,
+#'                         control_expr=control_expr,
+#'                         gradient_rep=gradient_rep)
 #'
 qSIP_atom_excess = function(physeq,
                             control_expr,
-                            gradient_rep=NULL,
+                            treatment_rep=NULL,
                             isotope='13C',
                             df_OTU_W=NULL){
   # formatting input
@@ -93,12 +154,12 @@ qSIP_atom_excess = function(physeq,
   }
 
   if(no_boot){
-    df_OTU = qSIP_atom_excess_format(physeq, control_expr, gradient_rep)
+    df_OTU = qSIP_atom_excess_format(physeq, control_expr, treatment_rep)
 
     # BD shift (Z)
     df_OTU_W = df_OTU %>%
       # weighted mean buoyant density (W)
-      dplyr::group_by_('IS_CONTROL', 'OTU', gradient_rep) %>%
+      dplyr::group_by_('IS_CONTROL', 'OTU', treatment_rep) %>%
       dplyr::mutate(Buoyant_density = Buoyant_density %>% as.Num,
                     Count = Count %>% as.Num) %>%
       dplyr::summarize(W = weighted.mean(Buoyant_density, Count, na.rm=TRUE))
@@ -187,13 +248,56 @@ sample_W = function(df, n_sample){
   atomX = qSIP_atom_excess(physeq=NULL,
                    df_OTU_W=df_OTU_W,
                    control_expr=NULL,
-                   gradient_rep=NULL,
+                   treatment_rep=NULL,
                    isotope=isotope)
   atomX$bootstrap_id = bootstrap_id
   return(atomX)
 }
 
 
+#' Calculate bootstrap CI for atom fraction excess using q-SIP method
+#'
+#' @param atomX  A list object created by \code{qSIP_atom_excess()}
+#' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
+#' @param n_sample  A vector of length 2.
+#' The sample size for data resampling (with replacement) for 1) control samples
+#' and 2) treatment samples.
+#' @param n_boot  Number of bootstrap replicates.
+#' @param parallel  Parallel processing. See \code{.parallel} option in
+#' \code{dplyr::mdply()} for more details.
+#'
+#' @return A data.frame of atom fraction excess values (A) and
+#' atom fraction excess confidence intervals.
+#'
+#' @export
+#'
+#' @examples
+#' # qPCR data simulation
+#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
+#' control_sd_fun = function(x) control_mean_fun(x) / 3
+#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
+#'
+#' physeq = physeq_S2D2_l[[1]]
+#' qPCR = qPCR_sim(physeq,
+#'                 control_expr='Substrate=="12C-Con"',
+#'                 control_mean_fun=control_mean_fun,
+#'                 control_sd_fun=control_sd_fun,
+#'                 treat_mean_fun=treat_mean_fun,
+#'                 treat_sd_fun=treat_sd_fun)
+#' # OTU table transformation
+#' physeq_t = OTU_qPCR_trans(physeq, qPCR)
+#'
+#' #BD shift (Z) & atom excess (A)
+#' atomX = qSIP_atom_excess(physeq_t,
+#'                         control_expr=control_expr,
+#'                         gradient_rep=gradient_rep)
+#'
+#' # bootstrapping in parallel
+#' doParallel::registerDoParallel(8)
+#' df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE)
+#' head(df_atomX_boot)
+#'
 qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
                           n_boot=10, parallel=FALSE){
   # atom excess for each bootstrap replicate
