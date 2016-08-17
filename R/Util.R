@@ -39,7 +39,7 @@ phyloseq2df = function(physeq, table_func){
 #' @param sample_col_keep  Which columns in the \code{sample_data} table to keep?
 #'   Use \code{NULL} to keep all columns.
 #' @param include_tax_table  Include \code{tax_table} information?
-#' @param tax_col_keep  Which columns in the \code{tax_table} table to keep?
+#' @param tax_col_keep  A vector for column names to keep.
 #'   Use \code{NULL} to keep all columns.
 #' @return data.frame
 #'
@@ -55,20 +55,31 @@ phyloseq2df = function(physeq, table_func){
 #' df_OTU = phyloseq2table(physeq, include_sample_data=TRUE, sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'),include_tax_table=TRUE)
 #' head(df_OTU)
 #'
-phyloseq2table = function(physeq, include_sample_data=FALSE,
+phyloseq2table = function(physeq,
+                          include_sample_data=FALSE,
                           sample_col_keep=NULL,
-                          include_tax_table=FALSE, tax_col_keep=NULL){
+                          include_tax_table=FALSE,
+                          tax_col_keep=NULL,
+                          control_expr=NULL){
   # OTU table
   df_OTU = otu_table(physeq)
   df_OTU = suppressWarnings(as.data.frame(as.matrix(df_OTU)))
   df_OTU$OTU = rownames(df_OTU)
-  df_OTU = gather(df_OTU, SAMPLE_JOIN, Count, 1:(ncol(df_OTU)-1))
+  df_OTU = tidyr::gather(df_OTU, SAMPLE_JOIN, Count, -OTU)
 
   # sample metdata
   if(include_sample_data==TRUE){
-    df_meta = sample_data(physeq)
-    df_meta = suppressWarnings(as.data.frame(as.matrix(df_meta)))
+    #df_meta = sample_data(physeq)
+    #df_meta = suppressWarnings(as.data.frame(as.matrix(df_meta)))
+    df_meta = phyloseq2df(physeq, sample_data)
+    rownames(df_meta) = make.names(rownames(df_meta))
     df_meta$SAMPLE_JOIN = rownames(df_meta)
+
+    if(! is.null(control_expr)){
+      df_meta = df_meta %>%
+        dplyr::mutate_(IS_CONTROL = control_expr)
+    }
+
     ## trimming
     if(!is.null(sample_col_keep)){
       sample_col_keep = c('SAMPLE_JOIN', sample_col_keep)
@@ -78,7 +89,7 @@ phyloseq2table = function(physeq, include_sample_data=FALSE,
     df_OTU = inner_join(df_OTU, df_meta, c('SAMPLE_JOIN'))
   }
 
-  # sample metdata
+  # taxonomy table
   if(include_tax_table==TRUE){
     df_tax = tax_table(physeq)
     df_tax = suppressWarnings(as.data.frame(as.matrix(df_tax)))

@@ -9,6 +9,10 @@
 #     ungroup()
 # }
 
+#' Simulate qPCR values
+#'
+#' @return numeric length of 1 (qPCR value)
+#'
 
 .qPCR_sim = function(Buoyant_density,
                      IS_CONTROL,
@@ -48,17 +52,37 @@
 #'
 #' @return data.frame of qPCR values
 #'
+#' @examples
+#' # making functions for simulating values
+#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
+#' control_sd_fun = function(x) control_mean_fun(x) / 3
+#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
+#' # simulating qPCR values
+#' df_qPCR = qPCR_sim(physeq_S2D2,
+#'                 control_expr='Substrate=="12C-Con"',
+#'                 control_mean_fun=control_mean_fun,
+#'                 control_sd_fun=control_sd_fun,
+#'                 treat_mean_fun=treat_mean_fun,
+#'                 treat_sd_fun=treat_sd_fun)
+#'
 qPCR_sim = function(physeq,
-                    control_expr,
                     control_mean_fun,
                     control_sd_fun,
                     treat_mean_fun,
                     treat_sd_fun,
                     n_tech_rep=3,
+                    control_expr=NULL,
                     ...){
   # sample_metadata
-  m = phyloseq2df(physeq_S2D2, sample_data) %>%
-    dplyr::mutate_(IS_CONTROL = control_expr)
+  m = phyloseq2df(physeq, sample_data)
+  if(is.null(m$IS_CONTROL)){
+    if(is.null(control_expr)){
+      stop('sample_data in phyloseq object must have IS_CONTROL column (logical), or you must provide the control_expr parameter')
+    }
+    m = m %>%
+      dplyr::mutate_(IS_CONTROL = control_expr)
+  }
 
   if(is.null(m$Buoyant_density)){
     stop('Buoyant_density column not found in phyloseq object sample_data')
@@ -76,8 +100,18 @@ qPCR_sim = function(physeq,
                         n_tech_rep=n_tech_rep)
 
   colnames(df_qPCR)[3:(2+n_tech_rep)] = gsub('^', 'qPCR_tech_rep', 1:n_tech_rep)
+  df_qPCR$Sample = physeq %>% sample_data %>% rownames
 
-  return(df_qPCR)
+  # gather & summarize
+  df_qPCR_s = df_qPCR %>%
+    tidyr::gather(qPCR_tech_rep_id, qPCR_tech_rep_value, starts_with('qPCR_tech_rep')) %>%
+    dplyr::group_by(IS_CONTROL, Sample, Buoyant_density) %>%
+    dplyr::summarize(qPCR_tech_rep_mean = mean(qPCR_tech_rep_value),
+           qPCR_tech_rep_sd = sd(qPCR_tech_rep_value)) %>%
+    dplyr::ungroup() %>%
+    as.data.frame
+
+  return(list(raw=df_qPCR, summary=df_qPCR_s))
 }
 
 
