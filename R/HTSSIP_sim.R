@@ -1,8 +1,35 @@
-# makes 1 gradient
+#' Simulate HTS-SIP communities for 1 density gradient
+#'
+#' @param locs  Buoyant densities of each gradient fraction
+#' @param params  A matrix of parameters for \code{coenocliner::coenocline()}.
+#' See that function's documentation for more details.
+#' @param responseModel  See \code{coenocliner::coenocline()}
+#' @param countModel  See \code{coenocliner::coenocline()}
+#' @param ...  Other parameters passed to \code{coenocliner::coenocline()}
+#'
+#' @return A data.frame of OTU counts.
+#'
+#' @export
+#'
+#' @examples
+#' # setting parameters
+#' set.seed(2)
+#' M = 10                                  # number of species (OTUs)
+#' ming = 1.67                             # gradient minimum...
+#' maxg = 1.78                                # ...and maximum
+#' nfrac = 24                                 # number of gradient fractions
+#' locs = seq(ming, maxg, length=nfrac)       # gradient fraction BD values
+#' tol = rep(0.005, M)                       # species tolerances
+#' h = ceiling(rlnorm(M, meanlog=11))    # max abundances
+#' opt = rnorm(M, mean=1.7, sd=0.005)      # species optima
+#' params = cbind(opt=opt, tol=tol, h=h)  # put in a matrix
+#' # simulate the OTU abundances
+#' df_OTU = gradient_sim(locs, params)
+#' head(df_OTU)
+#'
 gradient_sim = function(locs, params,
                         responseModel='gaussian',
                         countModel='poisson',
-                        #sample_prefix ='sample',
                         ...){
   df_OTU = coenocliner::coenocline(locs,
                                    params=params,
@@ -16,8 +43,39 @@ gradient_sim = function(locs, params,
 }
 
 
-
-# making whole dataset
+#' Simulate a HTS-SIP dataset
+#'
+#' @inheritParams gradient_sim
+#' @param parallel  Parallel processing. See \code{.parallel} option in
+#' \code{dplyr::mdply()} for more details.
+#'
+#' @return A phyloseq object
+#'
+#' @export
+#'
+#' @examples
+#' # setting parameters for tests
+#' set.seed(2)
+#' M = 10                                  # number of species
+#' ming = 1.67                             # gradient minimum...
+#' maxg = 1.78                                # ...and maximum
+#' nfrac = 24                                 # number of gradient fractions
+#' locs = seq(ming, maxg, length=nfrac)       # gradient locations
+#' tol  = rep(0.005, M)                       # species tolerances
+#' h    = ceiling(rlnorm(M, meanlog=11))    # max abundances
+#' ## creating parameter matrices for each density gradient
+#' opt1 = rnorm(M, mean=1.7, sd=0.005)      # species optima
+#' params1 = cbind(opt=opt1, tol=tol, h=h)  # put in a matrix
+#' opt2 = rnorm(M, mean=1.7, sd=0.005)      # species optima
+#' params2 = cbind(opt=opt2, tol=tol, h=h)  # put in a matrix
+#' param_l = list(
+#'   '12C-Con_rep1' = params1,
+#'   '13C-Cel_rep1' = params2
+#' )
+#' # simulating phyloseq object
+#' physeq = phyloseq_sim(locs, param_l)
+#' physeq
+#'
 phyloseq_sim = function(locs, params,
                    responseModel='gaussian',
                    countModel='poisson',
@@ -58,8 +116,3 @@ phyloseq_sim = function(locs, params,
 
   return(physeq)
 }
-
-
-
-
-

@@ -8,6 +8,9 @@ locs = seq(ming, maxg, length=nfrac)       # gradient locations
 tol  = rep(0.005, M)                       # species tolerances
 h    = ceiling(rlnorm(M, meanlog=11))    # max abundances
 
+opt = rnorm(M, mean=1.7, sd=0.005)      # species optima
+params = cbind(opt=opt, tol=tol, h=h)  # put in a matrix
+
 opt1 = rnorm(M, mean=1.7, sd=0.005)      # species optima
 params1 = cbind(opt=opt1, tol=tol, h=h)  # put in a matrix
 opt2 = rnorm(M, mean=1.7, sd=0.005)      # species optima

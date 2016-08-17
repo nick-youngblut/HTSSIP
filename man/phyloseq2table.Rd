@@ -5,7 +5,7 @@
 \title{Phyloseq conversion to a ggplot-formatted table}
 \usage{
 phyloseq2table(physeq, include_sample_data = FALSE, sample_col_keep = NULL,
-  include_tax_table = FALSE, tax_col_keep = NULL)
+  include_tax_table = FALSE, tax_col_keep = NULL, control_expr = NULL)
 }
 \arguments{
 \item{physeq}{Phyloseq object}
@@ -17,7 +17,7 @@ Use \code{NULL} to keep all columns.}
 
 \item{include_tax_table}{Include \code{tax_table} information?}
 
-\item{tax_col_keep}{Which columns in the \code{tax_table} table to keep?
+\item{tax_col_keep}{A vector for column names to keep.
 Use \code{NULL} to keep all columns.}
 }
 \value{

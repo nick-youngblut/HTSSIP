@@ -24,7 +24,7 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 #' Transform OTU counts based on qPCR data
 #'
 #' @param physeq  A phyloseq object
-#' @param qPCR  A list of qPCR data from \code(qPCR_sim())
+#' @param qPCR  A list of qPCR data from \code{qPCR_sim()}
 #'
 #' @return A phyloseq object with transformed OTU counts
 #'

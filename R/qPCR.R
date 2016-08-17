@@ -9,11 +9,7 @@
 #     ungroup()
 # }
 
-#' Simulate qPCR values
-#'
-#' @return numeric length of 1 (qPCR value)
-#'
-
+# Simulate qPCR values
 .qPCR_sim = function(Buoyant_density,
                      IS_CONTROL,
                      control_mean_fun,
