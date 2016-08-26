@@ -69,10 +69,8 @@ phyloseq2table = function(physeq,
 
   # sample metdata
   if(include_sample_data==TRUE){
-    #df_meta = sample_data(physeq)
-    #df_meta = suppressWarnings(as.data.frame(as.matrix(df_meta)))
     df_meta = phyloseq2df(physeq, sample_data)
-    rownames(df_meta) = make.names(rownames(df_meta))
+    #rownames(df_meta) = make.names(rownames(df_meta))
     df_meta$SAMPLE_JOIN = rownames(df_meta)
 
     if(! is.null(control_expr)){
@@ -87,6 +85,9 @@ phyloseq2table = function(physeq,
     }
     # join
     df_OTU = inner_join(df_OTU, df_meta, c('SAMPLE_JOIN'))
+    if(nrow(df_OTU) == 0){
+      stop('No rows returned after inner_join of otu_table & sample_data')
+    }
   }
 
   # taxonomy table
@@ -101,6 +102,9 @@ phyloseq2table = function(physeq,
     }
     # join
     df_OTU = inner_join(df_OTU, df_tax, c('OTU'))
+    if(nrow(df_OTU) == 0){
+      stop('No rows returned after inner_join of otu_table & tax_table')
+    }
   }
 
   return(df_OTU)

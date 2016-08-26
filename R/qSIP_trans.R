@@ -23,8 +23,19 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 
 #' Transform OTU counts based on qPCR data
 #'
+#' OTU counts in the phyloseq otu_table object will be normalized
+#' to sample totals (total sum scaling), then multiplied by the
+#' qPCR value associated with each sample. Thus, the qPCR table
+#' should have ONE value matching the OTU count table. Value
+#' matching between the OTU table & qPCR value table to set by
+#' \code{sample_idx()}.
+#'
+#'
 #' @param physeq  A phyloseq object
 #' @param qPCR  A list of qPCR data from \code{qPCR_sim()}
+#' @param sample_idx  The qPCR table column index for
+#' matching to otu table samples.
+#' @param value_idx  The qPCR table column index for qPCR values.
 #'
 #' @return A phyloseq object with transformed OTU counts
 #'
@@ -32,27 +43,21 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 #'
 #' @examples
 #' # qPCR data simulation
-#' ## making functions for simulating values
-#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-#' control_sd_fun = function(x) control_mean_fun(x) / 3
-#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
-#' ## simulating qPCR values
-#' qPCR = qPCR_sim(physeq_S2D2,
-#'                 control_expr='Substrate=="12C-Con"',
-#'                 control_mean_fun=control_mean_fun,
-#'                 control_sd_fun=control_sd_fun,
-#'                 treat_mean_fun=treat_mean_fun,
-#'                 treat_sd_fun=treat_sd_fun)
-#' ## transforming OTU values
-#' OTU_qPCR_trans(physeq, qPCR)
+#' data(physeq_rep3)
+#' data(phsyeq_rep3_qPCR)
+#' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
-OTU_qPCR_trans = function(physeq, qPCR){
+OTU_qPCR_trans = function(physeq, qPCR, sample_idx='Sample',
+                          value_idx='qPCR_tech_rep_mean'){
   # means of qPCR (if needed)
-  stopifnot(class(qPCR)=='list')
-  stopifnot(!is.null(qPCR$summary))
+  if(!is.null(qPCR$summary)){
+    qPCR = qPCR$summary
+  }
+  stopifnot(class(qPCR)=='data.frame' | class(qPCR)=='matrix')
+  stopifnot(!is.null(qPCR$Sample))
 
   # OTU table
+  df_OTU_col = physeq %>% otu_table %>% colnames
   df_OTU = phyloseq2df(physeq, otu_table)
   df_OTU_rn = rownames(df_OTU)
   df_OTU = as.data.frame(apply(df_OTU, 2, as.Num))
@@ -63,23 +68,25 @@ OTU_qPCR_trans = function(physeq, qPCR){
 
   # qPCR multiplication
   ## ordering of qPCR table
-  qPCR_s = qPCR$summary
-  stopifnot(!is.null(qPCR_s$Sample))
-  rownames(qPCR_s) = make.names(qPCR_s$Sample)
-  qPCR_s = qPCR_s[colnames(df_OTU),]
-  qPCR_vals = qPCR_s$qPCR_tech_rep_mean
+  rownames(qPCR) = make.names(qPCR[,sample_idx])
+  qPCR = qPCR[colnames(df_OTU),]
+  qPCR_vals = qPCR[,value_idx]
   if(length(qPCR_vals) != ncol(df_OTU)){
     stop('length qPCR_vals (', length(qPCR_vals),
          ') != ncol df_OTU (', ncol(df_OTU), ')')
   }
   ## transform
-  df_OTU = sweep(df_OTU %>% as.data.frame, 2, qPCR_s$qPCR_tech_rep_mean, "*")
+  df_OTU = sweep(df_OTU %>% as.data.frame, 2, qPCR_vals, "*")
+  df_OTU = apply(df_OTU, 2, function(x) round(x, 0))
+  colnames(df_OTU) = df_OTU_col
+
+  # nan to zero
+  df_OTU[is.na(df_OTU)] = 0
 
   # making new physeq object
   tree = phy_tree(physeq, errorIfNULL=FALSE)
   tax  = tax_table(physeq, errorIfNULL=FALSE)
   sam  = sample_data(physeq, errorIfNULL=FALSE)
-  rownames(sam) = make.names(rownames(sam))
 
   physeq2 = phyloseq(otu_table(df_OTU, taxa_are_rows=TRUE),
                     phy_tree(tree, errorIfNULL=FALSE),

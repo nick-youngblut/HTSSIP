@@ -38,14 +38,21 @@ gradient_sim = function(locs, params,
                                    ...)
   df_OTU = as.data.frame(df_OTU)
   colnames(df_OTU) = gsub('^', 'OTU.', 1:M)
-  df_OTU$Buoyant_density = locs #as.character(round(locs, digits=4))
+  df_OTU$Buoyant_density = locs   #as.character(round(locs, digits=4))
   return(df_OTU)
 }
 
 
 #' Simulate a HTS-SIP dataset
 #'
+#' This is a simple method for simulating high thoughput sequencing
+#' stable isotope probing datasets and is mainly used for package testing
+#' purposes. See \code{SIPSim} for more detailed and simulation pipeline.
+#'
 #' @inheritParams gradient_sim
+#' @param meta  Data.frame object of metadata to add to \code{sample_data} table.
+#' The data.frame object must have a 'Gradient' column, which is used for joining
+#' with \code{dplyr::left_join()}.
 #' @param parallel  Parallel processing. See \code{.parallel} option in
 #' \code{dplyr::mdply()} for more details.
 #'
@@ -73,12 +80,13 @@ gradient_sim = function(locs, params,
 #'   '13C-Cel_rep1' = params2
 #' )
 #' # simulating phyloseq object
-#' physeq = phyloseq_sim(locs, param_l)
+#' physeq = HTSSIP_sim(locs, param_l)
 #' physeq
 #'
-phyloseq_sim = function(locs, params,
+HTSSIP_sim = function(locs, params,
                    responseModel='gaussian',
                    countModel='poisson',
+                   meta=NULL,
                    parallel=FALSE,
                    ...){
 
@@ -94,18 +102,25 @@ phyloseq_sim = function(locs, params,
   # vary the BDs a bit
   x = rnorm(nrow(df_OTU), mean=0, sd=0.002)
   df_OTU$Buoyant_density = as.Num(df_OTU$Buoyant_density) + x
-  df_OTU$Buoyant_density = round(df_OTU$Buoyant_density, digits=4)
+  df_OTU$Buoyant_density = round(df_OTU$Buoyant_density, digits=7)
 
   # metadata
-  df_meta = df_OTU[,c('Gradient', 'Buoyant_density')]
+  X = c('Gradient', 'Buoyant_density')
+  df_meta = df_OTU[,X]
+
+  # adding to metadata
+  if(!is.null(meta)){
+    df_meta = dplyr::left_join(df_meta, meta, c('Gradient'='Gradient')) %>%
+      as.data.frame
+  }
 
   # formatting OTU table
-  rownames(df_OTU) = apply(df_meta, 1, paste, collapse="_")
+  rownames(df_OTU) = apply(df_meta[,X], 1, paste, collapse="_")
   df_OTU$Gradient = NULL
   df_OTU$Buoyant_density = NULL
   df_OTU = t(df_OTU)
 
-  # sample matching between metdata &  OTU table
+  # sample matching between metdata & OTU table
   rownames(df_meta) = colnames(df_OTU)
 
   # making phyloseq object

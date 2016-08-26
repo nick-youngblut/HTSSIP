@@ -1,23 +1,23 @@
 test_that('qSIP_BD_shift working', {
-  control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-  control_sd_fun = function(x) control_mean_fun(x) / 3
-  treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-  treat_sd_fun = function(x) treat_mean_fun(x) / 3
-
-  physeq = physeq_S2D2_l[[1]]
-  qPCR = qPCR_sim(physeq,
-                  control_expr='Substrate=="12C-Con"',
-                  control_mean_fun=control_mean_fun,
-                  control_sd_fun=control_sd_fun,
-                  treat_mean_fun=treat_mean_fun,
-                  treat_sd_fun=treat_sd_fun)
+  # control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
+  # control_sd_fun = function(x) control_mean_fun(x) / 3
+  # treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+  # treat_sd_fun = function(x) treat_mean_fun(x) / 3
+  #
+  # physeq = physeq_S2D2_l[[1]]
+  # qPCR = qPCR_sim(physeq,
+  #                 control_expr='Substrate=="12C-Con"',
+  #                 control_mean_fun=control_mean_fun,
+  #                 control_sd_fun=control_sd_fun,
+  #                 treat_mean_fun=treat_mean_fun,
+  #                 treat_sd_fun=treat_sd_fun)
   # OTU table transformation
-  physeq_t = OTU_qPCR_trans(physeq, qPCR)
+  physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 
   # BD shift (Z) & atom excess (A)
-  atomX = qSIP_atom_excess(physeq_t,
-                       control_expr=control_expr,
-                       gradient_rep=gradient_rep)
+  atomX = qSIP_atom_excess(physeq_rep3_t,
+                           control_expr='Treatment=="12C-Con"',
+                           treatment_rep='Replicate')
 
   #df_atomX %>% head
   expect_is(atomX, 'list')

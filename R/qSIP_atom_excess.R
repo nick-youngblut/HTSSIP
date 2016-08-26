@@ -11,7 +11,6 @@
 # bootstrapping & calculating CIs
 
 
-
 # W: weighted average (BD) of taxon, with weights by abundance
 ## calculated on a per-gradient basis
 # mean W (labeled vs control)
@@ -139,7 +138,7 @@ qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
 #' #BD shift (Z) & atom excess (A)
 #' atomX = qSIP_atom_excess(physeq_t,
 #'                         control_expr=control_expr,
-#'                         gradient_rep=gradient_rep)
+#'                         treatment_rep=gradient_rep)
 #'
 qSIP_atom_excess = function(physeq,
                             control_expr,
@@ -155,6 +154,9 @@ qSIP_atom_excess = function(physeq,
 
   if(no_boot){
     df_OTU = qSIP_atom_excess_format(physeq, control_expr, treatment_rep)
+    if(nrow(df_OTU) == 0){
+      stop('No rows in OTU table after qSIP_atom_excess_format(). Check control_exp & treatment_rep')
+    }
 
     # BD shift (Z)
     df_OTU_W = df_OTU %>%

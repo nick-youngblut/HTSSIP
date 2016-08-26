@@ -34,6 +34,13 @@ param_l = list(
   '13C-Glu_rep3' = params6
 )
 
+meta = data.frame(
+  'Gradient' = c('12C-Con_rep1', '12C-Con_rep2', '12C-Con_rep3',
+                 '13C-Glu_rep1', '13C-Glu_rep2', '13C-Glu_rep3'),
+  'Treatment' = c(rep('12C-Con', 3), rep('13C-Glu', 3)),
+  'Replicate' = c(1:3, 1:3)
+)
+
 
 test_that('Gradient sim', {
   df_OTU = gradient_sim(locs, params)
@@ -42,9 +49,27 @@ test_that('Gradient sim', {
 })
 
 test_that('phyloseq sim',{
-  physeq = phyloseq_sim(locs, param_l)
-  #physeq
+  physeq = HTSSIP_sim(locs, param_l)
+  physeq = HTSSIP_sim(locs, param_l, meta=meta)
   expect_is(physeq, 'phyloseq')
+  BDs = physeq %>% sample_data %>% .$Buoyant_density
+  expect_false(is.null(BDs))
 })
 
 
+#-- making a test dataset --#
+### physeq object
+# physeq_rep3 = HTSSIP_sim(locs, param_l, meta=meta)
+# devtools::use_data(physeq_rep3, overwrite=TRUE)
+# ## qPCR data
+# control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
+# control_sd_fun = function(x) control_mean_fun(x) / 3
+# treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+# treat_sd_fun = function(x) treat_mean_fun(x) / 3
+# physeq_rep3_qPCR = qPCR_sim(physeq_rep3,
+#                 control_expr='Gradient=="12C-Con"',
+#                 control_mean_fun=control_mean_fun,
+#                 control_sd_fun=control_sd_fun,
+#                 treat_mean_fun=treat_mean_fun,
+#                 treat_sd_fun=treat_sd_fun)
+# devtools::use_data(physeq_rep3_qPCR, overwrite=TRUE)
