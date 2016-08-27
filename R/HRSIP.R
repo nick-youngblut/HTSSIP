@@ -9,11 +9,10 @@
 #' @return filtered df_l2fc object
 #'
 filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
-
   padj_cutoff = as.numeric(padj_cutoff)
 
   # filter to sparsity thresholds with > number of rej_hypo
-  ## which sparsity cutoff and BD -w
+  ## which sparsity cutoff and BD
   df_l2fc_s = df_l2fc %>%
     # number of rej hypo
     dplyr::group_by(sparsity_threshold) %>%
@@ -72,12 +71,12 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #' @param l2fc_threshold  log2 fold change (l2fc) values must be significantly above this
 #'   threshold in order to reject the hypothesis of equal counts.
 #'   See \code{DESeq2} for more information.
+#' @param padj_method  Method for global p-value adjustment (See \code{p.adjust()}).
 #' @param padj_cutoff  Adjusted p-value cutoff for rejecting the null hypothesis
 #'   that l2fc values were not greater than the l2fc_threshold.
 #'   Set to \code{NULL} to skip filtering of results to the sparsity cutoff with most
 #'   rejected hypotheses and filtering each OTU to the buoyant density window with the
 #'   greatest log2 fold change.
-#' @param padj_method  Method for global p-value adjustment (See \code{p.adjust()}).
 #' @param parallel  Process each parameter combination in parallel.
 #'   See \code{plyr::mdply()} for more information.
 #' @return dataframe of HRSIP results
@@ -113,8 +112,8 @@ HRSIP = function(physeq,
                  sparsity_threshold=seq(0, 0.3, 0.1),
                  sparsity_apply='all',
                  l2fc_threshold=0.25,
-                 padj_cutoff=0.1,
                  padj_method='BH',
+                 padj_cutoff=NULL,
                  parallel=FALSE,
                  ...){
 
@@ -155,7 +154,7 @@ HRSIP = function(physeq,
     dplyr::mutate(padj = p.adjust(p, method=padj_method)) %>%
     ungroup()
 
-  # filtering l2fc table
+  # filtering l2fc table (if padj_cutoff provided)
   if(!is.null(padj_cutoff)){
     df_l2fc = filter_l2fc(df_l2fc, padj_cutoff=padj_cutoff)
   }

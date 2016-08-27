@@ -24,6 +24,16 @@ test_that('qSIP_BD_shift working', {
 })
 
 test_that('bootstrap iteration is working', {
+  data(physeq_rep3)
+  data(physeq_rep3_qPCR)
+  physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
+
+  # BD shift (Z) & atom excess (A)
+  atomX = qSIP_atom_excess(physeq_rep3_t,
+                           control_expr='Treatment=="12C-Con"',
+                           treatment_rep='Replicate')
+
+  # bootstrap
   atomX_boot = .qSIP_bootstrap(atomX)
   expect_is(atomX_boot, 'data.frame')
   expect_false(is.null(atomX_boot$Z))
@@ -32,6 +42,15 @@ test_that('bootstrap iteration is working', {
 })
 
 test_that('bootstrap in parallel working', {
+  data(physeq_rep3)
+  data(physeq_rep3_qPCR)
+  physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
+
+  # BD shift (Z) & atom excess (A)
+  atomX = qSIP_atom_excess(physeq_rep3_t,
+                           control_expr='Treatment=="12C-Con"',
+                           treatment_rep='Replicate')
+
   doParallel::registerDoParallel(10)
   # qSIP with bootstrapping
   df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE, n_boot=100)
