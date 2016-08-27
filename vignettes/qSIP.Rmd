@@ -11,17 +11,15 @@ vignette: >
 
 # Introduction
 
-## q-SIP method workflow:
+## q-SIP method workflow
 
-
-
-Quantitative stable isotope probing (q-SIP) deals with the compositional problems of qPCR to acertain the absolute abundances of each OTU in each sample. 
+Quantitative stable isotope probing (q-SIP) attempts to deal with the compositional problems of HTS-SIP data by transforming relative abundances with qPCR counts of total gene copies. 
 
 More details can be found at: 
 
 > Hungate, Bruce A., Rebecca L. Mau, Egbert Schwartz, J. Gregory Caporaso, Paul Dijkstra, Natasja van Gestel, Benjamin J. Koch, et al. 2015. “Quantitative Microbial Ecology Through Stable Isotope Probing.” Applied and Environmental Microbiology, August, AEM.02280–15.
 
-`HTSSIP` can both simulate q-SIP datasets and run the q-SIP analysis (with parallel processing of bootstraps). 
+`HTSSIP` can both simulate q-SIP datasets and run the q-SIP analysis (with parallel computation of bootstrap confidence intervals). 
 
 # Dataset 
 
@@ -110,14 +108,36 @@ df_atomX_boot = qSIP_bootstrap(atomX, n_boot=100)
 df_atomX_boot %>% head
 ```
 
+Let's use the same threshold as Hungate et al., (2015) for defining incorporators. 
+
+```{r}
+CI_threshold = 0
+df_atomX_boot = df_atomX_boot %>%
+  mutate(Incorporator = A_CI_low > CI_threshold,
+         OTU = reorder(OTU, -A))
+```
+
+
+How many incorporators?
+
+```{r}
+n_incorp = df_atomX_boot %>%
+  filter(Incorporator == TRUE) %>%
+  nrow
+cat('Number of incorporators:', n_incorp, '\n')
+```
+
 It's time to plot the results!
 
-```{r, fig.height=3, fig.width=6}
+```{r, fig.height=3, fig.width=7}
 
-ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high)) +
-  geom_pointrange() +
+ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorporator)) +
+  geom_pointrange(size=0.25) +
+  geom_linerange() +
   geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
-  labs(y='atom fraction excess') +
-  theme_bw() 
-  
+  labs(x='OTU', y='Atom fraction excess') +
+  theme_bw() +
+  theme(
+    axis.text.x = element_blank()
+  )
 ```

@@ -44,17 +44,24 @@ meta = data.frame(
 
 test_that('Gradient sim', {
   df_OTU = gradient_sim(locs, params)
-  #df_OTU %>% head
   expect_is(df_OTU, 'data.frame')
+  expect_false(is.null(df_OTU$Buoyant_density))
 })
 
 test_that('phyloseq sim',{
   physeq = HTSSIP_sim(locs, param_l)
+  expect_is(physeq, 'phyloseq')
+  BDs = physeq %>% sample_data %>% .$Buoyant_density
+  expect_false(is.null(BDs))
+})
+
+test_that('phyloseq sim w/ metadata',{
   physeq = HTSSIP_sim(locs, param_l, meta=meta)
   expect_is(physeq, 'phyloseq')
   BDs = physeq %>% sample_data %>% .$Buoyant_density
   expect_false(is.null(BDs))
 })
+
 
 
 #-- making a test q-SIP dataset --#

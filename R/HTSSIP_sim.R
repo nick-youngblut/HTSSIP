@@ -89,8 +89,7 @@ HTSSIP_sim = function(locs, params,
                    meta=NULL,
                    parallel=FALSE,
                    ...){
-
-  #samples = data.frame(sample_prefix=samples)
+  # making & combining OTU tables (1 per gradient)
   df_OTU = plyr::ldply(params, gradient_sim,
                        locs=locs,
                        responseModel=responseModel,

@@ -1,7 +1,15 @@
+check_qPCR = function(qPCR, physeq){
+  expect_is(qPCR, 'list')
+  expect_equal(qPCR$raw %>% nrow,
+               phyloseq::sample_data(physeq) %>% nrow)
+  expect_equal(qPCR$summary %>% nrow,
+               phyloseq::sample_data(physeq) %>% nrow)
+}
+
 test_that('qPCR simulation (control/treatment)', {
   control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
   control_sd_fun = function(x) control_mean_fun(x) / 3
-  treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
+  treat_mean_fun = function(x) dnorm(x, mean=1.74, sd=0.01) * 1e8
   treat_sd_fun = function(x) treat_mean_fun(x) / 3
 
   qPCR = qPCR_sim(physeq_S2D2,
@@ -10,6 +18,7 @@ test_that('qPCR simulation (control/treatment)', {
          control_sd_fun=control_sd_fun,
          treat_mean_fun=treat_mean_fun,
          treat_sd_fun=treat_sd_fun)
+  check_qPCR(qPCR, physeq_S2D2)
 
   p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
                       ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
@@ -17,6 +26,59 @@ test_that('qPCR simulation (control/treatment)', {
                       color=IS_CONTROL)) +
     geom_pointrange() +
     theme_bw()
-
   expect_is(p, 'ggplot')
+})
+
+test_that('qPCR simulation: replicate gradients', {
+  qPCR = qPCR_sim(physeq_rep3,
+                  control_expr='Treatment=="12C-Con"',
+                  control_mean_fun=control_mean_fun,
+                  control_sd_fun=control_sd_fun,
+                  treat_mean_fun=treat_mean_fun,
+                  treat_sd_fun=treat_sd_fun)
+  check_qPCR(qPCR, physeq_rep3)
+
+  p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
+                               ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
+                               ymax=qPCR_tech_rep_mean+qPCR_tech_rep_sd,
+                               color=IS_CONTROL)) +
+    geom_pointrange() +
+    theme_bw()
+  expect_is(p, 'ggplot')
+})
+
+
+test_that('qPCR simulation (control/treatment); different distributions', {
+  control_mean_fun = function(x) dcauchy(x, location=1.70, scale=0.01) * 1e8
+  control_sd_fun = function(x) control_mean_fun(x) / 3
+  treat_mean_fun = function(x) dcauchy(x, location=1.74, scale=0.01) * 1e8
+  treat_sd_fun = function(x) treat_mean_fun(x) / 3
+
+  qPCR = qPCR_sim(physeq_S2D2,
+                  control_expr='Substrate=="12C-Con"',
+                  control_mean_fun=control_mean_fun,
+                  control_sd_fun=control_sd_fun,
+                  treat_mean_fun=treat_mean_fun,
+                  treat_sd_fun=treat_sd_fun)
+  check_qPCR(qPCR, physeq_S2D2)
+
+  p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
+                               ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
+                               ymax=qPCR_tech_rep_mean+qPCR_tech_rep_sd,
+                               color=IS_CONTROL)) +
+    geom_pointrange() +
+    theme_bw()
+  expect_is(p, 'ggplot')
+})
+
+
+test_that('qPCR simulation warnings', {
+expect_warning(
+  qPCR_sim(physeq_S2D2,
+                  control_expr='Substrate=="XXX"',
+                  control_mean_fun=control_mean_fun,
+                  control_sd_fun=control_sd_fun,
+                  treat_mean_fun=treat_mean_fun,
+                  treat_sd_fun=treat_sd_fun)
+)
 })
