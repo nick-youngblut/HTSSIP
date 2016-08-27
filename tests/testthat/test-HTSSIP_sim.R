@@ -1,6 +1,6 @@
 # setting parameters for tests
 set.seed(2)
-M = 10                                  # number of species
+M = 100                                  # number of species
 ming = 1.67                             # gradient minimum...
 maxg = 1.78                                # ...and maximum
 nfrac = 24                                 # number of gradient fractions
@@ -57,7 +57,7 @@ test_that('phyloseq sim',{
 })
 
 
-#-- making a test dataset --#
+#-- making a test q-SIP dataset --#
 ### physeq object
 # physeq_rep3 = HTSSIP_sim(locs, param_l, meta=meta)
 # devtools::use_data(physeq_rep3, overwrite=TRUE)

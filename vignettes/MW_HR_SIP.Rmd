@@ -36,9 +36,6 @@ library(ggplot2)
 library(HTSSIP)
 ```
 
-
-## Dataset
-
 See [HTSSIP introduction vignette](HTSSIP_intro.html) for a description on why dataset parsing (all treatment-control comparisons) is needed.
 
 Let's see the already parsed dataset

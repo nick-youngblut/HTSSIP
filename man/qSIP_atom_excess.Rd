@@ -49,7 +49,7 @@ physeq_t = OTU_qPCR_trans(physeq, qPCR)
 #BD shift (Z) & atom excess (A)
 atomX = qSIP_atom_excess(physeq_t,
                         control_expr=control_expr,
-                        gradient_rep=gradient_rep)
+                        treatment_rep=gradient_rep)
 
 }
 

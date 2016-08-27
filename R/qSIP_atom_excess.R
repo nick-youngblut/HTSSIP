@@ -1,24 +1,4 @@
-# input: phyloseq (OTU counts transformed)
-## must be able to distinguish experimental design
-### experimental design table? (sample = control/treatment); or expression
-
-# calculate weighted average (W)
-# calculating mean W for control & treatment
-# calculate BD shift (Z)
-
-# calculating density shifts
-# calculating atom fraction excess
-# bootstrapping & calculating CIs
-
-
-# W: weighted average (BD) of taxon, with weights by abundance
-## calculated on a per-gradient basis
-# mean W (labeled vs control)
-# Z = Wm_lab - Wm_light
-# Z = BD shift
-
-
-#' Calculate GC from unlabeled buoyant density
+#' Calculate G+C from unlabeled buoyant density
 #'
 #' See Hungate et al., 2015 for more details
 #'
@@ -265,6 +245,7 @@ sample_W = function(df, n_sample){
 #' The sample size for data resampling (with replacement) for 1) control samples
 #' and 2) treatment samples.
 #' @param n_boot  Number of bootstrap replicates.
+#' @param a  A numeric value. The alpha for calculating confidence intervals.
 #' @param parallel  Parallel processing. See \code{.parallel} option in
 #' \code{dplyr::mdply()} for more details.
 #'
@@ -301,7 +282,7 @@ sample_W = function(df, n_sample){
 #' head(df_atomX_boot)
 #'
 qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
-                          n_boot=10, parallel=FALSE){
+                          n_boot=10, parallel=FALSE, a=0.1){
   # atom excess for each bootstrap replicate
   df_boot_id = data.frame(bootstrap_id = 1:n_boot)
   df_boot = plyr::mdply(df_boot_id, .qSIP_bootstrap,

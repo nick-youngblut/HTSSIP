@@ -4,35 +4,35 @@
 \alias{OTU_qPCR_trans}
 \title{Transform OTU counts based on qPCR data}
 \usage{
-OTU_qPCR_trans(physeq, qPCR)
+OTU_qPCR_trans(physeq, qPCR, sample_idx = "Sample",
+  value_idx = "qPCR_tech_rep_mean")
 }
 \arguments{
 \item{physeq}{A phyloseq object}
 
 \item{qPCR}{A list of qPCR data from \code{qPCR_sim()}}
+
+\item{sample_idx}{The qPCR table column index for
+matching to otu table samples.}
+
+\item{value_idx}{The qPCR table column index for qPCR values.}
 }
 \value{
 A phyloseq object with transformed OTU counts
 }
 \description{
-Transform OTU counts based on qPCR data
+OTU counts in the phyloseq otu_table object will be normalized
+to sample totals (total sum scaling), then multiplied by the
+qPCR value associated with each sample. Thus, the qPCR table
+should have ONE value matching the OTU count table. Value
+matching between the OTU table & qPCR value table to set by
+\code{sample_idx()}.
 }
 \examples{
 # qPCR data simulation
-## making functions for simulating values
-control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-control_sd_fun = function(x) control_mean_fun(x) / 3
-treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-treat_sd_fun = function(x) treat_mean_fun(x) / 3
-## simulating qPCR values
-qPCR = qPCR_sim(physeq_S2D2,
-                control_expr='Substrate=="12C-Con"',
-                control_mean_fun=control_mean_fun,
-                control_sd_fun=control_sd_fun,
-                treat_mean_fun=treat_mean_fun,
-                treat_sd_fun=treat_sd_fun)
-## transforming OTU values
-OTU_qPCR_trans(physeq, qPCR)
+data(physeq_rep3)
+data(phsyeq_rep3_qPCR)
+physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 
 }
 

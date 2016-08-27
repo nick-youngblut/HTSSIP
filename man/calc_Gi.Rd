@@ -2,7 +2,7 @@
 % Please edit documentation in R/qSIP_atom_excess.R
 \name{calc_Gi}
 \alias{calc_Gi}
-\title{Calculate GC from unlabeled buoyant density}
+\title{Calculate G+C from unlabeled buoyant density}
 \usage{
 calc_Gi(Wlight)
 }

@@ -70,7 +70,6 @@ phyloseq2table = function(physeq,
   # sample metdata
   if(include_sample_data==TRUE){
     df_meta = phyloseq2df(physeq, sample_data)
-    #rownames(df_meta) = make.names(rownames(df_meta))
     df_meta$SAMPLE_JOIN = rownames(df_meta)
 
     if(! is.null(control_expr)){

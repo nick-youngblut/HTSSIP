@@ -47,7 +47,8 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 #' data(phsyeq_rep3_qPCR)
 #' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
-OTU_qPCR_trans = function(physeq, qPCR, sample_idx='Sample',
+OTU_qPCR_trans = function(physeq, qPCR,
+                          sample_idx='Sample',
                           value_idx='qPCR_tech_rep_mean'){
   # means of qPCR (if needed)
   if(!is.null(qPCR$summary)){
