@@ -1,0 +1,17 @@
+citHeader("To cite HTSSIP in publications use:")
+
+citEntry(entry = "Article",
+         title = "HTSSIP: an R package for stable isotope probing sequence dataset analysis",
+         author       = personList(
+           as.person("Nicholas Youngblut"),
+           as.person("Sam Barnett"),
+           as.person("Daniel Buckley")),
+         journal      = "NA",
+         year         = "NA",
+         volume       = "NA",
+         number       = "NA",
+         pages        = "NA",
+         url          = "NA",
+         
+         textVersion  =
+           paste("NA")

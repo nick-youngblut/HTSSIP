@@ -34,9 +34,9 @@ max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
 #' @return a data.frame object of formatted metadata
 #'
 #' @examples
-#' data(physeq)
+#' data(physeq_S2D1)
 #' ex = "Substrate=='12C-Con'"
-#' metadata = format_metadata(physeq, ex)
+#' metadata = format_metadata(physeq_S2D1, ex)
 #'
 format_metadata = function(physeq,
                            ex = "Substrate=='12C-Con'"){
@@ -101,16 +101,15 @@ perc_overlap = function(x.start, x.end, y.start, y.end){
 
 #' Calculate the BD range overlap of gradient fractions
 #'
-#'
 #' @param metadata  Metdata data.frame object. See \code{format_metadata()}.
 #'
 #' @return a data.frame object of metadata with fraction BD overlaps
 #'
 #' @examples
 #'
-#' data(physeq)
+#' data(physeq_S2D2)
 #' ex = "Substrate=='12C-Con'"
-#' metadata = format_metadata(physeq, ex)
+#' metadata = format_metadata(physeq_S2D2, ex)
 #' m = fraction_overlap(metadata)
 #' head(m)
 #'
@@ -142,14 +141,14 @@ fraction_overlap = function(metadata){
 #'
 #' @examples
 #'
-#' data(physeq)
-#' physeq_d = phyloseq::distance(physeq,
+#' data(physeq_S2D2)
+#' physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
 #'                              method='unifrac',
 #'                              weighted=TRUE,
 #'                              fast=TRUE,
 #'                              normalized=FALSE)
-#' physeq_d = parse_dist(physeq_d)
-#' head(physeq_d)
+#' physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+#' head(physeq_S2D2_d)
 #'
 parse_dist = function(d){
   stopifnot(class(d)=='dist')
@@ -172,14 +171,14 @@ parse_dist = function(d){
 #'
 #' @examples
 #'
-#' data(physeq)
-#' physeq_d = phyloseq::distance(physeq,
+#' data(physeq_S2D2)
+#' physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
 #'                              method='unifrac',
 #'                              weighted=TRUE,
 #'                              fast=TRUE,
 #'                              normalized=FALSE)
-#' physeq_d = parse_dist(physeq_d)
-#' wmean = overlap_wmean_dist(physeq_d)
+#' physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+#' wmean = overlap_wmean_dist(physeq_S2D2_d)
 #' head(wmean)
 #'
 overlap_wmean_dist = function(df_dist){
@@ -226,17 +225,17 @@ overlap_wmean_dist = function(df_dist){
 #'
 #' data(physeq)
 #' # Subsetting phyloseq by Substrate and Day
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
+#' params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 #' params = dplyr::filter(params, Substrate!='12C-Con')
 #' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
-#' # Calculating BD_shift on 1 subset (use lapply to process full list)
-#' wmean1 = BD_shift(physeq_l[[1]])
+#' physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
+#' # Calculating BD_shift on 1 subset (use lapply function to process full list)
+#' wmean1 = BD_shift(physeq_S2D2_l[[1]])
 #' ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
 #'    geom_point()
 #'
 #' # Calculating BD_shift on all subsets
-#' lapply(physeq_l, BD_shift)
+#' lapply(physeq_S2D2_l, BD_shift)
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, parallel=FALSE){

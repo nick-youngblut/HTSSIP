@@ -14,8 +14,8 @@
 #' @export
 #'
 #' @examples
-#' data(physeq_l)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
+#' data(physeq_S2D2_l)
+#' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 #'
 physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
                                 fast=TRUE, normalized=TRUE, parallel=FALSE){
@@ -70,10 +70,10 @@ physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
 #' @export
 #'
 #' @examples
-#' data(physeq_l)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
-#' physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_l, physeq_l_d_ord)
+#' data(physeq_S2D2_l)
+#' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
+#' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
+#' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
 #'
 phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
   n = names(physeq_l) %>% as.array
@@ -105,10 +105,10 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #'
 #' @examples
 #' data(physeq_S2D2_l)
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
-#' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
-#' physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_l, physeq_l_d_ord)
-#' phyloseq_list_ord_plot(physeq_l_d_ord_df)
+#' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
+#' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
+#' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
+#' phyloseq_list_ord_plot(physeq_S2D2_l_d_ord_df)
 #'
 phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_size='Buoyant_density',
@@ -152,9 +152,9 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #' @export
 #'
 #' @examples
-#' data(physeq_l)
-#' physeq_l_df = SIP_betaDiv(physeq_l)
-#' head(physeq_l_df, n=3)
+#' data(physeq_S2D2_l)
+#' physeq_S2D2_l_df = SIP_betaDiv(physeq_S2D2_l)
+#' head(physeq_S2D2_l_df, n=3)
 #'
 SIP_betaDiv_ord = function(physeq_l, method='unifrac', weighted=TRUE,
                           fast=TRUE, normalized=TRUE, parallel=FALSE,
