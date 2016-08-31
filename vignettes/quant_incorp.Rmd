@@ -1,0 +1,153 @@
+---
+title: "Quantifying isotope incorporation"
+author: "Nick Youngblut"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+# Introduction
+
+# Dataset 
+
+First, let's load some packages including `HTSSIP`. 
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(HTSSIP)
+```
+
+OK. We're going to be using 2 data files: 
+
+* HTS-SIP data (phyloseq format)
+* qPCR data (total 16S rRNA gene copies per gradient fraction)
+
+We'll be using the dataset that we simulated in the [HTSSIP_sim](./HTSSIP_sim.html) vignette.
+
+The phyloseq object is similar to the dataset in the other vignettes.
+
+```{r}
+# HTS-SIP data
+physeq_rep3
+```
+
+The associated qPCR data is, in this case a list of length = 2. 
+
+```{r}
+# qPCR data (list object)
+physeq_rep3_qPCR %>% names
+```
+
+# q-SIP
+
+```{r}
+# transforming OTU counts
+physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
+
+# calculating atom fraction excess
+atomX = qSIP_atom_excess(physeq_rep3_t,
+                         control_expr='Treatment=="12C-Con"',
+                         treatment_rep='Replicate')
+atomX %>% names
+```
+
+
+```{r}
+# calculating bootstrapped CI values
+df_atomX_boot = qSIP_bootstrap(atomX, n_boot=100)
+df_atomX_boot %>% head
+```
+
+Let's use the same threshold as Hungate et al., (2015) for defining incorporators. 
+
+```{r}
+CI_threshold = 0
+df_atomX_boot = df_atomX_boot %>%
+  mutate(Incorporator = A_CI_low > CI_threshold,
+         OTU = reorder(OTU, -A))
+```
+
+How many incorporators?
+
+```{r}
+n_incorp = df_atomX_boot %>%
+  filter(Incorporator == TRUE) %>%
+  nrow
+cat('Number of incorporators:', n_incorp, '\n')
+```
+
+Plot the results!
+
+```{r, fig.height=3, fig.width=7}
+
+ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorporator)) +
+  geom_point(size=0.25) +
+  geom_linerange() +
+  geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
+  labs(x='OTU', y='Atom fraction excess') +
+  theme_bw() +
+  theme(
+    axis.text.x = element_blank()
+  )
+```
+
+
+
+# delta_BD
+
+```{r}
+df_dBD = delta_BD(physeq_rep3,
+               control_expr='Treatment=="12C-Con"')
+```
+
+```{r}
+df_dBD = df_dBD %>%
+  mutate(OTU = reorder(OTU, -delta_BD))
+```
+
+```{r, fig.height=3, fig.width=7}
+ggplot(df_dBD, aes(OTU, delta_BD)) +
+  geom_point(size=0.25) +
+  geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
+  labs(x='OTU', y='delta BD') +
+  theme_bw() +
+  theme(
+    axis.text.x = element_blank()
+  )
+```
+
+
+# Comparing methods
+
+```{r}
+stopifnot(nrow(df_atomX_boot) == nrow(df_dBD))
+df_j = dplyr::inner_join(df_atomX_boot, df_dBD, c('OTU'='OTU'))
+stopifnot(nrow(df_atomX_boot) == nrow(df_j))
+
+df_j = df_j %>%
+  dplyr::mutate(OTU = reorder(OTU, -delta_BD))
+
+# plotting
+ggplot(df_j, aes(OTU, Z, color=Incorporator)) +
+  geom_point(size=0.5) +
+ # geom_linerange() +
+  geom_point(aes(y=delta_BD), color='black', size=0.5) +
+  geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
+  labs(x='OTU', y='Atom fraction excess') +
+  theme_bw() +
+  theme(
+    axis.text.x = element_blank()
+  )
+```
+
+
+# Session info
+
+```{r}
+sessionInfo()
+```

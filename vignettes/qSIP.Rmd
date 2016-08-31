@@ -141,3 +141,10 @@ ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorpora
     axis.text.x = element_blank()
   )
 ```
+
+
+# Session info
+
+```{r}
+sessionInfo()
+```

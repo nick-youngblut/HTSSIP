@@ -16,12 +16,13 @@ I recommend starting with this introductory vignette, then checking out the othe
 * **Dataset exploration**
     * [Beta diversity ordinations of gradient fraction communities](beta_diversity_ordinations.html)
     * [Whole-community BD shift plots](BD_shifts.html)
+* **Dataset simulation**
+    * [HTS-SIP dataset simulation](HTSSIP_sim.html)
 * **Detecting incorporators**
     * [HR-SIP & MW-HR-SIP](MW_HR_SIP.html)
     * [q-SIP](qSIP.html)
-* **Calculating amount of incorporation**
-    * [delta-BD](delta_BD.html)  [TODO]
-    * [q-SIP](qSIP.html)  [TODO]
+* **Quantifying the amount of isotope incorporated**
+    * [quantifying incorporation](quant_incorp.html)
 
 
 # HTS-SIP introduction

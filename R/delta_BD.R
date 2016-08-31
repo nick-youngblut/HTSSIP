@@ -34,6 +34,14 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #' Calculate delta BD as described in
 #' \href{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4867679/}{Pepe-Ranney et al., 2016}.
 #'
+#' Basically, the abundance of each OTU is interpolated at specific BD values in order to
+#' have abundance values at consistent points across gradients (gradient fraction BDs
+#' normally vary from gradient to gradient). The center of mass (CM) is calculcated from these
+#' interpolated values, which is the weighted mean BD with interpolated OTU abundances
+#' used as weights (ie., where in the density gradient contains the 'center' of the OTU
+#' abundance distribution). Delta_BD is then calculated by substracting the CM for the
+#' unlabeled control gradient from the labeled treatment gradient.
+#'
 #' The delta_BD calculation will be a comparison between unlabled control and labeled
 #' treatment samples. These samples are distinguished from each other with the
 #' 'control_expr' parameter. NOTE: if multiple gradients fall into the control or
@@ -42,22 +50,37 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #'
 #' NaN values may occur due low abundances.
 #'
+#' The BD range used for interpolation is set by the min/max of all buoyant density
+#' values in the phyloseq object (standardize across).
+#'
 #' @param physeq  Phyloseq object
 #' @param control_expr  An expression for identifying unlabeled control
 #' samples in the phyloseq object (eg., "Substrate=='12C-Con'")
 #' @param n  How many evenly-spaced buoyant density values to use for linear
 #' interpolation of abundances.
+#' @param BD_min  The minimum BD value of the BD range used for OTU abundance interpolation.
+#' If NULL, then BD_min will be the minimum of all BD values in the phyloseq object.
+#' @param BD_max  The maximum BD value of the BD range used for OTU abundance interpolation.
+#' If NULL, then BD_max will be the maximum of all BD values in the phyloseq object.
 #'
 #' @return data.frame with delta_BD values for each OTU. 'CM' stands for 'center of mass'.
 #'
 #' @export
 #'
 #' @examples
+#' # 1 treatment-control comparison
 #' data(physeq_S2D2_l)
-#' df = delta_BD(physeq_S2D2_l[[1]], control_expr='Substrate=="12C-Con"')
+#' physeq = physeq_S2D2_l[[1]]
+#' df = delta_BD(physeq, control_expr='Substrate=="12C-Con"')
 #' head(df)
 #'
-delta_BD = function(physeq, control_expr, n=20){
+#' # This will combine the replicate gradients for treatments/controls
+#' data(physeq_rep3)
+#' df = delta_BD(physeq_rep3,
+#'               control_expr='Treatment=="12C-Con"')
+#' head(df)
+#'
+delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   # atom excess
   df_OTU = qSIP_atom_excess_format(physeq, control_expr, treatment_rep=NULL)
   if(nrow(df_OTU) == 0){
@@ -73,8 +96,12 @@ delta_BD = function(physeq, control_expr, n=20){
 
   # BD min/max
   df_OTU$Buoyant_density = df_OTU$Buoyant_density %>% as.Num
-  BD_min = df_OTU$Buoyant_density %>% min
-  BD_max = df_OTU$Buoyant_density %>% max
+  if(is.null(BD_min)){
+    BD_min = df_OTU$Buoyant_density %>% min
+  }
+  if(is.null(BD_max)){
+    BD_max = df_OTU$Buoyant_density %>% max
+  }
 
   # calculating BD shift
   df_OTU = df_OTU %>%

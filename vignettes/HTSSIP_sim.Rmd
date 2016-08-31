@@ -213,3 +213,10 @@ ggplot(physeq_rep3_qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
   theme_bw()
 ```
 
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+
