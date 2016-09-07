@@ -15,7 +15,7 @@ vignette: >
 
 * Remove sparsely occuring OTUs under the assumption that they are sequencing errors.
     * This is assuming that an OTU should at least be seen in a set number of fractions from the same gradient, since it's DNA should be (approximately) normally distributed. 
-* For each OTU, use DESeq2 to detect significant enrichment of in 'heavy' gradient fractions.
+* For each OTU, use DESeq2 to detect significant enrichment in 'heavy' gradient fractions.
     * 'heavy' gradients are selected *ad hoc*
     * Multiple hypotheses are adjusted for. 
     * Significantly enriched OTUs are considered to have incorporated isotope (incorporators)
@@ -190,7 +190,7 @@ ggplot(df_l2fc_s, aes(Rank2, n_incorp_OTUs)) +
 
 MW-HR-SIP is run very similarly to HRSIP, but it uses multiple buoyant density (BD) windows. MW-HR-SIP is performed with the `HRSIP()` function, but multiple BD windows are specified. 
 
-Let's use 3 buoyant density windows (g/ml^-1):
+Let's use 3 buoyant density windows (g/ml):
 
 > 1.70-1.73, 1.72-1.75, 1.74-1.77
 
@@ -202,7 +202,7 @@ windows
 
 Running HRSIP with all 3 BD windows. Let's run this in parallel to speed things up.
 
-You can turn off parallel processing by setting the `parallel` option to `FALSE`. Also, there's 2 different levels that could be parallelized: either the `ldply()` or `HRSIP()`. Here, I'm running HRSIP in parallel, but it may make sence in other situations (eg., many comparisons but few density windows and/or sparsity cutoffs).
+You can turn off parallel processing by setting the `parallel` option to `FALSE`. Also, there's 2 different levels that could be parallelized: either the `ldply()` or `HRSIP()`. Here, I'm running HRSIP in parallel, but it may make sense in other situations (eg., many comparisons but few density windows and/or sparsity cutoffs) to use ldply in parallel only.
 
 ```{r, message=FALSE}
 doParallel::registerDoParallel(ncores)
