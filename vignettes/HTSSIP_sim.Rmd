@@ -41,7 +41,7 @@ M = 6                                      # number of OTUs (species)
 ming = 1.67                                # gradient minimum...
 maxg = 1.78                                # ...and maximum
 nfrac = 24                                 # number of gradient fractions
-locs = seq(ming, maxg, length=nfrac)       # gradient locations
+locs = seq(ming, maxg, length=nfrac)       # Fraction BD's
 tol  = rep(0.005, M)                       # species tolerances
 h    = ceiling(rlnorm(M, meanlog=11))      # max abundances
 
@@ -78,6 +78,7 @@ params5 = cbind(opt=opt5, tol=tol, h=h)
 opt6 = rnorm(M, mean=1.72, sd=0.008)    
 params6 = cbind(opt=opt6, tol=tol, h=h) 
 
+# we need a named list of parameters for the next step. The names in the list will be used as sample IDs
 params_all = list(
   '12C-Con_rep1' = params1,
   '12C-Con_rep2' = params2,
@@ -87,8 +88,6 @@ params_all = list(
   '13C-Glu_rep3' = params6
 )
 ```
-
-**Note:** we need a named list of parameters for the next step. The names in the list will be used as sample IDs. 
 
 ### Additional sample metadata
 
