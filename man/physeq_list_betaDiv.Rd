@@ -28,8 +28,8 @@ For each phyloseq object in a list, calculates beta-diversity
 between all samples using the phyloseq::distance function.
 }
 \examples{
-data(physeq_l)
-physeq_l_d = physeq_list_betaDiv(physeq_l)
+data(physeq_S2D2_l)
+physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 
 }
 

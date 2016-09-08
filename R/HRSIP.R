@@ -43,8 +43,6 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #'
 #' Conduct (multi-window) high resolution stable isotope probing (HR-SIP) analysis.
 #'
-#' The goal is to identify
-#'
 #' The (MW-)HR-SIP workflow is as follows:
 #'
 #'\enumerate{
@@ -89,7 +87,6 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #' # HR-SIP on just 1 treatment-control comparison
 #' ## 1st item in list of phyloseq objects
 #' physeq = physeq_S2D2_l[[1]]
-#' physeq
 #' ## HR-SIP
 #' ### Note: treatment-control samples differentiated with 'design=~Substrate'
 #' df_l2fc = HRSIP(physeq, design=~Substrate)

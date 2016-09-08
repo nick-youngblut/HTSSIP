@@ -6,8 +6,8 @@
 \usage{
 HRSIP(physeq, design, density_windows = data.frame(density_min = c(1.7),
   density_max = c(1.75)), sparsity_threshold = seq(0, 0.3, 0.1),
-  sparsity_apply = "all", l2fc_threshold = 0.25, padj_cutoff = 0.1,
-  padj_method = "BH", parallel = FALSE, ...)
+  sparsity_apply = "all", l2fc_threshold = 0.25, padj_method = "BH",
+  padj_cutoff = NULL, parallel = FALSE, ...)
 }
 \arguments{
 \item{physeq}{Phyloseq object}
@@ -32,13 +32,13 @@ by the \code{density_windows}.}
 threshold in order to reject the hypothesis of equal counts.
 See \code{DESeq2} for more information.}
 
+\item{padj_method}{Method for global p-value adjustment (See \code{p.adjust()}).}
+
 \item{padj_cutoff}{Adjusted p-value cutoff for rejecting the null hypothesis
 that l2fc values were not greater than the l2fc_threshold.
 Set to \code{NULL} to skip filtering of results to the sparsity cutoff with most
 rejected hypotheses and filtering each OTU to the buoyant density window with the
 greatest log2 fold change.}
-
-\item{padj_method}{Method for global p-value adjustment (See \code{p.adjust()}).}
 
 \item{parallel}{Process each parameter combination in parallel.
 See \code{plyr::mdply()} for more information.}
@@ -50,8 +50,6 @@ dataframe of HRSIP results
 Conduct (multi-window) high resolution stable isotope probing (HR-SIP) analysis.
 }
 \details{
-The goal is to identify
-
 The (MW-)HR-SIP workflow is as follows:
 
 \enumerate{
@@ -67,7 +65,6 @@ data(physeq_S2D2_l)
 # HR-SIP on just 1 treatment-control comparison
 ## 1st item in list of phyloseq objects
 physeq = physeq_S2D2_l[[1]]
-physeq
 ## HR-SIP
 ### Note: treatment-control samples differentiated with 'design=~Substrate'
 df_l2fc = HRSIP(physeq, design=~Substrate)

@@ -27,33 +27,40 @@ a data.frame object of weighted mean distances
 }
 \description{
 This function is meant to compare 16S rRNA sequence communities
-from many gradient fractions from 2 gradients: a labeled
+of gradient fractions from 2 gradients: a labeled
 treatment (eg., 13C-labeled DNA) and its corresponding unlabeled
-control. First, the beta-diversity (e.g, Unifrac) is calculated
-pairwise between fraction communities. Then, assuming that the
-phyloseq \code{sample_data} contains buoyant density information
-on each gradient fraction commumnity
-(coded in the phyloseq object as 'Buoyant density'), the beta diversity
-between each treatment gradient fraction relative to the overlapping
-control fractions is set as the weighted mean of beta diversity
-values for all overlapping fractions, with the % overlap used for
-weighting.
+control. First, the beta-diversity (e.g, weighted-Unifrac) is calculated
+pairwise between fraction communities.
+}
+\details{
+The sample_data table of the user-provided phyloseq object
+MUST contain the buoyant density (BD) of each sample
+(a "Buoyant_density" column in the sample_data table).
+The BD information is used to identify overlapping gradient fractions
+(gradient fractions usually only partially overlap in BD between gradients)
+between the labeled treatment gradient and the control gradient.
+Beta diversity between overlapping fractions is calculated. Then,
+to standardize the values relative to the unlabeled control
+(1 beta-diversity value for each control gradient fraction), the
+mean beta diversity of overlapping labeled treatment gradients is
+calculated for each unlabeled control, and the percent overlap of
+each labeled treatment fraction is used to weight the mean.
 }
 \examples{
 
 data(physeq)
 # Subsetting phyloseq by Substrate and Day
-params = get_treatment_params(physeq, c('Substrate', 'Day'))
+params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-physeq_l = phyloseq_subset(physeq, params, ex)
-# Calculating BD_shift on 1 subset (use lapply to process full list)
-wmean1 = BD_shift(physeq_l[[1]])
+physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
+# Calculating BD_shift on 1 subset (use lapply function to process full list)
+wmean1 = BD_shift(physeq_S2D2_l[[1]])
 ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
    geom_point()
 
 # Calculating BD_shift on all subsets
-lapply(physeq_l, BD_shift)
+lapply(physeq_S2D2_l, BD_shift)
 
 }
 

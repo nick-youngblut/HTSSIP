@@ -21,6 +21,8 @@ test_that('Make a data.frame for ordination plotting',{
   expect_true('phyloseq_subset' %in% colnames(physeq_l_d_ord_df))
 })
 
+
+
 test_that('Plots created from phyloseq object',{
   # params for subseting
   params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))

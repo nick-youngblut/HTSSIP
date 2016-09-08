@@ -18,14 +18,14 @@ Calculating weighted mean beta-diversities of overlapping gradient fractions.
 }
 \examples{
 
-data(physeq)
-physeq_d = phyloseq::distance(physeq,
+data(physeq_S2D2)
+physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              method='unifrac',
                              weighted=TRUE,
                              fast=TRUE,
                              normalized=FALSE)
-physeq_d = parse_dist(physeq_d)
-wmean = overlap_wmean_dist(physeq_d)
+physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+wmean = overlap_wmean_dist(physeq_S2D2_d)
 head(wmean)
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/DESeq2_l2fc.R
 \name{DESeq2_l2fc}
 \alias{DESeq2_l2fc}
-\title{Format phyloseq & call DESeq2}
+\title{Calculating log2 fold change for HTS-SIP data.}
 \usage{
 DESeq2_l2fc(physeq, density_min, density_max, design, l2fc_threshold = 0.25,
   sparsity_threshold = 0.25, sparsity_apply = "all", ...)
@@ -31,7 +31,10 @@ or just heavy fraction samples ('heavy')}
 dataframe of HRSIP results
 }
 \description{
-Conducts the actual trimming of the phyloseq dataset & calling of DESeq2
+The phyloseq object will be filtered to 1) just OTUs
+that pass the sparsity cutoff 2) just samples in the user-defined
+'heavy' fractions. The log2 fold change (l2fc) is calculated
+between labeled treatment and control gradients.
 }
 \examples{
 data(physeq_S2D2)

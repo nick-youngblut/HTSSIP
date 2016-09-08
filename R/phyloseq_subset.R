@@ -23,11 +23,11 @@
 #' @export
 #'
 #' @examples
-#' data(physeq)
+#' data(physeq_S2D2)
 #' # Here, the treatment/controls (12C & 13C) are listed in substrate,
 #' # and should be matched by 'Day'. The 13C-treatments can be identified by
 #' # the expression: "Substrate != '12C-Con'"
-#' get_treatment_params(physeq, c('Substrate', 'Day'), "Substrate != '12C-Con'")
+#' get_treatment_params(physeq_S2D2, c('Substrate', 'Day'), "Substrate != '12C-Con'")
 #'
 get_treatment_params = function(physeq, exp_params, treatment=NULL){
   physeq_m = phyloseq2df(physeq, phyloseq::sample_data)
@@ -57,7 +57,6 @@ get_treatment_params = function(physeq, exp_params, treatment=NULL){
 #' @export
 #'
 #' @examples
-#' data(physeq)
 #' ex = '(Substrate=="12C-Con" & Day=="14")'
 #' expr_param_extract(ex)
 #'
@@ -102,12 +101,14 @@ expr_param_extract = function(ex, collapse=NULL){
 #' @export
 #'
 #' @examples
-#' data(physeq)
+#' data(physeq_S2D2)
 #' # making subsets by substrate and time point
-#' params = get_treatment_params(physeq, c('Substrate', 'Day'))
+#' params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
+#' # filtering out controls
 #' params = dplyr::filter(params, Substrate!='12C-Con')
+#' # making expression for subsetting labeled-unlabeled gradient comparisons
 #' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
-#' physeq_l = phyloseq_subset(physeq, params, ex)
+#' physeq_l = phyloseq_subset(physeq_S2D2, params, ex)
 #' physeq_l
 #'
 phyloseq_subset = function(physeq, params, ex){

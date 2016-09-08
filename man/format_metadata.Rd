@@ -19,9 +19,9 @@ a data.frame object of formatted metadata
 Format phyloseq metadata for calculating BD range overlaps.
 }
 \examples{
-data(physeq)
+data(physeq_S2D1)
 ex = "Substrate=='12C-Con'"
-metadata = format_metadata(physeq, ex)
+metadata = format_metadata(physeq_S2D1, ex)
 
 }
 

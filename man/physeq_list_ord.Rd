@@ -2,7 +2,7 @@
 % Please edit documentation in R/BD_ordinations.R
 \name{physeq_list_ord}
 \alias{physeq_list_ord}
-\title{calculating beta diversity for a list of phyloseq objects}
+\title{calculating ordinations from a list of distance matrices}
 \usage{
 physeq_list_ord(physeq_l, physeq_l_d, ord_method = "NMDS")
 }
@@ -17,11 +17,14 @@ physeq_list_ord(physeq_l, physeq_l_d, ord_method = "NMDS")
 List of ordination objects
 }
 \description{
-For each dist object in a list, calculates ordinations
+For each \code{dist} object in a provided list, the fucntion
+calculates an ordination with the \code{phyloseq::ordinate} function.
 }
 \examples{
 data(physeq_l)
+# make a list of beta diversity distance matrix objects
 physeq_l_d = physeq_list_betaDiv(physeq_l)
+# make a list of ordinations
 physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
 
 }

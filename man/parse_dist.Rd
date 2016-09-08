@@ -17,14 +17,14 @@ Filtering out non-relevant distances in distance matrix
 }
 \examples{
 
-data(physeq)
-physeq_d = phyloseq::distance(physeq,
+data(physeq_S2D2)
+physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              method='unifrac',
                              weighted=TRUE,
                              fast=TRUE,
                              normalized=FALSE)
-physeq_d = parse_dist(physeq_d)
-head(physeq_d)
+physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+head(physeq_S2D2_d)
 
 }
 
