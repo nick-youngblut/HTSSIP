@@ -106,7 +106,7 @@ The dataset subset that we'll be using consists of samples 6 CsCl gradients:
 1. 13C-Glu, Day 14
 1. 13C-Cel, Day 14
 
-Notes:
+**Notes:**
 
 * "12C-Con" stands for the unlabeled control 
 * "13C-Glu" and "13C-Cel" stand for 13C-glucose and 13C-cellulose, respectively

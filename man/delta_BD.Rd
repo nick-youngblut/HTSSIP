@@ -58,8 +58,7 @@ head(df)
 
 # In this example, the replicate gradients will be combined for treatments/controls
 data(physeq_rep3)
-df = delta_BD(physeq_rep3,
-              control_expr='Treatment=="12C-Con"')
+df = delta_BD(physeq_rep3, control_expr='Treatment=="12C-Con"')
 head(df)
 
 }

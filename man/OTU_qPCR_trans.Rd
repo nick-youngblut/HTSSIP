@@ -10,7 +10,11 @@ OTU_qPCR_trans(physeq, qPCR, sample_idx = "Sample",
 \arguments{
 \item{physeq}{A phyloseq object}
 
-\item{qPCR}{A list of qPCR data from \code{qPCR_sim()}}
+\item{qPCR}{Either a list or a data.frame of qPCR data.
+If a list, the list should include a 'summary' tag as is produced
+from \code{qPCR_sim()}.
+If a data.frame, the table should be formatted as the 'summary' table
+produced from \code{qPCR_sim()}.}
 
 \item{sample_idx}{The qPCR table column index for
 matching to otu table samples.}
@@ -27,6 +31,9 @@ qPCR value associated with each sample. Thus, the qPCR table
 should have ONE value matching the OTU count table. Value
 matching between the OTU table & qPCR value table to set by
 \code{sample_idx()}.
+}
+\details{
+Note: only the 'summa
 }
 \examples{
 # qPCR data simulation
