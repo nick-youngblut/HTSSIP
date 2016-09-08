@@ -23,7 +23,7 @@ a lot of isotope incorporation or a little for each labeled-treatment?).
 
 Let's assume that the gradient fraction communities of a labeled-treatment
 and its corresponding unlabled-control would be (approximately) the same at the same
-buoyant densities. If so, then the pairwise beta diversity between
+buoyant densities if no incorperation occured. If so, then the pairwise beta diversity between
 gradient fractions of the treatment vs control would (e.g., the beta diversity
 between the 13C & 12C communities at a BD of 1.75 g/ml^1) would be ~0 
 (no differentiation) across the BD range. However, if some taxa incorporated
@@ -50,7 +50,7 @@ The following analysis measures these community-wide BD shifts with the followin
 
 1. Splitting the dataset into pairwise comparisons between each labeled-treatment
 and its corresponding unlabeled control.
-1. The percent overlap of treatment gradient fractions relative to the control 
+1. The percent BD overlap of treatment gradient fractions relative to the control 
 are calculated. 
 1. For overlapping gradient fractions in each treatment-control comparison, 
 beta diversity is calculated between the gradient fraction communities. 
