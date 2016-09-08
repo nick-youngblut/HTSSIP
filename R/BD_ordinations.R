@@ -31,9 +31,10 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
   return(physeq_l_d)
 }
 
-#' calculating beta diversity for a list of phyloseq objects
+#' calculating ordinations from a list of distance matrices
 #'
-#' For each dist object in a list, calculates ordinations
+#' For each \code{dist} object in a provided list, the fucntion
+#' calculates an ordination with the \code{phyloseq::ordinate} function.
 #'
 #' @param physeq_l  A list of phyloseq objects
 #' @param physeq_l_d  A list of dist objects
@@ -44,7 +45,9 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
 #'
 #' @examples
 #' data(physeq_l)
+#' # make a list of beta diversity distance matrix objects
 #' physeq_l_d = physeq_list_betaDiv(physeq_l)
+#' # make a list of ordinations
 #' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
 #'
 physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
@@ -71,8 +74,11 @@ physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
+#' # make a list of ordinations
 #' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
+#' # convert ordination information to data.frame objects
 #' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
 #'
 phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
@@ -104,10 +110,15 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #' @export
 #'
 #' @examples
+#'
 #' data(physeq_S2D2_l)
+#' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
+#' # make a list of ordinations
 #' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
+#' # convert ordination information to data.frame objects
 #' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
+#' # make ordination plots with ggplot2
 #' phyloseq_list_ord_plot(physeq_S2D2_l_d_ord_df)
 #'
 phyloseq_ord_plot = function(physeq_ord_df, title=NULL,

@@ -1,8 +1,3 @@
-#--workflow--#
-# * calculate BD windows for each fraction
-# * calculate overlapping fractions
-
-
 #' Adjusting BD range size if negative.
 #'
 #' If BD (buoyant density) range size is negative,
@@ -198,17 +193,23 @@ overlap_wmean_dist = function(df_dist){
 #' and labeled treatment gradient fraction communities.
 #'
 #' This function is meant to compare 16S rRNA sequence communities
-#' from many gradient fractions from 2 gradients: a labeled
+#' of gradient fractions from 2 gradients: a labeled
 #' treatment (eg., 13C-labeled DNA) and its corresponding unlabeled
-#' control. First, the beta-diversity (e.g, Unifrac) is calculated
-#' pairwise between fraction communities. Then, assuming that the
-#' phyloseq \code{sample_data} contains buoyant density information
-#' on each gradient fraction commumnity
-#' (coded in the phyloseq object as 'Buoyant density'), the beta diversity
-#' between each treatment gradient fraction relative to the overlapping
-#' control fractions is set as the weighted mean of beta diversity
-#' values for all overlapping fractions, with the % overlap used for
-#' weighting.
+#' control. First, the beta-diversity (e.g, weighted-Unifrac) is calculated
+#' pairwise between fraction communities.
+#'
+#' The sample_data table of the user-provided phyloseq object
+#' MUST contain the buoyant density (BD) of each sample
+#' (a "Buoyant_density" column in the sample_data table).
+#' The BD information is used to identify overlapping gradient fractions
+#' (gradient fractions usually only partially overlap in BD between gradients)
+#' between the labeled treatment gradient and the control gradient.
+#' Beta diversity between overlapping fractions is calculated. Then,
+#' to standardize the values relative to the unlabeled control
+#' (1 beta-diversity value for each control gradient fraction), the
+#' mean beta diversity of overlapping labeled treatment gradients is
+#' calculated for each unlabeled control, and the percent overlap of
+#' each labeled treatment fraction is used to weight the mean.
 #'
 #' @param df_dist  phyloseq object
 #' @param method  See phyloseq::distance

@@ -89,6 +89,12 @@ With the transformed OTU abundance counts, let's calculate the BD shift (Z) and 
 The `treatment_rep` option designates which column in the `sample_data` table defines the replicate gradients (eg., `12C-Con_rep1`, `12C-Con_rep2`, etc).
 
 ```{r}
+# The 'Treatment' column designates treatment vs control
+# The 'Replicate' column designates treatment replicates
+physeq_rep3 %>% sample_data %>% dplyr::select(Treatment, Replicate) %>% distinct
+```
+
+```{r}
 atomX = qSIP_atom_excess(physeq_rep3_t,
                          control_expr='Treatment=="12C-Con"',
                          treatment_rep='Replicate')
@@ -96,6 +102,10 @@ atomX %>% names
 ```
 
 The output is a list of data.frames. The `W` table lists the weighted mean BD for each OTU in each gradient. This can be considered a sort-of 'raw data' table. The real meat of the output is the `A` table, which lists (among other things) the BD shift (Z) and atom fraction excess (A) as defined by Hungate et al., (2015). 
+
+> Note: a more complicated expression can be used to designate control samples. For example:
+'Treatment == "12C-Con" & Day == 1'
+
 
 ## Bootstrap confidence intervals
 

@@ -1,14 +1,4 @@
-# workflow
-# For each taxon:
-## For each gradient:
-### Linearly interpolate N evenly spaced relative abundance (RA) values
-### center_of_mass = weighted BD, where weights are interpolated RAs
-## calc mean center_of_mass for treatments & controls
-## deltaBD = mean_center_mass_treat - mean_center_mass_control
-
 # linear interpolation of counts based on BD
-
-
 lin_interp = function(df, BD_min, BD_max, n=20){
   stopifnot(!is.null(df$Buoyant_density))
   stopifnot(!is.null(df$Count))
@@ -31,7 +21,7 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 
 #' delta_BD calculation
 #'
-#' Calculate delta BD as described in
+#' Calculate delta_BD as described in
 #' \href{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4867679/}{Pepe-Ranney et al., 2016}.
 #'
 #' Basically, the abundance of each OTU is interpolated at specific BD values in order to
@@ -68,13 +58,14 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #' @export
 #'
 #' @examples
-#' # 1 treatment-control comparison
 #' data(physeq_S2D2_l)
+#' # just selecting 1 treatment-control comparison
 #' physeq = physeq_S2D2_l[[1]]
+#' # calculating delta_BD
 #' df = delta_BD(physeq, control_expr='Substrate=="12C-Con"')
 #' head(df)
 #'
-#' # This will combine the replicate gradients for treatments/controls
+#' # In this example, the replicate gradients will be combined for treatments/controls
 #' data(physeq_rep3)
 #' df = delta_BD(physeq_rep3,
 #'               control_expr='Treatment=="12C-Con"')

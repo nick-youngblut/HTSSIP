@@ -1,6 +1,9 @@
-#' Format phyloseq & call DESeq2
+#' Calculating log2 fold change for HTS-SIP data.
 #'
-#' Conducts the actual trimming of the phyloseq dataset & calling of DESeq2
+#' The phyloseq object will be filtered to 1) just OTUs
+#' that pass the sparsity cutoff 2) just samples in the user-defined
+#' 'heavy' fractions. The log2 fold change (l2fc) is calculated
+#' between labeled treatment and control gradients.
 #'
 #' @param physeq  Phyloseq object
 #' @param density_min  Minimum buoyant density of the 'heavy' gradient fractions
