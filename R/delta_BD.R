@@ -67,8 +67,7 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #'
 #' # In this example, the replicate gradients will be combined for treatments/controls
 #' data(physeq_rep3)
-#' df = delta_BD(physeq_rep3,
-#'               control_expr='Treatment=="12C-Con"')
+#' df = delta_BD(physeq_rep3, control_expr='Treatment=="12C-Con"')
 #' head(df)
 #'
 delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){

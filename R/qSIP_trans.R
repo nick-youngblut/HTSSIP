@@ -30,9 +30,15 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 #' matching between the OTU table & qPCR value table to set by
 #' \code{sample_idx()}.
 #'
+#' Note: only the 'summa
+#'
 #'
 #' @param physeq  A phyloseq object
-#' @param qPCR  A list of qPCR data from \code{qPCR_sim()}
+#' @param qPCR  Either a list or a data.frame of qPCR data.
+#'  If a list, the list should include a 'summary' tag as is produced
+#'  from \code{qPCR_sim()}.
+#'  If a data.frame, the table should be formatted as the 'summary' table
+#'  produced from \code{qPCR_sim()}.
 #' @param sample_idx  The qPCR table column index for
 #' matching to otu table samples.
 #' @param value_idx  The qPCR table column index for qPCR values.

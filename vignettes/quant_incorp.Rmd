@@ -12,6 +12,14 @@ vignette: >
 
 # Introduction
 
+There are to prevaling methods for using HTS-SIP data to estimate the amount of isotope that each OTU incorporated: 
+
+* q-SIP
+* delta_BD (a complementary analysis to HR-SIP)
+  * formally, delta_BD is written as $$\delta\hat{BD}$$
+
+In this vignette, we are going to show how to run both analyses and also compare the results a bit.
+
 # Dataset 
 
 First, let's load some packages including `HTSSIP`. 
@@ -36,18 +44,28 @@ The phyloseq object is similar to the dataset in the other vignettes.
 physeq_rep3
 ```
 
-The associated qPCR data is, in this case a list of length = 2. 
+The associated qPCR data is a list of length = 2. 
 
 ```{r}
 # qPCR data (list object)
 physeq_rep3_qPCR %>% names
 ```
 
+For the analyses in this vignette, we only need the 'summary' table.
+
+```{r}
+# qPCR data (list object)
+physeq_rep3_qPCR_sum = physeq_rep3_qPCR$summary
+physeq_rep3_qPCR_sum %>% head
+```
+
 # q-SIP
+
+OK. Let's quantify isotope incorporation witht the q-SIP method. 
 
 ```{r}
 # transforming OTU counts
-physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
+physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR_sum)
 
 # calculating atom fraction excess
 atomX = qSIP_atom_excess(physeq_rep3_t,
@@ -56,6 +74,13 @@ atomX = qSIP_atom_excess(physeq_rep3_t,
 atomX %>% names
 ```
 
+The resulting list object contains 2 data.frames. We are interested in the 'A' table, which contains estimated BD shifts (Z) and atom fraction excess (A). 
+
+```{r}
+atomX$A %>% head
+```
+
+Next, let's calculate bootstrap confidence intervales for the atom fraction excess estimations. 
 
 ```{r}
 # calculating bootstrapped CI values
@@ -63,46 +88,13 @@ df_atomX_boot = qSIP_bootstrap(atomX, n_boot=100)
 df_atomX_boot %>% head
 ```
 
-Let's use the same threshold as Hungate et al., (2015) for defining incorporators. 
-
-```{r}
-CI_threshold = 0
-df_atomX_boot = df_atomX_boot %>%
-  mutate(Incorporator = A_CI_low > CI_threshold,
-         OTU = reorder(OTU, -A))
-```
-
-How many incorporators?
-
-```{r}
-n_incorp = df_atomX_boot %>%
-  filter(Incorporator == TRUE) %>%
-  nrow
-cat('Number of incorporators:', n_incorp, '\n')
-```
-
-Plot the results!
-
-```{r, fig.height=3, fig.width=7}
-
-ggplot(df_atomX_boot, aes(OTU, A, ymin=A_CI_low, ymax=A_CI_high, color=Incorporator)) +
-  geom_point(size=0.25) +
-  geom_linerange() +
-  geom_hline(yintercept=0, linetype='dashed', alpha=0.5) +
-  labs(x='OTU', y='Atom fraction excess') +
-  theme_bw() +
-  theme(
-    axis.text.x = element_blank()
-  )
-```
-
-
 
 # delta_BD
 
+Now for delta_BD. 
+
 ```{r}
-df_dBD = delta_BD(physeq_rep3,
-               control_expr='Treatment=="12C-Con"')
+df_dBD = delta_BD(physeq_rep3, control_expr='Treatment=="12C-Con"')
 ```
 
 ```{r}
