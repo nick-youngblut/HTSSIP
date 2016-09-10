@@ -149,7 +149,7 @@ HRSIP = function(physeq,
   df_l2fc = df_l2fc %>%
     dplyr::group_by(sparsity_threshold) %>%
     dplyr::mutate(padj = p.adjust(p, method=padj_method)) %>%
-    ungroup()
+    dplyr::ungroup()
 
   # filtering l2fc table (if padj_cutoff provided)
   if(!is.null(padj_cutoff)){

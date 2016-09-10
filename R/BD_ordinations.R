@@ -86,7 +86,7 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
   names(n) = n
 
   df = plyr::adply(n, .margins=1, .fun=function(x,physeq_l,physeq_l_ords){
-     plot_ordination(physeq_l[[x]], physeq_l_ords[[x]], justDF=TRUE)
+     phyloseq::plot_ordination(physeq_l[[x]], physeq_l_ords[[x]], justDF=TRUE)
     }, physeq_l=physeq_l,
   physeq_l_ords=physeq_l_ords,
   .id='phyloseq_subset',

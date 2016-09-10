@@ -41,24 +41,24 @@ format_metadata = function(physeq,
   stopifnot(all(c('Buoyant_density', 'Fraction') %in% colnames(metadata)))
 
   metadata = metadata %>%
-    mutate_(IS__CONTROL = ex) %>%
-    rename('BD_min' = Buoyant_density) %>%
-    mutate(Fraction = Fraction %>% as.Num,
-           BD_min = BD_min %>% as.Num) %>%
-    arrange(BD_min) %>%
-    group_by(IS__CONTROL) %>%
-    mutate(BD_max = lead(BD_min),
-           BD_max = ifelse(is.na(BD_max), BD_min, BD_max),
-           BD_range = BD_max - BD_min) %>%
-    group_by() %>%
-    mutate(median_BD_range = median(BD_range, na.rm=T)) %>%
-    ungroup() %>%
-    mutate(BD_max = mapply(max_BD_range,
+    dplyr::mutate_(IS__CONTROL = ex) %>%
+    dplyr::rename('BD_min' = Buoyant_density) %>%
+    dplyr::mutate(Fraction = Fraction %>% as.Num,
+                  BD_min = BD_min %>% as.Num) %>%
+    dplyr::arrange(BD_min) %>%
+    dplyr::group_by(IS__CONTROL) %>%
+    dplyr::mutate(BD_max = lead(BD_min),
+                  BD_max = ifelse(is.na(BD_max), BD_min, BD_max),
+                  BD_range = BD_max - BD_min) %>%
+    dplyr::group_by() %>%
+    dplyr::mutate(median_BD_range = median(BD_range, na.rm=T)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(BD_max = mapply(max_BD_range,
                            BD_range, BD_min, BD_max,
                            BD_to_set = median_BD_range)) %>%
-    mutate(BD_range = BD_max - BD_min) %>%
-    select(METADATA_ROWNAMES, IS__CONTROL,
-           BD_min, BD_max, BD_range)
+    dplyr::mutate(BD_range = BD_max - BD_min) %>%
+    dplyr::select(METADATA_ROWNAMES, IS__CONTROL,
+                  BD_min, BD_max, BD_range)
 
   return(metadata)
 }
@@ -119,10 +119,10 @@ fraction_overlap = function(metadata){
 
   # merging; calculating fraction overlap; filtering
   metadata_j = merge(meta_cont, meta_treat, by=NULL) %>%
-    mutate(perc_overlap = mapply(perc_overlap,
-                                 BD_min.x, BD_max.x,
-                                 BD_min.y, BD_max.y)) %>%
-     filter(perc_overlap > 0)
+    dplyr::mutate(perc_overlap = mapply(perc_overlap,
+                                        BD_min.x, BD_max.x,
+                                       BD_min.y, BD_max.y)) %>%
+    dplyr::filter(perc_overlap > 0)
   stopifnot(nrow(metadata_j) > 0)
 
   return(metadata_j)
@@ -150,9 +150,10 @@ parse_dist = function(d){
 
   df = d %>% as.matrix %>% as.data.frame
   df$sample = rownames(df)
-  df = df %>% gather('sample.y', 'distance', -sample) %>%
-    rename('sample.x' = sample) %>%
-    filter(sample.x != sample.y)
+  df = df %>%
+    tidyr::gather('sample.y', 'distance', -sample) %>%
+    dplyr::rename('sample.x' = sample) %>%
+    dplyr::filter(sample.x != sample.y)
   return(df)
 }
 
@@ -179,11 +180,11 @@ parse_dist = function(d){
 overlap_wmean_dist = function(df_dist){
   # calculating weighted mean distance
   df_dist_s = df_dist %>%
-    group_by(sample.x, BD_min.x) %>%
-    mutate(n_over_fracs = n(),
-           wmean_dist = weighted.mean(distance, perc_overlap)) %>%
-    ungroup() %>%
-    distinct(sample.x, wmean_dist, .keep_all=TRUE)
+    dplyr::group_by(sample.x, BD_min.x) %>%
+    dplyr::mutate(n_over_fracs = n(),
+                  wmean_dist = weighted.mean(distance, perc_overlap)) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(sample.x, wmean_dist, .keep_all=TRUE)
   return(df_dist_s)
 }
 
@@ -256,9 +257,9 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
   physeq_d = parse_dist(physeq_d)
 
   # joining dataframes
-  physeq_d = inner_join(physeq_d, metadata,
-                        c('sample.x'='METADATA_ROWNAMES.x',
-                          'sample.y'='METADATA_ROWNAMES.y'))
+  physeq_d = dplyr::inner_join(physeq_d, metadata,
+                             c('sample.x'='METADATA_ROWNAMES.x',
+                               'sample.y'='METADATA_ROWNAMES.y'))
 
   # calculating weighted mean distance
   physeq_d_m = overlap_wmean_dist(physeq_d)

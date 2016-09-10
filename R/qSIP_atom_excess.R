@@ -294,8 +294,8 @@ qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
   # calculating atomX CIs for each OTU
   df_boot = df_boot %>%
     dplyr::group_by(OTU) %>%
-    summarize(A_CI_low = quantile(A, a / 2, na.rm=TRUE),
-              A_CI_high = quantile(A, 1 - a/2, na.rm=TRUE))
+    dplyr::summarize(A_CI_low = quantile(A, a / 2, na.rm=TRUE),
+                     A_CI_high = quantile(A, 1 - a/2, na.rm=TRUE))
 
   # combining with atomX summary data
   df_boot = dplyr::inner_join(atomX$A, df_boot, c('OTU'='OTU'))

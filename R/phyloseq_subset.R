@@ -33,7 +33,7 @@ get_treatment_params = function(physeq, exp_params, treatment=NULL){
   physeq_m = phyloseq2df(physeq, phyloseq::sample_data)
   # filter out control (if needed; depending on subsetting expression)
   if(!is.null(treatment)){
-    physeq_m = filter_(physeq_m, treatment)
+    physeq_m = dplyr::filter_(physeq_m, treatment)
   }
 
   # all pairwise params

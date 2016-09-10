@@ -4,16 +4,19 @@ Title: High throughput sequencing stable isotope probing data analysis
 Version: 0.1.1
 Author: Nick Youngblut
 Maintainer: Nick Youngblut <nyoungb2@gmail.com>
-Description: Perform HTS-SIP analyses such as HR-SIP, MW-HR-SIP, and q-SIP
+Description: Perform HTS-SIP analyses such as HR-SIP, MW-HR-SIP, and q-SIP.
 License: GPL-2
 LazyData: TRUE
 Depends:
     R (>= 3.1.2)
 Imports:
+    plyr (>= 1.8.4),
     dplyr (>= 0.5.0),
     tidyr (>= 0.5.1),
-    phyloseq (>= 1.14.0),
+    purrr (>= 0.2.2),
+    ggplot2 (>= 2.1.0),
     DESeq2 (>= 1.10.1),
+    phyloseq (>= 1.14.0),
     uuid (>= 0.1.2),
     coenocliner (>= 0.2.2)
 RoxygenNote: 5.0.1

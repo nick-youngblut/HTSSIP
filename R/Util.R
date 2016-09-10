@@ -50,11 +50,16 @@ phyloseq2df = function(physeq, table_func){
 #' @examples
 #' data(physeq_S2D1)
 #' # Including some columns from sample metadata
-#' df_OTU = phyloseq2table(physeq_S2D1, include_sample_data=TRUE, sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'))
+#' df_OTU = phyloseq2table(physeq_S2D1,
+#'                         include_sample_data=TRUE,
+#'                         sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'))
 #' head(df_OTU)
 #'
 #' # Including some columns from sample metadata & taxonomy
-#' df_OTU = phyloseq2table(physeq_S2D1, include_sample_data=TRUE, sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'),include_tax_table=TRUE)
+#' df_OTU = phyloseq2table(physeq_S2D1,
+#'                         include_sample_data=TRUE,
+#'                         sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'),
+#'                         include_tax_table=TRUE)
 #' head(df_OTU)
 #'
 phyloseq2table = function(physeq,
@@ -64,7 +69,7 @@ phyloseq2table = function(physeq,
                           tax_col_keep=NULL,
                           control_expr=NULL){
   # OTU table
-  df_OTU = otu_table(physeq)
+  df_OTU = phyloseq::otu_table(physeq)
   df_OTU = suppressWarnings(as.data.frame(as.matrix(df_OTU)))
   df_OTU$OTU = rownames(df_OTU)
   df_OTU = tidyr::gather(df_OTU, SAMPLE_JOIN, Count, -OTU)
@@ -85,7 +90,7 @@ phyloseq2table = function(physeq,
       df_meta = dplyr::select_(df_meta, .dots=as.list(sample_col_keep))
     }
     # join
-    df_OTU = inner_join(df_OTU, df_meta, c('SAMPLE_JOIN'))
+    df_OTU = dplyr::inner_join(df_OTU, df_meta, c('SAMPLE_JOIN'))
     if(nrow(df_OTU) == 0){
       stop('No rows returned after inner_join of otu_table & sample_data')
     }
