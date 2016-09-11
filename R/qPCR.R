@@ -81,8 +81,7 @@ qPCR_sim = function(physeq,
                     treat_mean_fun,
                     treat_sd_fun,
                     n_tech_rep=3,
-                    control_expr=NULL,
-                    ...){
+                    control_expr=NULL){
   # sample_metadata
   m = phyloseq2df(physeq, phyloseq::sample_data)
   if(is.null(m$IS_CONTROL)){

@@ -71,7 +71,7 @@ format_metadata = function(physeq,
 #' @param x.start  The start value for Range X
 #' @param x.end  The end value for Range X
 #' @param y.start  The start value for Range Y
-#' @param x.end  The end value for Range Y
+#' @param y.end  The end value for Range Y
 #'
 #' @return the percent overlap of the ranges
 #'
@@ -130,8 +130,7 @@ fraction_overlap = function(metadata){
 
 #' Filtering out non-relevant distances in distance matrix
 #'
-#' @param metadata  Metdata data.frame object. See \code{format_metadata()}.
-#'
+#' @param d  a distance matrix object
 #' @return a data.frame object of metadata with fraction BD overlaps
 #'
 #' @examples
@@ -212,7 +211,7 @@ overlap_wmean_dist = function(df_dist){
 #' calculated for each unlabeled control, and the percent overlap of
 #' each labeled treatment fraction is used to weight the mean.
 #'
-#' @param df_dist  phyloseq object
+#' @param physeq  phyloseq object
 #' @param method  See phyloseq::distance
 #' @param weighted  Weighted Unifrac (if calculating Unifrac)
 #' @param fast  Fast calculation method
@@ -225,7 +224,7 @@ overlap_wmean_dist = function(df_dist){
 #'
 #' @examples
 #'
-#' data(physeq)
+#' data(physeq_S2D2)
 #' # Subsetting phyloseq by Substrate and Day
 #' params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 #' params = dplyr::filter(params, Substrate!='12C-Con')

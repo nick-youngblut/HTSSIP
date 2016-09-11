@@ -37,7 +37,8 @@ gradient_sim = function(locs, params,
                                    countModel=countModel,
                                    ...)
   df_OTU = as.data.frame(df_OTU)
-  colnames(df_OTU) = gsub('^', 'OTU.', 1:M)
+  colnames(df_OTU) = gsub('^', 'OTU.', 1:nrow(params))
+  #print(df_OTU)
   df_OTU$Buoyant_density = locs   #as.character(round(locs, digits=4))
   return(df_OTU)
 }

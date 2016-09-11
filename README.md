@@ -1,5 +1,8 @@
 HTSSIP
 ======
+
+[![Travis-CI Build Status](https://travis-ci.org/nyoungb2/HTSSIP.svg?branch=master)](https://travis-ci.org/nyoungb2/HTSSIP)
+
 HTSSIP is an R package for analyzing high throughput 
 sequence data from nucleotide stable isotope probing 
 (DNA- & RNA-SIP) experiments. 

@@ -28,7 +28,7 @@
 #'
 DESeq2_l2fc = function(physeq, density_min, density_max, design,
                        l2fc_threshold=0.25, sparsity_threshold=0.25,
-                       sparsity_apply='all', ...){
+                       sparsity_apply='all'){
   # assertions
   l2fc_threshold = as.numeric(l2fc_threshold)
   stopifnot(l2fc_threshold >= 0 & l2fc_threshold <= 1)

@@ -98,9 +98,9 @@ test_that('qPCR simulation warnings', {
 expect_warning(
   qPCR_sim(physeq_S2D2,
                   control_expr='Substrate=="XXX"',
-                  control_mean_fun=control_mean_fun,
-                  control_sd_fun=control_sd_fun,
-                  treat_mean_fun=treat_mean_fun,
-                  treat_sd_fun=treat_sd_fun)
+                  control_mean_fun=L$control_mean_fun,
+                  control_sd_fun=L$control_sd_fun,
+                  treat_mean_fun=L$treat_mean_fun,
+                  treat_sd_fun=L$treat_sd_fun)
 )
 })

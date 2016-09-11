@@ -14,7 +14,8 @@ vignette: >
 ## HR-SIP method workflow:
 
 * Remove sparsely occuring OTUs under the assumption that they are sequencing errors.
-    * This is assuming that an OTU should at least be seen in a set number of fractions from the same gradient, since it's DNA should be (approximately) normally distributed. 
+    * This is assuming that DNA from and OTU is likely going to be found in multiple gradient fractions due to differences in G+C content, diffusion, etc. 
+    * So, if an OTU is just detected in only one fraction of a gradient, we can't tell whether it is a sequencing artifact or a real, but rare OTU. 
 * For each OTU, use DESeq2 to detect significant enrichment in 'heavy' gradient fractions.
     * 'heavy' gradients are selected *ad hoc*
     * Multiple hypotheses are adjusted for. 
@@ -93,7 +94,7 @@ df_l2fc %>%
 
 Let's plot a breakdown of incorporators for each phylum. 
 
-```{r, fig.width=7, fig.height=4}
+```{r, fig.width=5, fig.height=3.5}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
@@ -143,7 +144,7 @@ Each specific phyloseq subset (treatment-control comparison) is delimited with t
 df_l2fc %>% .$.id %>% unique
 ```
 
-For clarity, I'm going edit these long strings to make them more readable when plotted.
+For clarity, let's edit these long strings to make them more readable when plotted.
 
 ```{r}
 df_l2fc = df_l2fc %>%
@@ -209,10 +210,10 @@ doParallel::registerDoParallel(ncores)
 
 df_l2fc = plyr::ldply(physeq_S2D2_l, 
                       HRSIP, 
-                      density_windows=windows,
+                      density_windows = windows,
                       design = ~Substrate, 
                       padj_cutoff = padj_cutoff,
-                      parallel=TRUE)
+                      .parallel = TRUE)
 df_l2fc %>% head(n=3)
 ```
 
@@ -236,7 +237,7 @@ df_l2fc %>%
 
 The density windows can vary for each OTU. Let's plot which density windows were used.
 
-```{r, fig.width=7, fig.height=5}
+```{r, fig.width=7, fig.height=4.5}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   mutate(.id = gsub(' \\| ', '\n', .id)) %>%
@@ -252,7 +253,7 @@ ggplot(df_l2fc_s, aes(.id, n_incorp_OTUs, fill=density_range)) +
     scale_y_continuous(expand=c(0,0)) +
     theme_bw() +
     theme(
-      axis.text.x = element_text(angle=45, hjust=1)
+      axis.text.x = element_text(angle=55, hjust=1)
     )
 ```
 

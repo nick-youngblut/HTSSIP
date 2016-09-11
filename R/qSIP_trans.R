@@ -64,8 +64,8 @@ OTU_qPCR_trans = function(physeq, qPCR,
   stopifnot(!is.null(qPCR$Sample))
 
   # OTU table
-  df_OTU_col = physeq %>% phyloseq::otu_table %>% colnames
-  df_OTU = phyloseq2df(physeq, otu_table)
+  df_OTU_col = phyloseq::otu_table(physeq) %>% colnames
+  df_OTU = phyloseq2df(physeq, phyloseq::otu_table)
   df_OTU_rn = rownames(df_OTU)
   df_OTU = as.data.frame(apply(df_OTU, 2, as.Num))
   rownames(df_OTU) = df_OTU_rn
@@ -95,10 +95,10 @@ OTU_qPCR_trans = function(physeq, qPCR,
   tax  = phyloseq::tax_table(physeq, errorIfNULL=FALSE)
   sam  = phyloseq::sample_data(physeq, errorIfNULL=FALSE)
 
-  physeq2 = phyloseq::phyloseq(otu_table(df_OTU, taxa_are_rows=TRUE),
-                              phy_tree(tree, errorIfNULL=FALSE),
-                              tax_table(tax, errorIfNULL=FALSE),
-                              sample_data(sam, errorIfNULL=FALSE))
+  physeq2 = phyloseq::phyloseq(phyloseq::otu_table(df_OTU, taxa_are_rows=TRUE),
+                               phyloseq::phy_tree(tree, errorIfNULL=FALSE),
+                               phyloseq::tax_table(tax, errorIfNULL=FALSE),
+                               phyloseq::sample_data(sam, errorIfNULL=FALSE))
 
   return(physeq2)
 }

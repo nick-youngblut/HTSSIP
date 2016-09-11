@@ -66,7 +66,7 @@ calc_atom_excess = function(Mlab, Mlight, Mheavymax, isotope='13C'){
 #' @param physeq  A phyloseq object
 #' @param control_expr  An expression for identifying unlabeled control
 #' samples in the phyloseq object (eg., "Substrate=='12C-Con'")
-#' @param  treatmenat_rep  Which column in the phyloseq sample data designates
+#' @param  treatment_rep  Which column in the phyloseq sample data designates
 #' replicate treatments
 #' @return numeric value: atom fraction excess (A)
 #'
@@ -85,7 +85,7 @@ qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
 #'
 #' @param physeq  A phyloseq object
 #' @param control_expr  Expression used to identify control samples based on sample_data.
-#' @param  treatmenat_rep  Which column in the phyloseq sample data designates
+#' @param treatment_rep  Which column in the phyloseq sample data designates
 #' replicate treatments
 #' @param isotope  The isotope for which the DNA is labeled with ('13C' or '18O')
 #' @param df_OTU_W  Keep NULL

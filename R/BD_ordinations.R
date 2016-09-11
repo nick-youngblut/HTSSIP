@@ -68,6 +68,7 @@ physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
 #'
 #' @param physeq_l  A list of phyloseq objects
 #' @param physeq_l_ords  A list of ordination objects
+#' @param parallel  Parallel processing. See \code{plyr::adply} for more information.
 #' @return List of data.frame objects
 #'
 #' @export
@@ -158,7 +159,9 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #' @inheritParams physeq_list_betaDiv
 #' @inheritParams physeq_list_ord
 #' @inheritParams phyloseq_ord_plot
-#' @return List of dist objects
+#' @param plot  Return a plot (instead of )
+#' @return If plot==FALSE, a data.frame object of beta-diversity values.
+#' If plot==TRUE, a glob object for plotting.
 #'
 #' @export
 #'

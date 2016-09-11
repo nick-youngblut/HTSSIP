@@ -111,8 +111,7 @@ HRSIP = function(physeq,
                  l2fc_threshold=0.25,
                  padj_method='BH',
                  padj_cutoff=NULL,
-                 parallel=FALSE,
-                 ...){
+                 parallel=FALSE){
 
   # assertions
   if(is.factor(density_windows)){
