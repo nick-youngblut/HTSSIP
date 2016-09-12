@@ -48,7 +48,7 @@ each labeled treatment fraction is used to weight the mean.
 }
 \examples{
 
-data(physeq)
+data(physeq_S2D2)
 # Subsetting phyloseq by Substrate and Day
 params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
