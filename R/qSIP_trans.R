@@ -64,7 +64,7 @@ OTU_qPCR_trans = function(physeq, qPCR,
   stopifnot(!is.null(qPCR$Sample))
 
   # OTU table
-  df_OTU_col = phyloseq::otu_table(physeq) %>% colnames
+  df_OTU_col = colnames(phyloseq::otu_table(physeq))
   df_OTU = phyloseq2df(physeq, phyloseq::otu_table)
   df_OTU_rn = rownames(df_OTU)
   df_OTU = as.data.frame(apply(df_OTU, 2, as.Num))

@@ -5,7 +5,7 @@
 \title{Simulate qPCR values}
 \usage{
 qPCR_sim(physeq, control_mean_fun, control_sd_fun, treat_mean_fun, treat_sd_fun,
-  n_tech_rep = 3, control_expr = NULL, ...)
+  n_tech_rep = 3, control_expr = NULL)
 }
 \arguments{
 \item{physeq}{Object of class "phyloseq"}

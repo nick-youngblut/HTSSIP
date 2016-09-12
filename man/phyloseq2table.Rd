@@ -19,6 +19,10 @@ Use \code{NULL} to keep all columns.}
 
 \item{tax_col_keep}{A vector for column names to keep.
 Use \code{NULL} to keep all columns.}
+
+\item{control_expr}{An expression for identifying which samples are controls.
+Control/non-control identification will be in the 'IS_CONTROL' column of the
+returned data.frame object.}
 }
 \value{
 data.frame

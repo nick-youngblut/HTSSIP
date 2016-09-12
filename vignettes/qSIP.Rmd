@@ -74,12 +74,12 @@ First, we'll transform the OTU counts. The following function will do the follow
 * Multiplying the counts by the qPCR values. 
 
 ```{r}
-physeq_rep3 %>% otu_table %>% .[1:5, 1:5]
+phyloseq::otu_table(physeq_rep3) %>% .[1:5, 1:5]
 ```
 
 ```{r}
 physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
-physeq_rep3_t %>% otu_table %>% .[1:5, 1:5]
+phyloseq::otu_table(physeq_rep3_t) %>% .[1:5, 1:5]
 ```
   
 ## BD shift (Z) and atom fraction excess (A)
@@ -111,10 +111,10 @@ The output is a list of data.frames. The `W` table lists the weighted mean BD fo
 
 OK. The last step is to calculate atom % excess confidence intervals (CI). This is necessary for getting some sort of indication on how accurate the atom fraction excess estimations are. Also, Hungate et al., (2015) uses the CIs to call incorporators, in which an OTU was considered an incorporator if the CI was greater than, and did not span, zero. 
 
-We'll use 100 bootstrap replicates. This function can be run in parallel (see the documentation). 
+We'll use 20 bootstrap replicates for this tutorial, but I recommend 100 for a real analysis. Bootstrap replicates can be run in parallel (see the function documentation). 
 
 ```{r}
-df_atomX_boot = qSIP_bootstrap(atomX, n_boot=100)
+df_atomX_boot = qSIP_bootstrap(atomX, n_boot=20)
 df_atomX_boot %>% head
 ```
 

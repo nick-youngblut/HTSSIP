@@ -5,7 +5,7 @@
 \title{Calculating log2 fold change for HTS-SIP data.}
 \usage{
 DESeq2_l2fc(physeq, density_min, density_max, design, l2fc_threshold = 0.25,
-  sparsity_threshold = 0.25, sparsity_apply = "all", ...)
+  sparsity_threshold = 0.25, sparsity_apply = "all")
 }
 \arguments{
 \item{physeq}{Phyloseq object}

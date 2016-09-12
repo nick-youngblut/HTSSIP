@@ -10,6 +10,8 @@ BD_shift(physeq, method = "unifrac", weighted = TRUE, fast = TRUE,
   normalized = FALSE, parallel = FALSE)
 }
 \arguments{
+\item{physeq}{phyloseq object}
+
 \item{method}{See phyloseq::distance}
 
 \item{weighted}{Weighted Unifrac (if calculating Unifrac)}
@@ -19,8 +21,6 @@ BD_shift(physeq, method = "unifrac", weighted = TRUE, fast = TRUE,
 \item{normalized}{Normalized abundances}
 
 \item{parallel}{Calculate in parallel}
-
-\item{df_dist}{phyloseq object}
 }
 \value{
 a data.frame object of weighted mean distances
@@ -48,7 +48,7 @@ each labeled treatment fraction is used to weight the mean.
 }
 \examples{
 
-data(physeq)
+data(physeq_S2D2)
 # Subsetting phyloseq by Substrate and Day
 params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')

@@ -51,7 +51,7 @@ test_that('bootstrap in parallel working', {
                            control_expr='Treatment=="12C-Con"',
                            treatment_rep='Replicate')
 
-  doParallel::registerDoParallel(10)
+  doParallel::registerDoParallel(1)
   # qSIP with bootstrapping
   df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE, n_boot=100)
   # output formatted correctly

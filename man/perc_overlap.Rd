@@ -13,7 +13,7 @@ perc_overlap(x.start, x.end, y.start, y.end)
 
 \item{y.start}{The start value for Range Y}
 
-\item{x.end}{The end value for Range Y}
+\item{y.end}{The end value for Range Y}
 }
 \value{
 the percent overlap of the ranges

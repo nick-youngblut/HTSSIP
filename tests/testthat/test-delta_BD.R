@@ -33,7 +33,7 @@ test_that('delta BD on rep3 dataset',{
 test_that('delta BD on S2D2 list: each in parallel',{
   data(physeq_S2D2_l)
 
-  doParallel::registerDoParallel(4)
+  doParallel::registerDoParallel(1)
   interp_l = plyr::llply(physeq_S2D2_l, delta_BD,
                          control_expr='Substrate=="12C-Con"',
                          .parallel=TRUE)

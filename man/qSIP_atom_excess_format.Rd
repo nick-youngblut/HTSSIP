@@ -12,7 +12,7 @@ qSIP_atom_excess_format(physeq, control_expr, treatment_rep)
 \item{control_expr}{An expression for identifying unlabeled control
 samples in the phyloseq object (eg., "Substrate=='12C-Con'")}
 
-\item{treatmenat_rep}{Which column in the phyloseq sample data designates
+\item{treatment_rep}{Which column in the phyloseq sample data designates
 replicate treatments}
 }
 \value{

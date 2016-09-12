@@ -19,9 +19,12 @@ SIP_betaDiv_ord(physeq_l, method = "unifrac", weighted = TRUE,
 \item{normalized}{Normalized abundances}
 
 \item{parallel}{Calculate in parallel}
+
+\item{plot}{Return a plot (instead of )}
 }
 \value{
-List of dist objects
+If plot==FALSE, a data.frame object of beta-diversity values.
+If plot==TRUE, a glob object for plotting.
 }
 \description{
 For each phyloseq object in a list, calculates beta-diversity

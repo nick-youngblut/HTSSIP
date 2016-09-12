@@ -10,6 +10,8 @@ phyloseq_list_ord_dfs(physeq_l, physeq_l_ords, parallel = FALSE)
 \item{physeq_l}{A list of phyloseq objects}
 
 \item{physeq_l_ords}{A list of ordination objects}
+
+\item{parallel}{Parallel processing. See \code{plyr::adply} for more information.}
 }
 \value{
 List of data.frame objects

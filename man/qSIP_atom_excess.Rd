@@ -12,12 +12,12 @@ qSIP_atom_excess(physeq, control_expr, treatment_rep = NULL,
 
 \item{control_expr}{Expression used to identify control samples based on sample_data.}
 
+\item{treatment_rep}{Which column in the phyloseq sample data designates
+replicate treatments}
+
 \item{isotope}{The isotope for which the DNA is labeled with ('13C' or '18O')}
 
 \item{df_OTU_W}{Keep NULL}
-
-\item{treatmenat_rep}{Which column in the phyloseq sample data designates
-replicate treatments}
 }
 \value{
 A list of 2 data.frame objects. 'W' contains

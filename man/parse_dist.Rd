@@ -7,7 +7,7 @@
 parse_dist(d)
 }
 \arguments{
-\item{metadata}{Metdata data.frame object. See \code{format_metadata()}.}
+\item{d}{a distance matrix object}
 }
 \value{
 a data.frame object of metadata with fraction BD overlaps

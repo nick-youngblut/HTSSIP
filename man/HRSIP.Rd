@@ -7,7 +7,7 @@
 HRSIP(physeq, design, density_windows = data.frame(density_min = c(1.7),
   density_max = c(1.75)), sparsity_threshold = seq(0, 0.3, 0.1),
   sparsity_apply = "all", l2fc_threshold = 0.25, padj_method = "BH",
-  padj_cutoff = NULL, parallel = FALSE, ...)
+  padj_cutoff = NULL, parallel = FALSE)
 }
 \arguments{
 \item{physeq}{Phyloseq object}
