@@ -125,7 +125,7 @@ phyloseq_subset = function(physeq, params, ex){
     # x should be a list of parameters
     exx = stringterpolate(ex, x)
     physeq.m = phyloseq2df(physeq, phyloseq::sample_data)
-    bool = mutate_(physeq.m, exx)[,ncol(physeq.m)+1]
+    bool = dplyr::mutate_(physeq.m, exx)[,ncol(physeq.m)+1]
     phyloseq::prune_samples(bool, physeq)
   })
   return(physeq_l)

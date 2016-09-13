@@ -111,7 +111,9 @@ qPCR_sim = function(physeq,
 
   # gather & summarize
   df_qPCR_s = df_qPCR %>%
-    tidyr::gather(qPCR_tech_rep_id, qPCR_tech_rep_value, starts_with('qPCR_tech_rep')) %>%
+    tidyr::gather(qPCR_tech_rep_id,
+                  qPCR_tech_rep_value,
+                  dplyr::starts_with('qPCR_tech_rep')) %>%
     dplyr::group_by(IS_CONTROL, Sample, Buoyant_density) %>%
     dplyr::summarize(qPCR_tech_rep_mean = mean(qPCR_tech_rep_value),
                      qPCR_tech_rep_sd = sd(qPCR_tech_rep_value)) %>%

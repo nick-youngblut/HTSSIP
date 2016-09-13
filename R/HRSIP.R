@@ -18,7 +18,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
     dplyr::group_by(sparsity_threshold) %>%
     dplyr::summarize(n_rej_hypo = sum(padj < padj_cutoff)) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(rank_n_rej_hypo = row_number(-n_rej_hypo)) %>%
+    dplyr::mutate(rank_n_rej_hypo = dplyr::row_number(-n_rej_hypo)) %>%
     dplyr::filter(rank_n_rej_hypo == 1)
 
   BEST_SPAR_THRESH = as.numeric(df_l2fc_s[1,'sparsity_threshold'])
