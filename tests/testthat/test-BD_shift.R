@@ -37,7 +37,7 @@ test_that('BD_shift runs w/ default',{
   expect_wmean(wmean)
 
   # ggplot
-  p = ggplot(wmean, aes(BD_min.x, wmean_dist)) +
+  p = ggplot2::ggplot(wmean, aes(BD_min.x, wmean_dist)) +
         geom_point()
   expect_is(p, 'ggplot')
 })
@@ -51,7 +51,7 @@ test_that('BD_shift runs w/ Bray-Curtis',{
   expect_wmean(wmean)
 
   # ggplot
-  p = ggplot(wmean, aes(BD_min.x, wmean_dist)) +
+  p = ggplot2::ggplot(wmean, aes(BD_min.x, wmean_dist)) +
     geom_point()
   expect_is(p, 'ggplot')
 })
