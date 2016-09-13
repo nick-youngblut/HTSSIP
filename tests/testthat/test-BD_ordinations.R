@@ -48,5 +48,24 @@ test_that('Plots created from phyloseq object',{
   ## alternative plot output
   physeq_S2D2_p = SIP_betaDiv_ord(physeq_S2D2_l, plot=TRUE)
   expect_is(physeq_S2D2_p, 'ggplot')
-
 })
+
+
+test_that('Plot comparing all',{
+  # params for subseting
+  params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
+  expect_is(params, 'data.frame')
+  expect_equal(nrow(params), 6)
+  ## filtering params
+  params = dplyr::filter(params, Substrate!='12C-Con')
+  expect_equal(nrow(params), 4)
+
+  # calculating beta diversity
+  physeq_S2D2_df = SIP_betaDiv_ord(physeq_S2D2)
+  expect_is(physeq_S2D2_df, 'data.frame')
+  ## plotting
+  physeq_S2D2_df_p = phyloseq_ord_plot(physeq_S2D2_df, point_shape='Day')
+  physeq_S2D2_df_p
+  expect_is(physeq_S2D2_df_p, 'ggplot')
+})
+

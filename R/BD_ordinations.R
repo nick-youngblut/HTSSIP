@@ -125,7 +125,8 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_size='Buoyant_density',
                              point_fill='Substrate',
-                             point_alpha=0.5){
+                             point_alpha=0.5,
+                             point_shape=NULL){
 
   if(! is.null(physeq_ord_df$NMDS1)){
     AES = aes(x=NMDS1, y=NMDS2)
@@ -137,14 +138,26 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
     stop('Do not recognize ordination axes')
   }
 
+  if(!is.null(point_shape)){
+    physeq_ord_df[,point_shape] = as.character(physeq_ord_df[,point_shape])
+  }
+
   p = ggplot2::ggplot(physeq_ord_df, AES) +
-    geom_point(aes_string(fill = point_fill,
-                  size = point_size),
-                  pch=21, alpha=point_alpha) +
     scale_size(range=c(2,8)) +
     labs(title=title) +
     facet_wrap(~ phyloseq_subset) +
     theme_bw()
+
+  if(is.null(point_shape)){
+    p = p + geom_point(aes_string(fill=point_fill,
+                                  size=point_size),
+              pch=21, alpha=point_alpha)
+  } else {
+    p = p + geom_point(aes_string(fill=point_fill,
+                                  color=point_fill,
+                                  size=point_size,
+                                  shape=point_shape), alpha=point_alpha)
+  }
 
   return(p)
 }
@@ -173,6 +186,9 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 SIP_betaDiv_ord = function(physeq_l, method='unifrac', weighted=TRUE,
                           fast=TRUE, normalized=TRUE, parallel=FALSE,
                           plot=FALSE){
+  if(!is.list(physeq_l)){
+    physeq_l = list(all=physeq_l)
+  }
   physeq_l_d = physeq_list_betaDiv(physeq_l,
                                    method=method,
                                    weighted=weighted,
