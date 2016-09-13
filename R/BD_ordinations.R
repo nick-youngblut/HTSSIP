@@ -129,11 +129,14 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_shape=NULL){
 
   if(! is.null(physeq_ord_df$NMDS1)){
-    AES = aes(x=NMDS1, y=NMDS2)
+    x = NMDS1
+    y = NMDS2
   } else if(! is.null(physeq_ord_df$Axis.1)){
-    AES = aes(x=Axis.1, y=Axis.2)
+    x = Axis.1
+    y = Axis.2
   } else if(! is.null(physeq_ord_df$CA1)){
-    AES = aes(x=CA1, y=CA2)
+    x = CA1
+    y = CA2
   } else {
     stop('Do not recognize ordination axes')
   }
@@ -142,7 +145,7 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
     physeq_ord_df[,point_shape] = as.character(physeq_ord_df[,point_shape])
   }
 
-  p = ggplot2::ggplot(physeq_ord_df, AES) +
+  p = ggplot2::ggplot(physeq_ord_df, aes(x, y)) +
     scale_size(range=c(2,8)) +
     labs(title=title) +
     facet_wrap(~ phyloseq_subset) +
