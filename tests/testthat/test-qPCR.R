@@ -41,7 +41,7 @@ test_that('qPCR simulation (control/treatment)', {
          treat_sd_fun=L$treat_sd_fun)
   check_qPCR(qPCR, physeq_S2D2)
 
-  p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
+  p = ggplot2::ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
                       ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
                       ymax=qPCR_tech_rep_mean+qPCR_tech_rep_sd,
                       color=IS_CONTROL)) +
@@ -61,7 +61,7 @@ test_that('qPCR simulation: replicate gradients', {
                   treat_sd_fun=L$treat_sd_fun)
   check_qPCR(qPCR, physeq_rep3)
 
-  p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
+  p = ggplot2::ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
                                ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
                                ymax=qPCR_tech_rep_mean+qPCR_tech_rep_sd,
                                color=IS_CONTROL)) +
@@ -82,7 +82,7 @@ test_that('qPCR simulation (control/treatment); different distributions', {
                   treat_sd_fun=L$treat_sd_fun)
   check_qPCR(qPCR, physeq_S2D2)
 
-  p = ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
+  p = ggplot2::ggplot(qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
                                ymin=qPCR_tech_rep_mean-qPCR_tech_rep_sd,
                                ymax=qPCR_tech_rep_mean+qPCR_tech_rep_sd,
                                color=IS_CONTROL)) +
