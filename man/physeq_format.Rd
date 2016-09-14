@@ -22,12 +22,14 @@ data(physeq_S2D2)
 physeq_format(physeq_S2D2)
 
 # should NOT be correctly formatted for HTSSIP
+\dontrun{
 library(phyloseq)
 data(GlobalPatterns)
 tryCatch(
  physeq_format(GlobalPatterns),
  function(e) e
  )
+ }
 
 }
 

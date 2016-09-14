@@ -32,7 +32,7 @@ physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
 # convert ordination information to data.frame objects
 physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
 # make ordination plots with ggplot2
-phyloseq_list_ord_plot(physeq_S2D2_l_d_ord_df)
+phyloseq_ord_plot(physeq_S2D2_l_d_ord_df)
 
 }
 

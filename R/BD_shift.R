@@ -25,16 +25,17 @@ max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
 #' @param physeq  Phyloseq object
 #' @param ex  Expression for selecting the control samples to
 #' compare to the non-control samples.
-#'
 #' @return a data.frame object of formatted metadata
 #'
+#'
 #' @examples
+#' \dontrun{
 #' data(physeq_S2D1)
 #' ex = "Substrate=='12C-Con'"
 #' metadata = format_metadata(physeq_S2D1, ex)
+#' }
 #'
-format_metadata = function(physeq,
-                           ex = "Substrate=='12C-Con'"){
+format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
   metadata = phyloseq2df(physeq, table_func=sample_data)
   metadata$METADATA_ROWNAMES = rownames(metadata)
 
@@ -76,11 +77,12 @@ format_metadata = function(physeq,
 #' @return the percent overlap of the ranges
 #'
 #' @examples
-#'
+#' \dontrun{
 #' x = perc_overlap(0, 1, 0, 0.5)
 #' stopifnot(x == 50)
 #' x = perc_overlap(0, 0.5, 0, 1)
 #' stopifnot(x == 100)
+#' }
 #'
 perc_overlap = function(x.start, x.end, y.start, y.end){
   x.len = abs(x.end - x.start)
@@ -97,16 +99,16 @@ perc_overlap = function(x.start, x.end, y.start, y.end){
 #' Calculate the BD range overlap of gradient fractions
 #'
 #' @param metadata  Metdata data.frame object. See \code{format_metadata()}.
-#'
 #' @return a data.frame object of metadata with fraction BD overlaps
 #'
 #' @examples
-#'
+#' \dontrun{
 #' data(physeq_S2D2)
 #' ex = "Substrate=='12C-Con'"
 #' metadata = format_metadata(physeq_S2D2, ex)
 #' m = fraction_overlap(metadata)
 #' head(m)
+#' }
 #'
 fraction_overlap = function(metadata){
   stopifnot(all(c('METADATA_ROWNAMES', 'IS__CONTROL') %in%
@@ -134,7 +136,7 @@ fraction_overlap = function(metadata){
 #' @return a data.frame object of metadata with fraction BD overlaps
 #'
 #' @examples
-#'
+#' \dontrun{
 #' data(physeq_S2D2)
 #' physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
 #'                              method='unifrac',
@@ -143,6 +145,7 @@ fraction_overlap = function(metadata){
 #'                              normalized=FALSE)
 #' physeq_S2D2_d = parse_dist(physeq_S2D2_d)
 #' head(physeq_S2D2_d)
+#' }
 #'
 parse_dist = function(d){
   stopifnot(class(d)=='dist')
@@ -161,11 +164,10 @@ parse_dist = function(d){
 #'
 #' @param df_dist  Filtered distance matrix in data.frame format.
 #' See \code{parse_dist()}
-#'
 #' @return a data.frame object of weighted mean distances
 #'
 #' @examples
-#'
+#' \dontrun{
 #' data(physeq_S2D2)
 #' physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
 #'                              method='unifrac',
@@ -175,6 +177,7 @@ parse_dist = function(d){
 #' physeq_S2D2_d = parse_dist(physeq_S2D2_d)
 #' wmean = overlap_wmean_dist(physeq_S2D2_d)
 #' head(wmean)
+#' }
 #'
 overlap_wmean_dist = function(df_dist){
   # calculating weighted mean distance
@@ -223,7 +226,6 @@ overlap_wmean_dist = function(df_dist){
 #' @export
 #'
 #' @examples
-#'
 #' data(physeq_S2D2)
 #' # Subsetting phyloseq by Substrate and Day
 #' params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))

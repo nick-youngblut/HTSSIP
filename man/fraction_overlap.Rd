@@ -16,12 +16,13 @@ a data.frame object of metadata with fraction BD overlaps
 Calculate the BD range overlap of gradient fractions
 }
 \examples{
-
+\dontrun{
 data(physeq_S2D2)
 ex = "Substrate=='12C-Con'"
 metadata = format_metadata(physeq_S2D2, ex)
 m = fraction_overlap(metadata)
 head(m)
+}
 
 }
 

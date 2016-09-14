@@ -19,9 +19,11 @@ a data.frame object of formatted metadata
 Format phyloseq metadata for calculating BD range overlaps.
 }
 \examples{
+\dontrun{
 data(physeq_S2D1)
 ex = "Substrate=='12C-Con'"
 metadata = format_metadata(physeq_S2D1, ex)
+}
 
 }
 

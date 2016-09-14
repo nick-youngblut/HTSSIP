@@ -16,7 +16,7 @@ a data.frame object of metadata with fraction BD overlaps
 Filtering out non-relevant distances in distance matrix
 }
 \examples{
-
+\dontrun{
 data(physeq_S2D2)
 physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              method='unifrac',
@@ -25,6 +25,7 @@ physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              normalized=FALSE)
 physeq_S2D2_d = parse_dist(physeq_S2D2_d)
 head(physeq_S2D2_d)
+}
 
 }
 

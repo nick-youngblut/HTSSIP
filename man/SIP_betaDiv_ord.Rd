@@ -32,7 +32,7 @@ between all samples using the phyloseq::distance function.
 }
 \examples{
 data(physeq_S2D2_l)
-physeq_S2D2_l_df = SIP_betaDiv(physeq_S2D2_l)
+physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l)
 head(physeq_S2D2_l_df, n=3)
 
 }

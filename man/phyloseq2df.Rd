@@ -20,10 +20,10 @@ in a phyloseq object (eg., tax_table) to a dataframe
 }
 \examples{
 data(physeq_S2D1)
-df_otu = phyloseq2df(physeq_S2D1, table_func=otu_table)
+df_otu = phyloseq2df(physeq_S2D1, table_func=phyloseq::otu_table)
 head(df_otu)
 
-df_sample = phyloseq2df(physeq_S2D1, table_func=sample_data)
+df_sample = phyloseq2df(physeq_S2D1, table_func=phyloseq::sample_data)
 head(df_sample)
 
 }

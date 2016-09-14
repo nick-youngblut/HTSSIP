@@ -44,11 +44,11 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
 #' @export
 #'
 #' @examples
-#' data(physeq_l)
+#' data(physeq_S2D2_l)
 #' # make a list of beta diversity distance matrix objects
-#' physeq_l_d = physeq_list_betaDiv(physeq_l)
+#' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 #' # make a list of ordinations
-#' physeq_l_d_ord = physeq_list_ord(physeq_l, physeq_l_d)
+#' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
 #'
 physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
   ord_l = list()
@@ -119,7 +119,7 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #' # convert ordination information to data.frame objects
 #' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
 #' # make ordination plots with ggplot2
-#' phyloseq_list_ord_plot(physeq_S2D2_l_d_ord_df)
+#' phyloseq_ord_plot(physeq_S2D2_l_d_ord_df)
 #'
 phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_size='Buoyant_density',
@@ -179,7 +179,7 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #'
 #' @examples
 #' data(physeq_S2D2_l)
-#' physeq_S2D2_l_df = SIP_betaDiv(physeq_S2D2_l)
+#' physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l)
 #' head(physeq_S2D2_l_df, n=3)
 #'
 SIP_betaDiv_ord = function(physeq_l, method='unifrac', weighted=TRUE,

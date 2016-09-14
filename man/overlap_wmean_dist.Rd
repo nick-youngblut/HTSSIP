@@ -17,7 +17,7 @@ a data.frame object of weighted mean distances
 Calculating weighted mean beta-diversities of overlapping gradient fractions.
 }
 \examples{
-
+\dontrun{
 data(physeq_S2D2)
 physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              method='unifrac',
@@ -27,6 +27,7 @@ physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
 physeq_S2D2_d = parse_dist(physeq_S2D2_d)
 wmean = overlap_wmean_dist(physeq_S2D2_d)
 head(wmean)
+}
 
 }
 

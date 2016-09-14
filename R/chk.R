@@ -12,12 +12,14 @@
 #' physeq_format(physeq_S2D2)
 #'
 #' # should NOT be correctly formatted for HTSSIP
+#' \dontrun{
 #' library(phyloseq)
 #' data(GlobalPatterns)
 #' tryCatch(
 #'  physeq_format(GlobalPatterns),
 #'  function(e) e
 #'  )
+#'  }
 #'
 physeq_format = function(physeq){
   meta = phyloseq::sample_data(physeq)
