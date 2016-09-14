@@ -36,7 +36,7 @@ max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
 #' }
 #'
 format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
-  metadata = phyloseq2df(physeq, table_func=sample_data)
+  metadata = phyloseq2df(physeq, table_func=phyloseq::sample_data)
   metadata$METADATA_ROWNAMES = rownames(metadata)
 
   stopifnot(all(c('Buoyant_density', 'Fraction') %in% colnames(metadata)))
