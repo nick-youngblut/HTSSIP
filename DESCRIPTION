@@ -19,8 +19,7 @@ Imports:
     DESeq2 (>= 1.10.1),
     phyloseq (>= 1.14.0),
     uuid (>= 0.1.2),
-    coenocliner (>= 0.2.2),
-    rmdformats (>= 0.3)
+    coenocliner (>= 0.2.2)
 RoxygenNote: 5.0.1
 Suggests:
     testthat,

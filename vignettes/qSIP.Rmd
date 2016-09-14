@@ -2,31 +2,12 @@
 title: "q-SIP"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output:
-  rmdformats::html_clean:
-    highlight: kate
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{q-SIP}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r knitr_init, echo=FALSE, cache=FALSE}
-library(knitr)
-library(rmdformats)
-
-## Global options
-options(max.print="75")
-opts_chunk$set(echo=TRUE,
-	             cache=TRUE,
-               prompt=FALSE,
-               tidy=TRUE,
-               comment=NA,
-               message=FALSE,
-               warning=FALSE)
-opts_knit$set(width=75)
-```
-
 
 # Introduction
 
