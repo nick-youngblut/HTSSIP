@@ -124,7 +124,7 @@ Let's use the same threshold as Hungate et al., (2015) for defining incorporator
 CI_threshold = 0
 df_atomX_boot = df_atomX_boot %>%
   mutate(Incorporator = A_CI_low > CI_threshold,
-         OTU = reorder(OTU, -A))
+                OTU = reorder(OTU, -A))
 ```
 
 

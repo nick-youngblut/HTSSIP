@@ -61,7 +61,9 @@ physeq_S2D2_l
 Now, let's actually make ordinations of each treatment compared to the control. This will return a `data.frame` object for plotting. 
 
 ```{r, message=FALSE, warning=FALSE}
-physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l)
+# running in parallel
+doParallel::registerDoParallel(2)
+physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l, parallel=TRUE)
 physeq_S2D2_l_df %>% head(n=3)
 ```
 

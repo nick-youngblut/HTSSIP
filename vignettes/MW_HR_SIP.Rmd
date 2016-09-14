@@ -54,7 +54,7 @@ Let's set some parameters used later.
 # adjusted P-value cutoff 
 padj_cutoff = 0.1
 # number of cores for parallel processing (increase depending on your computational hardware)
-ncores = 1
+ncores = 2
 ```
 
 ## One treatment-control comparison
