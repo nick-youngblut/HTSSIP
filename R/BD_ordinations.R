@@ -111,7 +111,6 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #' @export
 #'
 #' @examples
-#'
 #' data(physeq_S2D2_l)
 #' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
@@ -129,11 +128,11 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_shape=NULL){
 
   if(! is.null(physeq_ord_df$NMDS1)){
-    AES = ggplot2::aes(x=NMDS1, y=NMDS2)
+    AES = aes(x=NMDS1, y=NMDS2)
   } else if(! is.null(physeq_ord_df$Axis.1)){
-    AES = ggplot2::aes(x=Axis.1, y=Axis.2)
+    AES = aes(x=Axis.1, y=Axis.2)
   } else if(! is.null(physeq_ord_df$CA1)){
-    AES = ggplot2::aes(x=CA1, y=CA2)
+    AES = aes(x=CA1, y=CA2)
   } else {
     stop('Do not recognize ordination axes')
   }
@@ -142,18 +141,18 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
     physeq_ord_df[,point_shape] = as.character(physeq_ord_df[,point_shape])
   }
 
-  p = ggplot2::ggplot(physeq_ord_df, AES) +
-    ggplot2::scale_size(range=c(2,8)) +
-    ggplot2::labs(title=title) +
-    ggplot2::facet_wrap(~ phyloseq_subset) +
-    ggplot2::theme_bw()
+  p = ggplot(physeq_ord_df, AES) +
+    scale_size(range=c(2,8)) +
+    labs(title=title) +
+    facet_wrap(~ phyloseq_subset) +
+    theme_bw()
 
   if(is.null(point_shape)){
-    p = p + ggplot2::geom_point(ggplot2::aes_string(fill=point_fill,
+    p = p + geom_point(aes_string(fill=point_fill,
                                   size=point_size),
               pch=21, alpha=point_alpha)
   } else {
-    p = p + ggplot2::geom_point(aes_string(fill=point_fill,
+    p = p + geom_point(aes_string(fill=point_fill,
                                   color=point_fill,
                                   size=point_size,
                                   shape=point_shape), alpha=point_alpha)
