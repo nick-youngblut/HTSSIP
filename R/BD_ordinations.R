@@ -107,6 +107,8 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #' @param point_size  The data.frame column determining point size
 #' @param point_fill  The data.frame column determining point fill color
 #' @param point_alpha  The data.frame column (or just a single value) determining point alpha
+#' @param point_shape  The data.frame column (or just a single value) determining point shape
+#' @return ggplot2 object
 #'
 #' @export
 #'

@@ -234,8 +234,10 @@ overlap_wmean_dist = function(df_dist){
 #' physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
 #' # Calculating BD_shift on 1 subset (use lapply function to process full list)
 #' wmean1 = BD_shift(physeq_S2D2_l[[1]])
+#' \dontrun{
 #' ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
 #'    geom_point()
+#' }
 #'
 #' # Calculating BD_shift on all subsets
 #' lapply(physeq_S2D2_l, BD_shift)

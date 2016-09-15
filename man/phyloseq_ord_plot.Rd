@@ -18,6 +18,11 @@ phyloseq_ord_plot(physeq_ord_df, title = NULL,
 \item{point_fill}{The data.frame column determining point fill color}
 
 \item{point_alpha}{The data.frame column (or just a single value) determining point alpha}
+
+\item{point_shape}{The data.frame column (or just a single value) determining point shape}
+}
+\value{
+ggplot2 object
 }
 \description{
 For each data.frame object in a list (coverted from ordination objects),

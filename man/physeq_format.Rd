@@ -10,18 +10,17 @@ physeq_format(physeq)
 \item{physeq}{Phyloseq object}
 }
 \value{
-
+phyloseq object
 }
 \description{
 Checking format of phyloseq object for HTSSIP compatibility
 }
 \examples{
-
-# should be formatted for HTSSIP
+# this data should be formatted for HTSSIP
 data(physeq_S2D2)
 physeq_format(physeq_S2D2)
 
-# should NOT be correctly formatted for HTSSIP
+# this data should NOT be correctly formatted for HTSSIP
 \dontrun{
 library(phyloseq)
 data(GlobalPatterns)

@@ -1,17 +1,16 @@
 #' Checking format of phyloseq object for HTSSIP compatibility
 #'
 #' @param physeq  Phyloseq object
-#' @return
+#' @return phyloseq object
 #'
 #' @export
 #'
 #' @examples
-#'
-#' # should be formatted for HTSSIP
+#' # this data should be formatted for HTSSIP
 #' data(physeq_S2D2)
 #' physeq_format(physeq_S2D2)
 #'
-#' # should NOT be correctly formatted for HTSSIP
+#' # this data should NOT be correctly formatted for HTSSIP
 #' \dontrun{
 #' library(phyloseq)
 #' data(GlobalPatterns)
