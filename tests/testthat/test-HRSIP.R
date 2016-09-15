@@ -28,7 +28,7 @@ test_that('HRSIP runs padj_cutoff',{
 })
 
 test_that('MW-HR-SIP runs with default & parallel ',{
-  ncores = 1
+  ncores = 2
   doParallel::registerDoParallel(ncores)
   windows = data.frame(density_min=c(1.70, 1.72), density_max=c(1.73, 1.75))
   df_l2fc = HRSIP(physeq_S2D2_l[[1]],
@@ -47,7 +47,7 @@ test_that('MW-HR-SIP runs with default & parallel ',{
 
 
 test_that('MW-HR-SIP runs with padj_cutoff',{
-  ncores = 1
+  ncores = 2
   doParallel::registerDoParallel(ncores)
   windows = data.frame(density_min=c(1.70, 1.72), density_max=c(1.73, 1.75))
   df_l2fc = HRSIP(physeq_S2D2_l[[1]],

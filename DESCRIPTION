@@ -1,11 +1,14 @@
 Package: HTSSIP
 Type: Package
-Title: High throughput sequencing stable isotope probing data analysis
+Title: High throughput sequencing of stable isotope probing data analysis
 Version: 0.1.1
-Author: Nick Youngblut
-Maintainer: Nick Youngblut <nyoungb2@gmail.com>
+Authors: c(
+    person("Nicholas", "Youngblut", ,"nyoungb2@gmail.com", c("aut", "cre")),
+    person("Samuel", "Barnett",  ,"seb369@cornell.edu", c("aut", "cre"))
+    )
+Maintainer: Nicholas Youngblut <nyoungb2@gmail.com>
 Description: Perform HTS-SIP analyses such as HR-SIP, MW-HR-SIP, and q-SIP.
-License: GPL-2
+License: file LICENSE
 LazyData: TRUE
 Depends:
     R (>= 3.1.2)
