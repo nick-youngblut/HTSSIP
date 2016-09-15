@@ -101,7 +101,7 @@ phyloseq2table = function(physeq,
 
   # taxonomy table
   if(include_tax_table==TRUE){
-    df_tax = tax_table(physeq)
+    df_tax = phyloseq::tax_table(physeq)
     df_tax = suppressWarnings(as.data.frame(as.matrix(df_tax)))
     df_tax$OTU = rownames(df_tax)
     ## trimming
@@ -110,7 +110,7 @@ phyloseq2table = function(physeq,
       df_tax = dplyr::select_(df_tax, .dots=as.list(tax_col_keep))
     }
     # join
-    df_OTU = inner_join(df_OTU, df_tax, c('OTU'))
+    df_OTU = dplyr::inner_join(df_OTU, df_tax, c('OTU'))
     if(nrow(df_OTU) == 0){
       stop('No rows returned after inner_join of otu_table & tax_table')
     }
