@@ -48,8 +48,8 @@ physeq_t = OTU_qPCR_trans(physeq, qPCR)
 
 #BD shift (Z) & atom excess (A)
 atomX = qSIP_atom_excess(physeq_t,
-                        control_expr=control_expr,
-                        treatment_rep=gradient_rep)
+                        control_expr='Substrate=="12C-Con"',
+                        treatment_rep='Microcosm_replicate')
 
 }
 
