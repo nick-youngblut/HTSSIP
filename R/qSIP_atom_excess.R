@@ -273,8 +273,8 @@ sample_W = function(df, n_sample){
 #'
 #' #BD shift (Z) & atom excess (A)
 #' atomX = qSIP_atom_excess(physeq_t,
-#'                         control_expr=control_expr,
-#'                         gradient_rep=gradient_rep)
+#'                         control_expr='Substrate=="12C-Con"',
+#'                         gradient_rep='Microcosm_replicate')
 #'
 #' # bootstrapping in parallel
 #' doParallel::registerDoParallel(8)
