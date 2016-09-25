@@ -5,7 +5,7 @@ test_that('Beta diversity from a list of phyloseq objects',{
 })
 
 test_that('Beta diversity from a list of phyloseq objects (parallel)',{
-  doParallel::registerDoParallel(1)
+  doParallel::registerDoParallel(2)
   physeq_l_d = physeq_list_betaDiv(physeq_S2D2_l, parallel=TRUE)
   expect_is(physeq_l_d, 'list')
   expect_equal(length(physeq_l_d), 4)
@@ -14,7 +14,7 @@ test_that('Beta diversity from a list of phyloseq objects (parallel)',{
 
 test_that('Make a data.frame for ordination plotting (parallel)',{
   # params for subseting
-  doParallel::registerDoParallel(1)
+  doParallel::registerDoParallel(2)
   physeq_l_d = physeq_list_betaDiv(physeq_S2D2_l, parallel=TRUE)
   physeq_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_l_d)
   physeq_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_l_d_ord)

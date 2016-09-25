@@ -1,7 +1,7 @@
 Package: HTSSIP
 Type: Package
 Title: High throughput sequencing of stable isotope probing data analysis
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person("Nicholas", "Youngblut", email="nyoungb2@gmail.com", role=c("aut", "cre")),
     person("Samuel", "Barnett", email="seb369@cornell.edu", role=c("ctb"))

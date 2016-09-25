@@ -94,8 +94,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #'
 #' ## Same, but multiple BD windows (MW-HR-SIP) & run in parallel
 #' ### Windows = 1.7-1.73 & 1.72-1.75
-#' ncores = 2
-#' doParallel::registerDoParallel(ncores)
+#' doParallel::registerDoParallel(2)
 #' dw = data.frame(density_min=c(1.7, 1.72), density_max=c(1.73, 1.75))
 #' df_l2fc = HRSIP(physeq_S2D1_l[[1]],
 #'                 design=~Substrate,

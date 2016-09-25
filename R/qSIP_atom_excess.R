@@ -99,26 +99,13 @@ qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
 #' @export
 #'
 #' @examples
-#' # qPCR data simulation
-#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-#' control_sd_fun = function(x) control_mean_fun(x) / 3
-#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
+#' # tranforming values
+#' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
-#' physeq = physeq_S2D2_l[[1]]
-#' qPCR = qPCR_sim(physeq,
-#'                 control_expr='Substrate=="12C-Con"',
-#'                 control_mean_fun=control_mean_fun,
-#'                 control_sd_fun=control_sd_fun,
-#'                 treat_mean_fun=treat_mean_fun,
-#'                 treat_sd_fun=treat_sd_fun)
-#' # OTU table transformation
-#' physeq_t = OTU_qPCR_trans(physeq, qPCR)
-#'
-#' #BD shift (Z) & atom excess (A)
-#' atomX = qSIP_atom_excess(physeq_t,
-#'                         control_expr=control_expr,
-#'                         treatment_rep=gradient_rep)
+#' # BD shift (Z) & atom excess (A)
+#' atomX = qSIP_atom_excess(physeq_rep3_t,
+#'                         control_expr='Treatment=="12C-Con"',
+#'                         treatment_rep='Replicate')
 #'
 qSIP_atom_excess = function(physeq,
                             control_expr,
@@ -255,29 +242,16 @@ sample_W = function(df, n_sample){
 #' @export
 #'
 #' @examples
-#' # qPCR data simulation
-#' control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-#' control_sd_fun = function(x) control_mean_fun(x) / 3
-#' treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-#' treat_sd_fun = function(x) treat_mean_fun(x) / 3
+#' # tranforming values
+#' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
-#' physeq = physeq_S2D2_l[[1]]
-#' qPCR = qPCR_sim(physeq,
-#'                 control_expr='Substrate=="12C-Con"',
-#'                 control_mean_fun=control_mean_fun,
-#'                 control_sd_fun=control_sd_fun,
-#'                 treat_mean_fun=treat_mean_fun,
-#'                 treat_sd_fun=treat_sd_fun)
-#' # OTU table transformation
-#' physeq_t = OTU_qPCR_trans(physeq, qPCR)
-#'
-#' #BD shift (Z) & atom excess (A)
-#' atomX = qSIP_atom_excess(physeq_t,
-#'                         control_expr='Substrate=="12C-Con"',
-#'                         gradient_rep='Microcosm_replicate')
+#' # BD shift (Z) & atom excess (A)
+#' atomX = qSIP_atom_excess(physeq_rep3_t,
+#'                         control_expr='Treatment=="12C-Con"',
+#'                         treatment_rep='Replicate')
 #'
 #' # bootstrapping in parallel
-#' doParallel::registerDoParallel(1)
+#' doParallel::registerDoParallel(2)
 #' df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE)
 #' head(df_atomX_boot)
 #'
