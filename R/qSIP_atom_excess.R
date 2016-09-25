@@ -277,7 +277,7 @@ sample_W = function(df, n_sample){
 #'                         gradient_rep='Microcosm_replicate')
 #'
 #' # bootstrapping in parallel
-#' doParallel::registerDoParallel(8)
+#' doParallel::registerDoParallel(1)
 #' df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE)
 #' head(df_atomX_boot)
 #'
