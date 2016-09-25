@@ -50,7 +50,7 @@ tss = function(x, MARGIN=2, na.rm=FALSE){
 #' @examples
 #' # qPCR data simulation
 #' data(physeq_rep3)
-#' data(phsyeq_rep3_qPCR)
+#' data(physeq_rep3_qPCR)
 #' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
 OTU_qPCR_trans = function(physeq, qPCR,
