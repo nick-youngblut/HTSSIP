@@ -1,7 +1,7 @@
 HTSSIP
 ======
 
-[![Travis-CI Build Status](https://travis-ci.org/nyoungb2/HTSSIP.svg?branch=master)](https://travis-ci.org/nyoungb2/HTSSIP)
+[![Travis-CI Build Status](https://travis-ci.org/nick-youngblut/HTSSIP.svg?branch=master)](https://travis-ci.org/nick-youngblut/HTSSIP)
 
 HTSSIP is an R package for analyzing high throughput 
 sequence data from nucleotide stable isotope probing 
@@ -40,7 +40,7 @@ To get the current development version from github:
 
 ```R
 # install.packages("devtools")
-devtools::install_github("nyoungb2/HTSSIP")
+devtools::install_github("nick-youngblut/HTSSIP")
 ```
 
 
