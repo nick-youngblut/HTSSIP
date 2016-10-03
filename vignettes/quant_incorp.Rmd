@@ -11,7 +11,7 @@ vignette: >
 
 # Introduction
 
-There are to prevaling methods for using HTS-SIP data to estimate the amount of isotope that each OTU incorporated: 
+There are two prevaling methods for using HTS-SIP data to estimate the amount of isotope that each OTU incorporated: 
 
 * q-SIP
 * delta_BD (a complementary analysis to HR-SIP)

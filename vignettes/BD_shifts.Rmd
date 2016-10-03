@@ -38,7 +38,7 @@ BD shifts in the form of 'spikes' in beta diversity.
 
 The only major issue with this approach is that the BD range of each gradient
 fraction varies from gradient to gradient. So, gradient fractions between gradients
-usually only partially overlap. To deal with this issue, I have taken the approach
+usually only partially overlap. To deal with this issue, we have taken the approach
 of weighting the beta diversity based on gradient fraction overlap. For instance,
 if 2 labeled-treatment fractions overlapped 1 control fraction by 40% and 60%,
 then the final beta diversity value would be the weighted average of 
@@ -145,7 +145,7 @@ ggplot(wmean, aes(BD_min.x, wmean_dist)) +
   theme(axis.text.x = element_text(angle=45, hjust=1))
 ```
 
-As you can see, the 'heavy' beta diversity spike is stronger for 13C-Glucose at day 3 versus 13C-Cellulose, but this pattern reverses at day 14 of the substrate incubation. These results are to be expected, given that glucose is more labile than cellulose.
+As you can see, the 'heavy' beta diversity spike is stronger for 13C-Glucose at Day 3 versus 13C-Cellulose, but this pattern reverses at Day 14 of the substrate incubation. These results are to be expected, given that glucose is more labile than cellulose.
 
 
 # Session info

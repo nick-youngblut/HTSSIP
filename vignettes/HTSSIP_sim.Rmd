@@ -181,6 +181,7 @@ ggplot(physeq_rep3_qPCR$summary, aes(Buoyant_density, qPCR_tech_rep_mean,
   theme_bw()
 ```
 
+With this simulation, we made the separation between labeled and unlabeled DNA pretty easy to distinguish. 
 
 OK. Just to show the flexiblity of the qPCR value simulation function, let's try using some other functions as input. 
 
