@@ -18,7 +18,9 @@ Extensions’ manual.
 > The warning is a result of including the phyloseq R package in the list of Imports (see DESCRIPTION).
 
 
-### There was 1 NOTE:
+### There was 2 NOTE:
+
+Note 1:
 
 ~~~
 .qSIP_bootstrap: no visible binding for global variable ‘OTU’
@@ -47,3 +49,8 @@ qSIP_bootstrap: no visible binding for global variable ‘A’
 > This note is a result of using the `%>%` declarative syntax (as described in the magrittr package) in
 multiple functions in the HTSSIP package. Using this syntax improves code readability. 
 
+
+Note 2:
+
+Maintainer: ‘Nicholas Youngblut <nyoungb2@gmail.com>’
+New submission
