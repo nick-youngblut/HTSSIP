@@ -48,13 +48,13 @@ each labeled treatment fraction is used to weight the mean.
 }
 \examples{
 data(physeq_S2D2)
+\dontrun{
 # Subsetting phyloseq by Substrate and Day
 params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
 
-\dontrun{
 # Calculating BD_shift on 1 subset (use lapply function to process full list)
 wmean1 = BD_shift(physeq_S2D2_l[[1]])
 
