@@ -79,7 +79,7 @@ physeq_S2D2
 
 As with the [beta diversity ordinations](beta_diversity_ordinations.html), we are going to split up the dataset into individual labeled-treamtent + corresponding unlabeled-control comparisons. Treatment-control correspondence is based on the day from substrate addition. So, we have to parse the dataset by Substrate & Day.
 
-```{r}
+```{r phyloseq_subset}
 params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
 params = dplyr::filter(params, Substrate!='12C-Con')
 ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
@@ -91,7 +91,7 @@ physeq_S2D2_l
 
 Now, let's just measure BD shift for just 1 subset (1 item in the list of phyloseq objects).
 
-```{r}
+```{r BD_shift_wmean}
 wmean1 = BD_shift(physeq_S2D2_l[[2]])
 cat('Subset:', names(physeq_S2D2_l)[2], '\n')
 wmean1 %>% head(n=3)
@@ -101,7 +101,7 @@ Note that the `sample.x` column is all 12C-Con control samples, while the compar
 
 **OK.** Let's plot the results!
 
-```{r, fig.height=3.5, fig.width=7}
+```{r plot_wmean, fig.height=3.5, fig.width=7}
 x_lab = 'Buoyant density (g/ml^-1)'
 y_lab = 'Weighted mean of\nweighted-Unifrac distances'
 ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
@@ -121,14 +121,14 @@ than at 'heavy' gradient fractions, where there's less taxa.
 
 Now let's run `BD_shift()` on all phyloseq objects in our list. We'll use `plyr::ldply()` for this because it preserves the list names in the resulting data.frame (list names are assigned to `.id` by default).
 
-```{r}
+```{r wmean}
 wmean = plyr::ldply(physeq_S2D2_l, BD_shift)
 wmean %>% head(n=3)
 ```
 
 Alright, let's plot the data!
 
-```{r, fig.height=5, fig.width=7}
+```{r shift_plot, fig.height=5, fig.width=7}
 # formatting the treatment names to look a bit better as facet labels
 wmean = wmean %>%
   mutate(Substrate = gsub('.+(13C-[A-z]+).+', '\\1', .id),
@@ -138,6 +138,7 @@ wmean = wmean %>%
 # plotting, with facetting by 13C-treatment
 ggplot(wmean, aes(BD_min.x, wmean_dist)) +
   geom_point() +
+  geom_line() +
   labs(x=x_lab, y=y_lab, 
        title='Beta diversity of 13C-treatments relative to 12C-Con') +
   facet_grid(Day ~ Substrate) +

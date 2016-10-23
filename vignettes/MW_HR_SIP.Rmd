@@ -50,7 +50,7 @@ physeq_S2D2_l
 
 Let's set some parameters used later.
 
-```{r}
+```{r set_params}
 # adjusted P-value cutoff 
 padj_cutoff = 0.1
 # number of cores for parallel processing (increase depending on your computational hardware)
@@ -76,10 +76,11 @@ OK, we should be ready to run HR-SIP!
 
 Note that the `design` parameter for `HRSIP()` is the experimental design parameter for calculating log2 fold change (l2fc) values with DESeq. Here, it's used to distinguish label-treatment and unlabel-control samples. 
 
-```{r, message=FALSE}
+```{r HRSIP_run, message=FALSE}
 df_l2fc = HRSIP(physeq,
                 design = ~Substrate,
-                padj_cutoff = padj_cutoff)
+                padj_cutoff = padj_cutoff,
+                sparsity_threshold = c(0,0.15,0.3))   # just using 3 thresholds to reduce time
 df_l2fc %>% head(n=3)
 ```
 
@@ -94,7 +95,7 @@ df_l2fc %>%
 
 Let's plot a breakdown of incorporators for each phylum. 
 
-```{r, fig.width=5, fig.height=3.5}
+```{r HRSIP_res_plotting, fig.width=5, fig.height=3.5}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
@@ -125,7 +126,7 @@ physeq_S2D2_l %>% length
 
 The function `plyr::ldply()` is useful (compared to `lapply()`) beccause it can be run in parallel and returns a data.frame object.
 
-```{r, message=FALSE}
+```{r HRSIP_parallel_run, message=FALSE}
 # Running in parallel; you may need to change the backend for your environment.
 # Or you can just set .parallel=FALSE. 
 doParallel::registerDoParallel(ncores)
@@ -134,6 +135,7 @@ df_l2fc = plyr::ldply(physeq_S2D2_l,
                       HRSIP, 
                       design = ~Substrate, 
                       padj_cutoff = padj_cutoff,
+                      sparsity_threshold = c(0,0.15,0.3),   # just using 3 thresholds to reduce time
                       .parallel=TRUE)
 df_l2fc %>% head(n=3)
 ```
@@ -166,7 +168,7 @@ df_l2fc %>%
 
 How about a breakdown of incorporators for each phylum in each comparision. 
 
-```{r, fig.width=7, fig.height=7}
+```{r HRSIP_parallel_res_plotting, fig.width=7, fig.height=7}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   filter(padj < padj_cutoff) %>%
@@ -205,7 +207,7 @@ Running HRSIP with all 3 BD windows. Let's run this in parallel to speed things 
 
 You can turn off parallel processing by setting the `parallel` option to `FALSE`. Also, there's 2 different levels that could be parallelized: either the `ldply()` or `HRSIP()`. Here, I'm running HRSIP in parallel, but it may make sense in other situations (eg., many comparisons but few density windows and/or sparsity cutoffs) to use ldply in parallel only.
 
-```{r, message=FALSE}
+```{r MWHRSIP_run, message=FALSE}
 doParallel::registerDoParallel(ncores)
 
 df_l2fc = plyr::ldply(physeq_S2D2_l, 
@@ -213,6 +215,7 @@ df_l2fc = plyr::ldply(physeq_S2D2_l,
                       density_windows = windows,
                       design = ~Substrate, 
                       padj_cutoff = padj_cutoff,
+                      sparsity_threshold = c(0,0.15,0.3),   # just using 3 thresholds to reduce time
                       .parallel = TRUE)
 df_l2fc %>% head(n=3)
 ```
@@ -235,9 +238,9 @@ df_l2fc %>%
   as.data.frame
 ```
 
-The density windows can vary for each OTU. Let's plot which density windows were used.
+The density windows can vary for each OTU. Let's plot which density windows were used for the OTUs in the dataset.
 
-```{r, fig.width=7, fig.height=4.5}
+```{r MWHRSIP_plotting_densWin, fig.width=7, fig.height=4.5}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   mutate(.id = gsub(' \\| ', '\n', .id)) %>%
@@ -249,7 +252,7 @@ df_l2fc_s = df_l2fc %>%
 #plotting
 ggplot(df_l2fc_s, aes(.id, n_incorp_OTUs, fill=density_range)) +
     geom_bar(stat='identity', position='fill') +
-    labs(y='Fraction of incorporators') +
+    labs(x='Control-treatment comparision', y='Fraction of incorporators') +
     scale_y_continuous(expand=c(0,0)) +
     theme_bw() +
     theme(
@@ -262,7 +265,7 @@ Different BD windows were used for different treatment-control comparisons becau
 
 Let's look at a breakdown of incorporators for each phylum in each comparision. 
 
-```{r, fig.width=7, fig.height=7}
+```{r MWHRSIP_plotting_incorp, fig.width=7, fig.height=7}
 # summarizing
 df_l2fc_s = df_l2fc %>% 
   mutate(.id = gsub(' \\| ', '\n', .id)) %>%
