@@ -53,7 +53,7 @@ test_that('bootstrap in parallel working', {
 
   doParallel::registerDoParallel(2)
   # qSIP with bootstrapping
-  df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE, n_boot=100)
+  df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE, n_boot=20)
   # output formatted correctly
   expect_is(df_atomX_boot, 'data.frame')
   # gte zero CI ranges
