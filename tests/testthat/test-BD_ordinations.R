@@ -24,6 +24,8 @@ test_that('Make a data.frame for ordination plotting (parallel)',{
 
 
 test_that('Plots created from phyloseq object',{
+  skip_on_cran()
+
   # params for subseting
   params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
   expect_is(params, 'data.frame')
@@ -52,6 +54,8 @@ test_that('Plots created from phyloseq object',{
 
 
 test_that('Plot comparing all',{
+  skip_on_cran()
+
   # params for subseting
   params = get_treatment_params(physeq_S2D2, c('Substrate', 'Day'))
   expect_is(params, 'data.frame')

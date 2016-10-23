@@ -31,8 +31,9 @@ make_expr = function(d='norm'){
 }
 
 test_that('qPCR simulation (control/treatment)', {
-  L = make_expr()
+  skip_on_cran()
 
+  L = make_expr()
   qPCR = qPCR_sim(physeq_S2D2,
          control_expr='Substrate=="12C-Con"',
          control_mean_fun=L$control_mean_fun,
@@ -51,8 +52,9 @@ test_that('qPCR simulation (control/treatment)', {
 })
 
 test_that('qPCR simulation: replicate gradients', {
-  L = make_expr()
+  skip_on_cran()
 
+  L = make_expr()
   qPCR = qPCR_sim(physeq_rep3,
                   control_expr='Treatment=="12C-Con"',
                   control_mean_fun=L$control_mean_fun,
@@ -72,8 +74,9 @@ test_that('qPCR simulation: replicate gradients', {
 
 
 test_that('qPCR simulation (control/treatment); different distributions', {
-  L = make_expr(d='cauchy')
+  skip_on_cran()
 
+  L = make_expr(d='cauchy')
   qPCR = qPCR_sim(physeq_S2D2,
                   control_expr='Substrate=="12C-Con"',
                   control_mean_fun=L$control_mean_fun,

@@ -25,6 +25,8 @@ expect_wmean = function(wmean){
 }
 
 test_that('BD_shift runs w/ default',{
+  skip_on_cran()
+
   ## basic call
   data(physeq_S2D2_l)
 
@@ -43,6 +45,8 @@ test_that('BD_shift runs w/ default',{
 })
 
 test_that('BD_shift runs w/ Bray-Curtis',{
+  skip_on_cran()
+
   ## basic call
   data(physeq_S2D2_l)
 

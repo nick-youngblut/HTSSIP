@@ -1,3 +1,8 @@
+# HTSSIP 1.0.1
+
+* Reduced run time of examples, tests, and vignettes
+
+
 # HTSSIP 1.0.0
 
 * Examples for exported functions.
