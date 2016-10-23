@@ -78,19 +78,4 @@ test_that('phyloseq sim w/ metadata',{
 
 
 
-#-- making a test q-SIP dataset --#
-### physeq object
-# physeq_rep3 = HTSSIP_sim(locs, param_l, meta=meta)
-# devtools::use_data(physeq_rep3, overwrite=TRUE)
-# ## qPCR data
-# control_mean_fun = function(x) dnorm(x, mean=1.70, sd=0.01) * 1e8
-# control_sd_fun = function(x) control_mean_fun(x) / 3
-# treat_mean_fun = function(x) dnorm(x, mean=1.75, sd=0.01) * 1e8
-# treat_sd_fun = function(x) treat_mean_fun(x) / 3
-# physeq_rep3_qPCR = qPCR_sim(physeq_rep3,
-#                 control_expr='Gradient=="12C-Con"',
-#                 control_mean_fun=control_mean_fun,
-#                 control_sd_fun=control_sd_fun,
-#                 treat_mean_fun=treat_mean_fun,
-#                 treat_sd_fun=treat_sd_fun)
-# devtools::use_data(physeq_rep3_qPCR, overwrite=TRUE)
+
