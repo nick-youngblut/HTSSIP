@@ -1,5 +1,15 @@
-# conversion to numeric
-as.Num = function(x) x %>% as.character %>% as.numeric
+#' conversion to numeric
+#'
+#' Conducts conversion: as.character --> as.numeric
+#'
+#' @param x  single value
+#' @return numeric
+#'
+#' @export
+#'
+as.Num = function(x){
+  as.numeric(as.character(x))
+}
 
 
 #' phyloseq data object conversion to data.frame

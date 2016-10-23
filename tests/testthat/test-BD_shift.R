@@ -7,6 +7,32 @@ test_that('Percent overlap is working',{
   expect_equal(x, 0)
 })
 
+test_that('parse_dist is working',{
+  skip_on_cran()
+
+  physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
+                             method='unifrac',
+                             weighted=TRUE,
+                             fast=TRUE,
+                             normalized=FALSE)
+  physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+  expect_is(physeq_S2D2_d, 'data.frame')
+})
+
+
+# test_that('parse_dist is working',{
+#   skip_on_cran()
+#
+#   physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
+#                              method='unifrac',
+#                              weighted=TRUE,
+#                              fast=TRUE,
+#                              normalized=FALSE)
+#   physeq_S2D2_d = parse_dist(physeq_S2D2_d)
+#   wmean = overlap_wmean_dist(physeq_S2D2_d)
+#   expect_is(wmean, 'data.frame')
+#
+# })
 
 expect_wmean = function(wmean){
   expect_is(wmean, 'data.frame')

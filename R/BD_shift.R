@@ -43,23 +43,24 @@ format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
 
   metadata = metadata %>%
     dplyr::mutate_(IS__CONTROL = ex) %>%
-    dplyr::rename('BD_min' = Buoyant_density) %>%
-    dplyr::mutate(Fraction = Fraction %>% as.Num,
-                  BD_min = BD_min %>% as.Num) %>%
-    dplyr::arrange(BD_min) %>%
-    dplyr::group_by(IS__CONTROL) %>%
-    dplyr::mutate(BD_max = lead(BD_min),
-                  BD_max = ifelse(is.na(BD_max), BD_min, BD_max),
-                  BD_range = BD_max - BD_min) %>%
+    dplyr::rename_('BD_min' = "Buoyant_density") %>%
+    dplyr::mutate_(Fraction = "HTSSIP::as.Num(Fraction)",
+                   BD_min = "HTSSIP::as.Num(BD_min)") %>%
+    dplyr::arrange_("BD_min") %>%
+    dplyr::group_by_("IS__CONTROL") %>%
+    dplyr::mutate_(BD_max = "lead(BD_min)",
+                  BD_max = "ifelse(is.na(BD_max), BD_min, BD_max)",
+                  BD_range = "BD_max - BD_min") %>%
     dplyr::group_by() %>%
-    dplyr::mutate(median_BD_range = stats::median(BD_range, na.rm=T)) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(BD_max = mapply(max_BD_range,
-                           BD_range, BD_min, BD_max,
-                           BD_to_set = median_BD_range)) %>%
-    dplyr::mutate(BD_range = BD_max - BD_min) %>%
-    dplyr::select(METADATA_ROWNAMES, IS__CONTROL,
-                  BD_min, BD_max, BD_range)
+    dplyr::mutate_(median_BD_range = "stats::median(BD_range, na.rm=T)") %>%
+    dplyr::ungroup()
+
+  metadata$BD_max = mapply(max_BD_range, metadata$BD_range,
+                           metadata$BD_min, metadata$BD_max,
+                           BD_to_set = metadata$median_BD_range)
+  metadata = metadata %>%
+    dplyr::mutate_(BD_range = "BD_max - BD_min") %>%
+    dplyr::select_("METADATA_ROWNAMES", "IS__CONTROL", "BD_min", "BD_max", "BD_range")
 
   return(metadata)
 }
@@ -114,17 +115,19 @@ fraction_overlap = function(metadata){
   stopifnot(all(c('METADATA_ROWNAMES', 'IS__CONTROL') %in%
                   colnames(metadata)))
 
-  meta_cont = filter(metadata, IS__CONTROL==TRUE)
+  meta_cont = filter_(metadata, "IS__CONTROL==TRUE")
   stopifnot(nrow(meta_cont) > 0)
-  meta_treat = filter(metadata, IS__CONTROL==FALSE)
+  meta_treat = filter_(metadata, "IS__CONTROL==FALSE")
   stopifnot(nrow(meta_treat) > 0)
 
   # merging; calculating fraction overlap; filtering
-  metadata_j = merge(meta_cont, meta_treat, by=NULL) %>%
-    dplyr::mutate(perc_overlap = mapply(perc_overlap,
-                                        BD_min.x, BD_max.x,
-                                       BD_min.y, BD_max.y)) %>%
-    dplyr::filter(perc_overlap > 0)
+  metadata_j = merge(meta_cont, meta_treat, by=NULL)
+  metadata_j$perc_overlap = mapply(perc_overlap,
+                                   metadata_j$BD_min.x,
+                                   metadata_j$BD_max.x,
+                                   metadata_j$BD_min.y,
+                                   metadata_j$BD_max.y)
+  metadata_j = dplyr::filter(metadata_j, perc_overlap > 0)
   stopifnot(nrow(metadata_j) > 0)
 
   return(metadata_j)
@@ -154,8 +157,8 @@ parse_dist = function(d){
   df$sample = rownames(df)
   df = df %>%
     tidyr::gather('sample.y', 'distance', -sample) %>%
-    dplyr::rename('sample.x' = sample) %>%
-    dplyr::filter(sample.x != sample.y)
+    dplyr::rename_('sample.x' = "sample") %>%
+    dplyr::filter_("sample.x != sample.y")
   return(df)
 }
 
@@ -166,27 +169,14 @@ parse_dist = function(d){
 #' See \code{parse_dist()}
 #' @return a data.frame object of weighted mean distances
 #'
-#' @examples
-#' \dontrun{
-#' data(physeq_S2D2)
-#' physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
-#'                              method='unifrac',
-#'                              weighted=TRUE,
-#'                              fast=TRUE,
-#'                              normalized=FALSE)
-#' physeq_S2D2_d = parse_dist(physeq_S2D2_d)
-#' wmean = overlap_wmean_dist(physeq_S2D2_d)
-#' head(wmean)
-#' }
-#'
 overlap_wmean_dist = function(df_dist){
   # calculating weighted mean distance
   df_dist_s = df_dist %>%
-    dplyr::group_by(sample.x, BD_min.x) %>%
-    dplyr::mutate(n_over_fracs = n(),
-                  wmean_dist = stats::weighted.mean(distance, perc_overlap)) %>%
+    dplyr::group_by_("sample.x", "BD_min.x") %>%
+    dplyr::mutate_(n_over_fracs = "n()",
+                  wmean_dist = "stats::weighted.mean(distance, perc_overlap)") %>%
     dplyr::ungroup() %>%
-    dplyr::distinct(sample.x, wmean_dist, .keep_all=TRUE)
+    dplyr::distinct_("sample.x", "wmean_dist", .keep_all=TRUE)
   return(df_dist_s)
 }
 
