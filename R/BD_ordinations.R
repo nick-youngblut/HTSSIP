@@ -120,6 +120,7 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' \dontrun{
 #' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 #' # make a list of ordinations
@@ -128,6 +129,7 @@ phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
 #' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
 #' # make ordination plots with ggplot2
 #' phyloseq_ord_plot(physeq_S2D2_l_d_ord_df)
+#' }
 #'
 phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_size='Buoyant_density',

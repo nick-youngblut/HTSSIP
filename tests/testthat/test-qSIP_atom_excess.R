@@ -42,6 +42,8 @@ test_that('bootstrap iteration is working', {
 })
 
 test_that('bootstrap in parallel working', {
+  skip_on_cran()
+
   data(physeq_rep3)
   data(physeq_rep3_qPCR)
   physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)

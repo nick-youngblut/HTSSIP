@@ -62,6 +62,7 @@ The (MW-)HR-SIP workflow is as follows:
 \examples{
 data(physeq_S2D2_l)
 
+\dontrun{
 # HR-SIP on just 1 treatment-control comparison
 ## 1st item in list of phyloseq objects
 physeq = physeq_S2D2_l[[1]]
@@ -79,6 +80,7 @@ df_l2fc = HRSIP(physeq_S2D1_l[[1]],
                 density_windows=dw,
                 parallel=TRUE)
 head(df_l2fc)
+}
 
 }
 

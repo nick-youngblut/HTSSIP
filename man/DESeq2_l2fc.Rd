@@ -38,8 +38,10 @@ between labeled treatment and control gradients.
 }
 \examples{
 data(physeq_S2D2)
+\dontrun{
 df_l2fc = DESeq2_l2fc(physeq_S2D2, density_min=1.71, density_max=1.75, design=~Substrate)
 head(df_l2fc)
+}
 
 }
 

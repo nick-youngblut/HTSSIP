@@ -22,12 +22,14 @@ for easy plotting with ggplot
 }
 \examples{
 data(physeq_S2D2_l)
+\dontrun{
 # make a list of beta diversity distance matrix objects
 physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 # make a list of ordinations
 physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
 # convert ordination information to data.frame objects
 physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
+}
 
 }
 
