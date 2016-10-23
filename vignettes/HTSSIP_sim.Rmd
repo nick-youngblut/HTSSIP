@@ -13,7 +13,7 @@ vignette: >
 
 HTSSIP has some functionality for simulating basic HTS-SIP datasets. With that said, I recommend using a more sophisticated simulation toolset such as SIPSim **[LINK]** for applications other than simple testing of HTS-SIP data analysis functions.
 
-HTSSIP relies *heavily* on the great R package [coenocliner](https://cran.r-project.org/web/packages/coenocliner/index.html). See [this tutorial](http://www.fromthebottomoftheheap.net/code/r-packages/coenocliner/) for a short and simple introduction. 
+HTSSIP relies *heavily* on the great R package [coenocliner](https://CRAN.R-project.org/package=coenocliner). See [this tutorial](http://www.fromthebottomoftheheap.net/code/r-packages/coenocliner/) for a short and simple introduction. 
 
 # Simulating a HTS-SIP dataset
 

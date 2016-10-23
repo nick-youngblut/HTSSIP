@@ -74,7 +74,7 @@ DESeq2_l2fc = function(physeq, density_min, density_max, design,
   # p-value
   beta = res$log2FoldChange
   betaSE = res$lfcSE
-  p = pnorm(beta, theta, betaSE, lower.tail=FALSE)
+  p = stats::pnorm(beta, theta, betaSE, lower.tail=FALSE)
   res$p = p
   d = data.frame(res[, c('OTU','log2FoldChange', 'p')])
 

@@ -67,7 +67,7 @@ For more information on SIP and HTS-SIP, check out these references:
     * Buckley, Daniel H., Varisa Huangyutitham, Shi-Fang Hsu, and Tyrrell A. Nelson. 2007. “Stable Isotope Probing with 15N Achieved by Disentangling the Effects of Genome G+C Content and Isotope Enrichment on DNA Density.” Applied and Environmental Microbiology 73 (10): 3189–95.
     * Youngblut, Nicholas D., and Daniel H. Buckley. 2014. “Intra-Genomic Variation in G + C Content and Its Implications for DNA Stable Isotope Probing.” Environmental Microbiology Reports 6 (6): 767–75.
 * **HR-SIP**
-    * Pepe-Ranney, Charles, Chantal Koechli, Ruth Potrafka, Cheryl Andam, Erin Eggleston, Ferran Garcia-Pichel, and Daniel H. Buckley. 2015. “Non-Cyanobacterial Diazotrophs Mediate Dinitrogen Fixation in Biological Soil Crusts during Early Crust Formation.” The ISME Journal, June. doi:10.1038/ismej.2015.106.
+    * Pepe-Ranney, Charles, Chantal Koechli, Ruth Potrafka, Cheryl Andam, Erin Eggleston, Ferran Garcia-Pichel, and Daniel H. Buckley. 2015. “Non-Cyanobacterial Diazotrophs Mediate Dinitrogen Fixation in Biological Soil Crusts during Early Crust Formation.” The ISME Journal.
     * Pepe-Ranney, Charles, Ashley N. Campbell, Chantal N. Koechli, Sean Berthrong, and Daniel H. Buckley. 2016. “Unearthing the Ecology of Soil Microorganisms Using a High Resolution DNA-SIP Approach to Explore Cellulose and Xylose Metabolism in Soil.” Terrestrial Microbiology, 703.
 * **qSIP**
     * Hungate, Bruce A., Rebecca L. Mau, Egbert Schwartz, J. Gregory Caporaso, Paul Dijkstra, Natasja van Gestel, Benjamin J. Koch, et al. 2015. “Quantitative Microbial Ecology Through Stable Isotope Probing.” Applied and Environmental Microbiology, August, AEM.02280–15.

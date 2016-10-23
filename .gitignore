@@ -3,4 +3,5 @@
 *.RData
 *.Ruserdata
 data-raw/
+manuscript/
 inst/doc

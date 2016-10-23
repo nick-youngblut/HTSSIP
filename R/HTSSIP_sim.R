@@ -100,7 +100,7 @@ HTSSIP_sim = function(locs, params,
                        ...)
 
   # vary the BDs a bit
-  x = rnorm(nrow(df_OTU), mean=0, sd=0.002)
+  x = stats::rnorm(nrow(df_OTU), mean=0, sd=0.002)
   df_OTU$Buoyant_density = as.Num(df_OTU$Buoyant_density) + x
   df_OTU$Buoyant_density = round(df_OTU$Buoyant_density, digits=7)
 

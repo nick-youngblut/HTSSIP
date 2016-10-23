@@ -14,6 +14,8 @@ test_that('HRSIP runs with default',{
 })
 
 test_that('HRSIP runs padj_cutoff',{
+  skip_on_cran()
+
   ## basic call
   df_l2fc = HRSIP(physeq_S2D2_l[[1]],
                   design=~Substrate,

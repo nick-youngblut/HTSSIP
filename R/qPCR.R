@@ -10,11 +10,11 @@
   if(IS_CONTROL==TRUE){
     M = control_mean_fun(Buoyant_density, ...)
     S = control_sd_fun(Buoyant_density, ...)
-    X = rnorm(n=n_tech_rep, mean=M, sd=S)
+    X = stats::rnorm(n=n_tech_rep, mean=M, sd=S)
   } else {
     M = treat_mean_fun(Buoyant_density, ...)
     S = treat_sd_fun(Buoyant_density, ...)
-    X = rnorm(n=n_tech_rep, mean=M, sd=S)
+    X = stats::rnorm(n=n_tech_rep, mean=M, sd=S)
   }
   X = ifelse(X < 0, 0, X)
   return(X)
@@ -116,7 +116,7 @@ qPCR_sim = function(physeq,
                   dplyr::starts_with('qPCR_tech_rep')) %>%
     dplyr::group_by(IS_CONTROL, Sample, Buoyant_density) %>%
     dplyr::summarize(qPCR_tech_rep_mean = mean(qPCR_tech_rep_value),
-                     qPCR_tech_rep_sd = sd(qPCR_tech_rep_value)) %>%
+                     qPCR_tech_rep_sd = stats::sd(qPCR_tech_rep_value)) %>%
     dplyr::ungroup() %>%
     as.data.frame
 

@@ -5,7 +5,7 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 
   # linear interpolation function
   BDs = df$Buoyant_density %>% as.Num
-  lin_fun = approxfun(x=BDs, y=as.Num(df$Count))
+  lin_fun = stats::approxfun(x=BDs, y=as.Num(df$Count))
 
   # BDs (x) for interplation of abundances (y)
   BD_x = seq(BD_min, BD_max, length.out=n)
@@ -105,11 +105,11 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
                                 n=n,
                                 BD_min=BD_min,
                                 BD_max=BD_max)) %>%
-    tidyr::unnest(Count_interp = data %>% purrr::map(function(x) x)) %>%
+    tidyr::unnest(Count_interp = purrr::map(data, function(x) x)) %>%
     # center of mass
     dplyr::group_by(IS_CONTROL, OTU) %>%
-    dplyr::summarize(center_of_mass = weighted.mean(x=Buoyant_density,
-                                             w=Count_interp)) %>%
+    dplyr::summarize(center_of_mass = stats::weighted.mean(x=Buoyant_density,
+                                                           w=Count_interp)) %>%
     # delta BD
     dplyr::group_by(OTU) %>%
     dplyr::mutate(IS_CONTROL = ifelse(IS_CONTROL==TRUE, 'CM_control', 'CM_treatment')) %>%

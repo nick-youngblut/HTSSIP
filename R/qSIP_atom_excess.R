@@ -131,7 +131,7 @@ qSIP_atom_excess = function(physeq,
       dplyr::group_by_('IS_CONTROL', 'OTU', treatment_rep) %>%
       dplyr::mutate(Buoyant_density = Buoyant_density %>% as.Num,
                     Count = Count %>% as.Num) %>%
-      dplyr::summarize(W = weighted.mean(Buoyant_density, Count, na.rm=TRUE))
+      dplyr::summarize(W = stats::weighted.mean(Buoyant_density, Count, na.rm=TRUE))
   }
 
 
@@ -270,8 +270,8 @@ qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
   # calculating atomX CIs for each OTU
   df_boot = df_boot %>%
     dplyr::group_by(OTU) %>%
-    dplyr::summarize(A_CI_low = quantile(A, a / 2, na.rm=TRUE),
-                     A_CI_high = quantile(A, 1 - a/2, na.rm=TRUE))
+    dplyr::summarize(A_CI_low = stats::quantile(A, a / 2, na.rm=TRUE),
+                     A_CI_high = stats::quantile(A, 1 - a/2, na.rm=TRUE))
 
   # combining with atomX summary data
   df_boot = dplyr::inner_join(atomX$A, df_boot, c('OTU'='OTU'))

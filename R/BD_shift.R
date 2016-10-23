@@ -52,7 +52,7 @@ format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
                   BD_max = ifelse(is.na(BD_max), BD_min, BD_max),
                   BD_range = BD_max - BD_min) %>%
     dplyr::group_by() %>%
-    dplyr::mutate(median_BD_range = median(BD_range, na.rm=T)) %>%
+    dplyr::mutate(median_BD_range = stats::median(BD_range, na.rm=T)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(BD_max = mapply(max_BD_range,
                            BD_range, BD_min, BD_max,
@@ -184,7 +184,7 @@ overlap_wmean_dist = function(df_dist){
   df_dist_s = df_dist %>%
     dplyr::group_by(sample.x, BD_min.x) %>%
     dplyr::mutate(n_over_fracs = n(),
-                  wmean_dist = weighted.mean(distance, perc_overlap)) %>%
+                  wmean_dist = stats::weighted.mean(distance, perc_overlap)) %>%
     dplyr::ungroup() %>%
     dplyr::distinct(sample.x, wmean_dist, .keep_all=TRUE)
   return(df_dist_s)
