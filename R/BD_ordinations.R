@@ -15,7 +15,9 @@
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' \dontrun{
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
+#' }
 #'
 physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
                                 fast=TRUE, normalized=TRUE, parallel=FALSE){
@@ -45,10 +47,12 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' \dontrun{
 #' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 #' # make a list of ordinations
 #' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
+#' }
 #'
 physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
   ord_l = list()
@@ -75,12 +79,14 @@ physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' \dontrun{
 #' # make a list of beta diversity distance matrix objects
 #' physeq_S2D2_l_d = physeq_list_betaDiv(physeq_S2D2_l)
 #' # make a list of ordinations
 #' physeq_S2D2_l_d_ord = physeq_list_ord(physeq_S2D2_l, physeq_S2D2_l_d)
 #' # convert ordination information to data.frame objects
 #' physeq_S2D2_l_d_ord_df = phyloseq_list_ord_dfs(physeq_S2D2_l, physeq_S2D2_l_d_ord)
+#' }
 #'
 phyloseq_list_ord_dfs = function(physeq_l, physeq_l_ords, parallel=FALSE){
   n = names(physeq_l) %>% as.array
@@ -181,8 +187,10 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #'
 #' @examples
 #' data(physeq_S2D2_l)
+#' \dontrun{
 #' physeq_S2D2_l_df = SIP_betaDiv_ord(physeq_S2D2_l)
 #' head(physeq_S2D2_l_df, n=3)
+#' }
 #'
 SIP_betaDiv_ord = function(physeq_l, method='unifrac', weighted=TRUE,
                           fast=TRUE, normalized=TRUE, parallel=FALSE,

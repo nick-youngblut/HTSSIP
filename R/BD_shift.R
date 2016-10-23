@@ -232,15 +232,17 @@ overlap_wmean_dist = function(df_dist){
 #' params = dplyr::filter(params, Substrate!='12C-Con')
 #' ex = "(Substrate=='12C-Con' & Day=='${Day}') | (Substrate=='${Substrate}' & Day == '${Day}')"
 #' physeq_S2D2_l = phyloseq_subset(physeq_S2D2, params, ex)
+#'
+#' \dontrun{
 #' # Calculating BD_shift on 1 subset (use lapply function to process full list)
 #' wmean1 = BD_shift(physeq_S2D2_l[[1]])
-#' \dontrun{
+#'
 #' ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
 #'    geom_point()
-#' }
 #'
 #' # Calculating BD_shift on all subsets
 #' lapply(physeq_S2D2_l, BD_shift)
+#' }
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, parallel=FALSE){

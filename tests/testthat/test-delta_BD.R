@@ -31,6 +31,8 @@ test_that('delta BD on rep3 dataset',{
 })
 
 test_that('delta BD on S2D2 list: each in parallel',{
+  skip_on_cran()
+
   data(physeq_S2D2_l)
 
   doParallel::registerDoParallel(2)

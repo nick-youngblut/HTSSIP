@@ -245,6 +245,7 @@ sample_W = function(df, n_sample){
 #' # tranforming values
 #' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
+#' \dontrun{
 #' # BD shift (Z) & atom excess (A)
 #' atomX = qSIP_atom_excess(physeq_rep3_t,
 #'                         control_expr='Treatment=="12C-Con"',
@@ -254,6 +255,7 @@ sample_W = function(df, n_sample){
 #' doParallel::registerDoParallel(2)
 #' df_atomX_boot = qSIP_bootstrap(atomX, parallel=TRUE)
 #' head(df_atomX_boot)
+#' }
 #'
 qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
                           n_boot=10, parallel=FALSE, a=0.1){

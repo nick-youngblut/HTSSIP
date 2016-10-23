@@ -61,6 +61,8 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #' data(physeq_S2D2_l)
 #' # just selecting 1 treatment-control comparison
 #' physeq = physeq_S2D2_l[[1]]
+#'
+#' \dontrun{
 #' # calculating delta_BD
 #' df = delta_BD(physeq, control_expr='Substrate=="12C-Con"')
 #' head(df)
@@ -69,6 +71,7 @@ lin_interp = function(df, BD_min, BD_max, n=20){
 #' data(physeq_rep3)
 #' df = delta_BD(physeq_rep3, control_expr='Treatment=="12C-Con"')
 #' head(df)
+#' }
 #'
 delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   # atom excess

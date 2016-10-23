@@ -84,6 +84,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #' @examples
 #' data(physeq_S2D2_l)
 #'
+#' \dontrun{
 #' # HR-SIP on just 1 treatment-control comparison
 #' ## 1st item in list of phyloseq objects
 #' physeq = physeq_S2D2_l[[1]]
@@ -101,6 +102,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #'                 density_windows=dw,
 #'                 parallel=TRUE)
 #' head(df_l2fc)
+#' }
 #'
 HRSIP = function(physeq,
                  design,
