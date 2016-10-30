@@ -97,15 +97,18 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   }
 
   # calculating BD shift
-  nest_cols = c('OTU', 'SAMPLE_JOIN', 'Count', 'IS_CONTROL', 'Buoyant_density')
+  ## params for standard-eval
+  nest_cols = c('SAMPLE_JOIN', 'Count', 'Buoyant_density')
+  dots = list(~lapply(data, lin_interp, n=n, BD_min=BD_min, BD_max=BD_max))
+  dots = setNames(dots, "data")
+  ## calculation
   df_OTU = df_OTU %>%
     # linear interpolation for each OTU in each gradient
     #head() %>% print %>%
     dplyr::group_by_("IS_CONTROL", "OTU") %>%
     tidyr::nest_(key_col='data',
                  nest_cols=nest_cols) %>%
-    dplyr::mutate(data=lapply(data, lin_interp,
-                              n=n, BD_min=BD_min, BD_max=BD_max)) %>%
+    dplyr::mutate_(.dots=dots) %>%
     tidyr::unnest_(unnest_cols='data') %>%
     # center of mass
     dplyr::group_by_("IS_CONTROL", "OTU") %>%

@@ -12,11 +12,14 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
   padj_cutoff = as.numeric(padj_cutoff)
 
   # filter to sparsity thresholds with > number of rej_hypo
+  ## function init
+  #sum_padj_cutoff = function(x, padj_cutoff=padj_cutoff) sum(x < padj_cutoff)
+
   ## which sparsity cutoff and BD
   df_l2fc_s = df_l2fc %>%
     # number of rej hypo
-    dplyr::group_by(sparsity_threshold) %>%
-    dplyr::summarize(n_rej_hypo = sum(padj < padj_cutoff)) %>%
+    dplyr::group_by_("sparsity_threshold") %>%
+    dplyr::summarize(n_rej_hypo = sum(padj<padj_cutoff)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(rank_n_rej_hypo = dplyr::row_number(-n_rej_hypo)) %>%
     dplyr::filter(rank_n_rej_hypo == 1)

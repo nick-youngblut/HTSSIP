@@ -49,8 +49,8 @@ format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
     dplyr::arrange_("BD_min") %>%
     dplyr::group_by_("IS__CONTROL") %>%
     dplyr::mutate_(BD_max = "lead(BD_min)",
-                  BD_max = "ifelse(is.na(BD_max), BD_min, BD_max)",
-                  BD_range = "BD_max - BD_min") %>%
+                   BD_max = "ifelse(is.na(BD_max), BD_min, BD_max)",
+                   BD_range = "BD_max - BD_min") %>%
     dplyr::group_by() %>%
     dplyr::mutate_(median_BD_range = "stats::median(BD_range, na.rm=T)") %>%
     dplyr::ungroup()
