@@ -129,21 +129,21 @@ qSIP_atom_excess = function(physeq,
     df_OTU_W = df_OTU %>%
       # weighted mean buoyant density (W)
       dplyr::group_by_('IS_CONTROL', 'OTU', treatment_rep) %>%
-      dplyr::mutate(Buoyant_density = Buoyant_density %>% as.Num,
-                    Count = Count %>% as.Num) %>%
-      dplyr::summarize(W = stats::weighted.mean(Buoyant_density, Count, na.rm=TRUE))
+      dplyr::mutate_(Buoyant_density = "HTSSIP::as.Num(Buoyant_density)",
+                    Count = "HTSSIP::as.Num(Count)") %>%
+      dplyr::summarize_(W = "stats::weighted.mean(Buoyant_density, Count, na.rm=TRUE)")
   }
 
 
   df_OTU_s = df_OTU_W %>%
     # mean W of replicate gradients
     dplyr::group_by_('IS_CONTROL', 'OTU') %>%
-    dplyr::summarize(Wm = mean(W, na.rm=TRUE)) %>%
+    dplyr::summarize_(Wm = "mean(W, na.rm=TRUE)") %>%
     # BD shift (Z)
     dplyr::group_by_('OTU') %>%
-    dplyr::mutate(IS_CONTROL = ifelse(IS_CONTROL==TRUE, 'Wlight', 'Wlab')) %>%
-    tidyr::spread(IS_CONTROL, Wm) %>%
-    dplyr::mutate(Z = Wlab - Wlight) %>%
+    dplyr::mutate_(IS_CONTROL = "ifelse(IS_CONTROL==TRUE, 'Wlight', 'Wlab')") %>%
+    tidyr::spread_("IS_CONTROL", "Wm") %>%
+    dplyr::mutate_(Z = "Wlab - Wlight") %>%
     dplyr::ungroup()
 
   # atom excess (A)
@@ -206,11 +206,12 @@ sample_W = function(df, n_sample){
                            bootstrap_id = 1){
   # making a new (subsampled with replacement) dataset
   n_sample = c(3,3)  # control, treatment
+  dots = setNames(list(~lapply(data, sample_W, n_sample=n_sample)), "ret")
   df_OTU_W = atomX$W %>%
-    dplyr::group_by(OTU) %>%
-    tidyr::nest() %>%
-    dplyr::mutate(ret = lapply(data, sample_W, n_sample=n_sample)) %>%
-    dplyr::select(-data) %>%
+    dplyr::group_by_("OTU") %>%
+    tidyr::nest_(key_col="data") %>%
+    dplyr::mutate_(.dots=dots) %>%
+    dplyr::select_("-data") %>%
     tidyr::unnest()
 
   # calculating atom excess
@@ -268,10 +269,16 @@ qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
                         .parallel=parallel)
 
   # calculating atomX CIs for each OTU
+  #mutate_call = lazyeval::interp(~ stats::quantile(A, a / 2, na.rm=TRUE),
+  #                               A = as.name("A"))
+  #dots = setNames(list(mutate_call), "A_CI_low")
   df_boot = df_boot %>%
-    dplyr::group_by(OTU) %>%
+    dplyr::group_by_("OTU") %>%
     dplyr::summarize(A_CI_low = stats::quantile(A, a / 2, na.rm=TRUE),
                      A_CI_high = stats::quantile(A, 1 - a/2, na.rm=TRUE))
+    #dplyr::summarize_(.dots=dots)
+                     #A_CI_low = "stats::quantile(A, a / 2, na.rm=TRUE)",
+                     #A_CI_high = "stats::quantile(A, 1 - a/2, na.rm=TRUE)")
 
   # combining with atomX summary data
   df_boot = dplyr::inner_join(atomX$A, df_boot, c('OTU'='OTU'))
