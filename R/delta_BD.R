@@ -104,7 +104,7 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
     dplyr::group_by_("IS_CONTROL", "OTU") %>%
     tidyr::nest_(key_col='data',
                  nest_cols=nest_cols) %>%
-    dplyr::mutate(data=lapply(data, HTSSIP::lin_interp,
+    dplyr::mutate(data=lapply(data, lin_interp,
                               n=n, BD_min=BD_min, BD_max=BD_max)) %>%
     tidyr::unnest_(unnest_cols='data') %>%
     # center of mass

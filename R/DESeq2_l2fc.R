@@ -52,7 +52,7 @@ DESeq2_l2fc = function(physeq, density_min, density_max, design,
   # window selection
   ## applying 'heavy' window pruning
   physeq = phyloseq::prune_samples((physeq.md$Buoyant_density >= density_min) &
-                                     (physeq.md$Buoyant_density <= density_max),  physeq)
+                                   (physeq.md$Buoyant_density <= density_max),  physeq)
 
   # removing 0-abundance taxa
   physeq = phyloseq::filter_taxa(physeq, function(x) sum(x > 0) > 0 * length(x), TRUE)
