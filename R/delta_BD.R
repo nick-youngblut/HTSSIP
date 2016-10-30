@@ -82,9 +82,9 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
 
   # total sum scaling
   df_OTU = df_OTU %>%
-    dplyr::group_by(SAMPLE_JOIN) %>%
-    dplyr::mutate(Count = Count / sum(Count),
-                  Count = ifelse(is.na(Count), 0, Count)) %>%
+    dplyr::group_by_("SAMPLE_JOIN") %>%
+    dplyr::mutate_(Count = "Count / sum(Count)",
+                   Count = "ifelse(is.na(Count), 0, Count)") %>%
     dplyr::ungroup()
 
   # BD min/max
@@ -97,24 +97,25 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   }
 
   # calculating BD shift
+  nest_cols = c('OTU', 'SAMPLE_JOIN', 'Count', 'IS_CONTROL', 'Buoyant_density')
   df_OTU = df_OTU %>%
     # linear interpolation for each OTU in each gradient
-    dplyr::group_by(IS_CONTROL, OTU) %>%
-    tidyr::nest() %>%
-    dplyr::mutate(data = lapply(data, lin_interp,
-                                n=n,
-                                BD_min=BD_min,
-                                BD_max=BD_max)) %>%
-    tidyr::unnest(Count_interp = purrr::map(data, function(x) x)) %>%
+    #head() %>% print %>%
+    dplyr::group_by_("IS_CONTROL", "OTU") %>%
+    tidyr::nest_(key_col='data',
+                 nest_cols=nest_cols) %>%
+    dplyr::mutate(data=lapply(data, HTSSIP::lin_interp,
+                              n=n, BD_min=BD_min, BD_max=BD_max)) %>%
+    tidyr::unnest_(unnest_cols='data') %>%
     # center of mass
-    dplyr::group_by(IS_CONTROL, OTU) %>%
-    dplyr::summarize(center_of_mass = stats::weighted.mean(x=Buoyant_density,
-                                                           w=Count_interp)) %>%
+    dplyr::group_by_("IS_CONTROL", "OTU") %>%
+    dplyr::summarize_(center_of_mass = "stats::weighted.mean(x=Buoyant_density,
+                                                             w=Count_interp)") %>%
     # delta BD
-    dplyr::group_by(OTU) %>%
-    dplyr::mutate(IS_CONTROL = ifelse(IS_CONTROL==TRUE, 'CM_control', 'CM_treatment')) %>%
-    tidyr::spread(IS_CONTROL, center_of_mass) %>%
-    dplyr::mutate(delta_BD = CM_treatment - CM_control) %>%
+    dplyr::group_by_("OTU") %>%
+    dplyr::mutate_(IS_CONTROL="ifelse(IS_CONTROL==TRUE, 'CM_control', 'CM_treatment')") %>%
+    tidyr::spread_("IS_CONTROL", "center_of_mass") %>%
+    dplyr::mutate_(delta_BD="CM_treatment - CM_control") %>%
     dplyr::ungroup()
 
   return(df_OTU)

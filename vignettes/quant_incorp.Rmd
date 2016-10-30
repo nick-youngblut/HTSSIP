@@ -128,6 +128,8 @@ ggplot(df_j, aes(OTU, Z)) +
   )
 ```
 
+In the figure, red points are delta_BD and blue points are q-SIP. It's easy to see that delta_BD is a lot more variable than q-SIP. This is likely due to a high influence of compositional data artifacts on delta_BD versus q-SIP.
+
 Let's make a boxplot to show the difference in estimation variance between the two methods.
 
 ```{r, fig.height=3, fig.width=3}
@@ -146,6 +148,7 @@ ggplot(df_j_g, aes(Method, BD_shift)) +
   theme_bw() 
 ```
 
+The boxplot helps to summarize how much more variance delta_BD produces versus q-SIP.
 
 # Session info
 
