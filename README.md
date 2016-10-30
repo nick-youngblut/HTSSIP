@@ -33,7 +33,7 @@ See `References` in the HTSSIP introduction vignette.
 To get the current released version from CRAN:
 
 ```R
-install.packages("HTSSIP")
+install.packages("HTSSIP")  # sorry: the package is not yet on CRAN
 ```
 
 To get the current development version from github:
