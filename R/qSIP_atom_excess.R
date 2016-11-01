@@ -148,14 +148,18 @@ qSIP_atom_excess = function(physeq,
 
   # atom excess (A)
   ## pt1
+  dots = list(~calc_Gi(Wlight))
+  dots = setNames(dots, "Gi")
+  df_OTU_s = df_OTU_s %>%
+    mutate_(.dots=dots) %>%
+    mutate_(Mlight = "0.496 * Gi + 307.691")
+  ## pt2
   MoreArgs = list(isotope=isotope)
   dots = list(~mapply(calc_Mheavymax, Mlight=Mlight, Gi=Gi, MoreArgs=MoreArgs))
   dots = setNames(dots, "Mheavymax")
   df_OTU_s = df_OTU_s %>%
-    dplyr::mutate_(Gi = "HTSSIP::calc_Gi(Wlight)",
-                   Mlight = "0.496 * Gi + 307.691") %>%
     dplyr::mutate_(.dots=dots)
-  ## pt2
+  ## pt3
   dots = list(~mapply(calc_atom_excess, Mlab=Mlab, Mlight=Mlight,
                       Mheavymax=Mheavymax, MoreArgs=MoreArgs))
   dots = setNames(dots, "A")
