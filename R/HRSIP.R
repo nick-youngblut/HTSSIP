@@ -15,7 +15,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
   ## init dots
   mutate_call = lazyeval::interp(~ sum(padj<padj_cutoff),
                                  padj = as.name('padj'))
-  dots = setNames(list(mutate_call), 'n_rej_hypo')
+  dots = stats::setNames(list(mutate_call), 'n_rej_hypo')
   ## which sparsity cutoff and BD
   df_l2fc_s = df_l2fc %>%
     # number of rej hypo
@@ -31,7 +31,7 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
   ### filtering
   mutate_call = lazyeval::interp(~ x==BEST_SPAR_THRESH,
                                  x=as.name('sparsity_threshold'))
-  dots = setNames(list(mutate_call), NA)
+  dots = stats::setNames(list(mutate_call), NA)
   df_l2fc = df_l2fc %>%
     dplyr::filter_(.dots=dots)
 
@@ -156,7 +156,7 @@ HRSIP = function(physeq,
   # global p.adjust per sparsity_thresh
   mutate_call = lazyeval::interp(~ stats::p.adjust(x, method=padj_method),
                                  x = as.name('p'))
-  dots = setNames(list(mutate_call), 'padj')
+  dots = stats::setNames(list(mutate_call), 'padj')
   df_l2fc = df_l2fc %>%
     dplyr::group_by_("sparsity_threshold") %>%
     dplyr::mutate_(.dots=dots) %>%

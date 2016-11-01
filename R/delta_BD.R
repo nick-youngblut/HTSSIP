@@ -100,7 +100,7 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   ## params for standard-eval
   nest_cols = c('SAMPLE_JOIN', 'Count', 'Buoyant_density')
   dots = list(~lapply(data, lin_interp, n=n, BD_min=BD_min, BD_max=BD_max))
-  dots = setNames(dots, "data")
+  dots = stats::setNames(dots, "data")
   ## calculation
   df_OTU = df_OTU %>%
     # linear interpolation for each OTU in each gradient

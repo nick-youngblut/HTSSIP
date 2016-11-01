@@ -149,20 +149,20 @@ qSIP_atom_excess = function(physeq,
   # atom excess (A)
   ## pt1
   dots = list(~calc_Gi(Wlight))
-  dots = setNames(dots, "Gi")
+  dots = stats::setNames(dots, "Gi")
   df_OTU_s = df_OTU_s %>%
     mutate_(.dots=dots) %>%
     mutate_(Mlight = "0.496 * Gi + 307.691")
   ## pt2
   MoreArgs = list(isotope=isotope)
   dots = list(~mapply(calc_Mheavymax, Mlight=Mlight, Gi=Gi, MoreArgs=MoreArgs))
-  dots = setNames(dots, "Mheavymax")
+  dots = stats::setNames(dots, "Mheavymax")
   df_OTU_s = df_OTU_s %>%
     dplyr::mutate_(.dots=dots)
   ## pt3
   dots = list(~mapply(calc_atom_excess, Mlab=Mlab, Mlight=Mlight,
                       Mheavymax=Mheavymax, MoreArgs=MoreArgs))
-  dots = setNames(dots, "A")
+  dots = stats::setNames(dots, "A")
   df_OTU_s = df_OTU_s %>%
     dplyr::mutate_(Mlab = "(Z / Wlight + 1) * Mlight") %>%
     dplyr::mutate_(.dots=dots)
@@ -212,7 +212,7 @@ sample_W = function(df, n_sample){
                            bootstrap_id = 1){
   # making a new (subsampled with replacement) dataset
   n_sample = c(3,3)  # control, treatment
-  dots = setNames(list(~lapply(data, sample_W, n_sample=n_sample)), "ret")
+  dots = stats::setNames(list(~lapply(data, sample_W, n_sample=n_sample)), "ret")
   df_OTU_W = atomX$W %>%
     dplyr::group_by_("OTU") %>%
     tidyr::nest_(key_col="data") %>%
@@ -279,7 +279,7 @@ qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
                                  A = as.name("A"))
   mutate_call2 = lazyeval::interp(~ stats::quantile(A, 1-a/2, na.rm=TRUE),
                                  A = as.name("A"))
-  dots = setNames(list(mutate_call1, mutate_call2), c("A_CI_low", "A_CI_high"))
+  dots = stats::setNames(list(mutate_call1, mutate_call2), c("A_CI_low", "A_CI_high"))
   df_boot = df_boot %>%
     dplyr::group_by_("OTU") %>%
     dplyr::summarize_(.dots=dots)

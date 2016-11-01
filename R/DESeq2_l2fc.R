@@ -79,7 +79,7 @@ DESeq2_l2fc = function(physeq, density_min, density_max, design,
   d = data.frame(res[, c('OTU','log2FoldChange', 'p')])
 
   # p-value adjust
-  d$padj = p.adjust(p, method = 'BH')
+  d$padj = stats::p.adjust(p, method = 'BH')
 
   # taxonomy data
   TT = phyloseq::tax_table(physeq)
