@@ -147,21 +147,23 @@ qSIP_atom_excess = function(physeq,
     dplyr::ungroup()
 
   # atom excess (A)
+  ## pt1
   MoreArgs = list(isotope=isotope)
+  dots = list(~mapply(calc_Mheavymax, Mlight=Mlight, Gi=Gi, MoreArgs=MoreArgs))
+  dots = setNames(dots, "Mheavymax")
   df_OTU_s = df_OTU_s %>%
-    dplyr::mutate(Gi = calc_Gi(Wlight),
-                  Mlight = 0.496 * Gi + 307.691,
-                  Mheavymax = mapply(calc_Mheavymax,
-                                     Mlight=Mlight,
-                                     Gi=Gi,
-                                     MoreArgs=MoreArgs),
-                  Mlab = (Z / Wlight + 1) * Mlight,
-                  A = mapply(calc_atom_excess,
-                             Mlab=Mlab,
-                             Mlight=Mlight,
-                             Mheavymax=Mheavymax,
-                             MoreArgs=MoreArgs))
+    dplyr::mutate_(Gi = "HTSSIP::calc_Gi(Wlight)",
+                   Mlight = "0.496 * Gi + 307.691") %>%
+    dplyr::mutate_(.dots=dots)
+  ## pt2
+  dots = list(~mapply(calc_atom_excess, Mlab=Mlab, Mlight=Mlight,
+                      Mheavymax=Mheavymax, MoreArgs=MoreArgs))
+  dots = setNames(dots, "A")
+  df_OTU_s = df_OTU_s %>%
+    dplyr::mutate_(Mlab = "(Z / Wlight + 1) * Mlight") %>%
+    dplyr::mutate_(.dots=dots)
 
+  ## flow control: bootstrap
   if(no_boot){
     return(list(W=df_OTU_W, A=df_OTU_s))
   } else {
@@ -269,16 +271,14 @@ qSIP_bootstrap = function(atomX, isotope='13C', n_sample=c(3,3),
                         .parallel=parallel)
 
   # calculating atomX CIs for each OTU
-  #mutate_call = lazyeval::interp(~ stats::quantile(A, a / 2, na.rm=TRUE),
-  #                               A = as.name("A"))
-  #dots = setNames(list(mutate_call), "A_CI_low")
+  mutate_call1 = lazyeval::interp(~ stats::quantile(A, a/2, na.rm=TRUE),
+                                 A = as.name("A"))
+  mutate_call2 = lazyeval::interp(~ stats::quantile(A, 1-a/2, na.rm=TRUE),
+                                 A = as.name("A"))
+  dots = setNames(list(mutate_call1, mutate_call2), c("A_CI_low", "A_CI_high"))
   df_boot = df_boot %>%
     dplyr::group_by_("OTU") %>%
-    dplyr::summarize(A_CI_low = stats::quantile(A, a / 2, na.rm=TRUE),
-                     A_CI_high = stats::quantile(A, 1 - a/2, na.rm=TRUE))
-    #dplyr::summarize_(.dots=dots)
-                     #A_CI_low = "stats::quantile(A, a / 2, na.rm=TRUE)",
-                     #A_CI_high = "stats::quantile(A, 1 - a/2, na.rm=TRUE)")
+    dplyr::summarize_(.dots=dots)
 
   # combining with atomX summary data
   df_boot = dplyr::inner_join(atomX$A, df_boot, c('OTU'='OTU'))
