@@ -69,6 +69,8 @@ For more information on SIP and HTS-SIP, check out these references:
 * **HR-SIP**
     * Pepe-Ranney, Charles, Chantal Koechli, Ruth Potrafka, Cheryl Andam, Erin Eggleston, Ferran Garcia-Pichel, and Daniel H. Buckley. 2015. “Non-Cyanobacterial Diazotrophs Mediate Dinitrogen Fixation in Biological Soil Crusts during Early Crust Formation.” The ISME Journal.
     * Pepe-Ranney, Charles, Ashley N. Campbell, Chantal N. Koechli, Sean Berthrong, and Daniel H. Buckley. 2016. “Unearthing the Ecology of Soil Microorganisms Using a High Resolution DNA-SIP Approach to Explore Cellulose and Xylose Metabolism in Soil.” Terrestrial Microbiology, 703.
+* **MW-HR-SIP**
+    * Youngblut, Nicholas D., and Daniel H. Buckley. "Evaluating the Accuracy of DNA Stable Isotope Probing". in prep
 * **qSIP**
     * Hungate, Bruce A., Rebecca L. Mau, Egbert Schwartz, J. Gregory Caporaso, Paul Dijkstra, Natasja van Gestel, Benjamin J. Koch, et al. 2015. “Quantitative Microbial Ecology Through Stable Isotope Probing.” Applied and Environmental Microbiology, August, AEM.02280–15.
 

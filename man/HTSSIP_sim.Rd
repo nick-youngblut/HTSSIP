@@ -53,9 +53,11 @@ param_l = list(
   '12C-Con_rep1' = params1,
   '13C-Cel_rep1' = params2
 )
+\dontrun{
 # simulating phyloseq object
 physeq = HTSSIP_sim(locs, param_l)
 physeq
+}
 
 }
 
