@@ -85,7 +85,7 @@ phyloseq2table = function(physeq,
   df_OTU = phyloseq::otu_table(physeq)
   df_OTU = suppressWarnings(as.data.frame(as.matrix(df_OTU)))
   df_OTU$OTU = rownames(df_OTU)
-  df_OTU = tidyr::gather(df_OTU, SAMPLE_JOIN, Count, -OTU)
+  df_OTU = tidyr::gather_(df_OTU, "SAMPLE_JOIN", "Count", "-OTU")
 
   # sample metdata
   if(include_sample_data==TRUE){
