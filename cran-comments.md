@@ -1,4 +1,3 @@
-
 ## Test environments
 * local OS X install, R 3.3.1
 * ubuntu 12.04 (on travis-ci), R 3.3.1
@@ -20,39 +19,16 @@ Extensions’ manual.
 > The warning is a result of including the phyloseq R package in the list of Imports (see DESCRIPTION).
 
 
-### There was 2 NOTE:
+### There was 1 NOTE from win-builder:
 
 Note 1:
 
-~~~
-.qSIP_bootstrap: no visible binding for global variable ‘OTU’
-HRSIP: no visible binding for global variable ‘p’
-delta_BD: no visible binding for global variable ‘SAMPLE_JOIN’
-delta_BD: no visible binding for global variable ‘Count’
-delta_BD: no visible binding for global variable ‘IS_CONTROL’
-delta_BD: no visible binding for global variable ‘OTU’
-delta_BD: no visible binding for global variable ‘Buoyant_density’
-delta_BD: no visible binding for global variable ‘Count_interp’
-delta_BD: no visible binding for global variable ‘center_of_mass’
-... 51 lines ...
-qSIP_atom_excess: no visible binding for global variable ‘IS_CONTROL’
-qSIP_atom_excess: no visible binding for global variable ‘Wm’
-qSIP_atom_excess: no visible binding for global variable ‘Wlab’
-qSIP_atom_excess: no visible binding for global variable ‘Wlight’
-qSIP_atom_excess: no visible binding for global variable ‘Gi’
-qSIP_atom_excess: no visible binding for global variable ‘Mlight’
-qSIP_atom_excess: no visible binding for global variable ‘Z’
-qSIP_atom_excess: no visible binding for global variable ‘Mlab’
-qSIP_atom_excess: no visible binding for global variable ‘Mheavymax’
-qSIP_bootstrap: no visible binding for global variable ‘OTU’
-qSIP_bootstrap: no visible binding for global variable ‘A’
-~~~
-
-> This note is a result of using the `%>%` declarative syntax (as described in the magrittr package) in
-multiple functions in the HTSSIP package. Using this syntax improves code readability. 
-
-
-Note 2:
-
 Maintainer: ‘Nicholas Youngblut <nyoungb2@gmail.com>’
 New submission
+
+
+## Other comments
+
+* The Windows build error: "cannot open file 'startup.Rs': No such file or directory" should be fixed.
+* We have reduced the run times for both building vignettes and running tests. 
+
