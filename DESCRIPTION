@@ -20,7 +20,7 @@ Description: Perform HTS-SIP analyses such as high resolution stable isotope pro
     3) Hungate, Bruce A., Rebecca L. Mau, Egbert Schwartz, J. Gregory Caporaso,
     Paul Dijkstra, Natasja van Gestel, Benjamin J. Koch, et al. 2015. "Quantitative
     Microbial Ecology Through Stable Isotope Probing." Applied and Environmental
-    Microbiology, August, AEM.02280–15. <doi:10.1128/AEM.02280-15>
+    Microbiology, August, AEM.02280-15. <doi:10.1128/AEM.02280-15>
 License: GPL-2 | file LICENSE
 LazyData: TRUE
 Depends:
