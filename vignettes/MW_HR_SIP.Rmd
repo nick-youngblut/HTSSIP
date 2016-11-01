@@ -135,7 +135,7 @@ df_l2fc = plyr::ldply(physeq_S2D2_l,
                       HRSIP, 
                       design = ~Substrate, 
                       padj_cutoff = padj_cutoff,
-                      sparsity_threshold = c(0,0.15,0.3),   # just using 3 thresholds to reduce time
+                      sparsity_threshold = c(0,0.15,0.3),  # just using 3 thresholds to reduce run time
                       .parallel=TRUE)
 df_l2fc %>% head(n=3)
 ```
@@ -215,7 +215,7 @@ df_l2fc = plyr::ldply(physeq_S2D2_l,
                       density_windows = windows,
                       design = ~Substrate, 
                       padj_cutoff = padj_cutoff,
-                      sparsity_threshold = c(0,0.15,0.3),   # just using 3 thresholds to reduce time
+                      sparsity_threshold = c(0,0.15,0.3), # just using 3 thresholds to reduce run time
                       .parallel = TRUE)
 df_l2fc %>% head(n=3)
 ```
