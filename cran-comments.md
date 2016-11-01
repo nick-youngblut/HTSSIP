@@ -31,4 +31,5 @@ New submission
 
 * The Windows build error: "cannot open file 'startup.Rs': No such file or directory" should be fixed.
 * We have reduced the run times for both building vignettes and running tests. 
+* We have made the package description more descriptive and included references with DOIs.
 
