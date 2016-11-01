@@ -96,8 +96,8 @@ qPCR_sim = function(physeq,
     stop('Buoyant_density column not found in phyloseq object sample_data')
   }
   m_f = m %>%
-    dplyr::mutate(Buoyant_density = as.Num(Buoyant_density)) %>%
-    dplyr::select(Buoyant_density, IS_CONTROL)
+    dplyr::mutate_(Buoyant_density = "as.numeric(as.character(Buoyant_density))") %>%
+    dplyr::select_("Buoyant_density", "IS_CONTROL")
 
   df_qPCR = plyr::mdply(m_f, .qPCR_sim,
                         control_mean_fun=control_mean_fun,

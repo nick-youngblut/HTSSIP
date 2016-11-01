@@ -57,9 +57,9 @@ physeq_list_betaDiv = function(physeq_l, method='unifrac', weighted=TRUE,
 physeq_list_ord = function(physeq_l, physeq_l_d, ord_method='NMDS'){
   ord_l = list()
   for (X in names(physeq_l_d)){
-   ord_l[[X]] = ordinate(physeq_l[[X]],
-                          method = ord_method,
-                          distance = physeq_l_d[[X]])
+   ord_l[[X]] = phyloseq::ordinate(physeq_l[[X]],
+                                   method = ord_method,
+                                   distance = physeq_l_d[[X]])
   }
   return(ord_l)
 }
@@ -138,11 +138,11 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_shape=NULL){
 
   if(! is.null(physeq_ord_df$NMDS1)){
-    AES = aes(x=NMDS1, y=NMDS2)
+    AES = aes_(x='NMDS1', y='NMDS2')
   } else if(! is.null(physeq_ord_df$Axis.1)){
-    AES = aes(x=Axis.1, y=Axis.2)
+    AES = aes_(x='Axis.1', y='Axis.2')
   } else if(! is.null(physeq_ord_df$CA1)){
-    AES = aes(x=CA1, y=CA2)
+    AES = aes_(x='CA1', y='CA2')
   } else {
     stop('Do not recognize ordination axes')
   }

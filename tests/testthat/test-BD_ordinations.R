@@ -13,6 +13,8 @@ test_that('Beta diversity from a list of phyloseq objects (parallel)',{
 
 
 test_that('Make a data.frame for ordination plotting (parallel)',{
+  skip_on_cran()
+
   # params for subseting
   doParallel::registerDoParallel(2)
   physeq_l_d = physeq_list_betaDiv(physeq_S2D2_l, parallel=TRUE)
