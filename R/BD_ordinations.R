@@ -138,11 +138,11 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
                              point_shape=NULL){
 
   if(! is.null(physeq_ord_df$NMDS1)){
-    AES = aes_(x='NMDS1', y='NMDS2')
+    AES = aes_string(x='NMDS1', y='NMDS2')
   } else if(! is.null(physeq_ord_df$Axis.1)){
-    AES = aes_(x='Axis.1', y='Axis.2')
+    AES = aes_string(x='Axis.1', y='Axis.2')
   } else if(! is.null(physeq_ord_df$CA1)){
-    AES = aes_(x='CA1', y='CA2')
+    AES = aes_string(x='CA1', y='CA2')
   } else {
     stop('Do not recognize ordination axes')
   }
