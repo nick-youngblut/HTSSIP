@@ -1,3 +1,8 @@
+# HTSSIP 1.1.1
+
+* small documentation updates and bug fixes
+
+
 # HTSSIP 1.1.0
 
 * fixed BD ordination plotting standard evaluation bug
