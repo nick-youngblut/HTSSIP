@@ -2,12 +2,16 @@
 title: "BD shifts"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{BD shifts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+***
 
 # Making BD shift plots
 

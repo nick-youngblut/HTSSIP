@@ -2,12 +2,16 @@
 title: "Beta diversity ordinations"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Beta diversity ordinations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+***
 
 # Beta diversity ordinations
 
@@ -82,13 +86,13 @@ physeq_S2D2_l_df %>% .$phyloseq_subset %>% unique
 ```
 
 
-Let's plot the data!
+OK, let's plot the data!
 
 ```{r, fig.height=6, fig.width=7.5}
 phyloseq_ord_plot(physeq_S2D2_l_df)
 ```
 
-As you can see, the 'heavy' gradient fraction communities for the labeled-treatments tend to diverge from the unlabeled gradient fraction communities, but the amount of divergence in dependent on substrate and time point.
+As you can see, the 'heavy' gradient fraction 'communities' for the labeled-treatments tend to diverge from the unlabeled gradient fraction communities, but the amount of divergence in dependent on substrate and time point.
 
 # Session info
 

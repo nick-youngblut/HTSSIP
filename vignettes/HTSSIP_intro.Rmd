@@ -2,12 +2,16 @@
 title: "HTSSIP introduction"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{HTSSIP introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+***
 
 **HTSSIP** is a package for analyzing high throughput sequence (HTS) data from DNA- or RNA-based stable isotope probing (SIP) experiments. 
 
@@ -31,8 +35,6 @@ The goal of HTS-SIP methods is to accurately determine which taxa (e.g., bacteri
 
 * **the microbial food web**
     * e.g., Which bacteria contribute to each step of biomass breakdown in soil?
-* **the prevalence of functional redundancy and community stability (resilience and resistance)**
-    * e.g., Do many microbes consume the same substrates? How can this affect stability of the microbial community and the ecosystem processes mediated by members of the community?
 * **taxonomic conservatism of ecological roles**
     * e.g., Is taxonomic relatedness a good predictor of functional similarity (similar niche)?
     * e.g., Do OTU groupings accurately delimit functionally coherent individuals?
@@ -40,6 +42,9 @@ The goal of HTS-SIP methods is to accurately determine which taxa (e.g., bacteri
     * e.g., Which microbes will (or will not) stabily coexist in a particular environment?
 * **how microbial physiology can dictate biogeographic patterns**
     * e.g., Is the biogeography distribution of cellulose specialists more patchy than carbon source generalists? 
+* **the prevalence of functional redundancy and community stability (resilience and resistance)**
+    * e.g., Do many microbes consume the same substrates? How can this affect stability of the microbial community and the ecosystem processes mediated by members of the community?
+
 
 ## Background
 
@@ -49,7 +54,7 @@ Note: I'm going to just refer to DNA-SIP, but most of this also applies to RNA-S
 
 In theory, if a taxon incorporates isotopically labeled substrate, then its DNA with be 'heavier' than if that same taxon had instead incorporated unlabeled substrate. By 'heavier', I mean that the DNA with have a higher buoyant density (BD) in a CsCl gradient. So, if you were to load isotopically labeled DNA into one CsCl gradient and unlabeled DNA (from the same taxon) in another CsCl gradient, then the labeled DNA with appear shifted to a heavier BD than the unlabeled DNA. The DNA should be more or less normally distributed in each gradient, so picture a Gaussian distribution that shifts from a 'light' BD to a 'heavy' BD between the control and treatment gradients. This is the basics of stable isotope probing, which is a powerful method because it can be used to detect which taxa *in an entire community* consumed particular substrates (e.g., cellulose). 
 
-If 'heavy' DNA is shifted from 'light' DNA, why are both a control and treatment gradient needed instead of just carefully separating out the 'heavy' DNA band from the 'light' DNA band in just one gradient. While this technique used be done in older SIP papers, the main problem is the BD of DNA is also a factor of G+C content. DNA with a higher G+C content has a 'heavier' BD. So, labeled, low G+C DNA can easily overlap with unlabeled high G+C DNA. 
+If 'heavy' DNA is shifted from 'light' DNA, why are both a control and treatment gradient needed instead of just carefully separating out the 'heavy' DNA band from the 'light' DNA band in just one gradient? While this technique used be done in older SIP studies, the main problem is the BD of DNA is also a factor of G+C content (& some other factors). DNA with a higher G+C content has a 'heavier' BD. So, labeled, low G+C DNA can easily overlap with unlabeled high G+C DNA. 
 
 Let's consider a simple DNA-SIP experiment. A basic SIP experiment could consist of incubating aliquots of soil with either 13C-glucose (treatment) or 12C-glucose (the corresponding control). The DNA is then extracted from each soil sample, and heavy DNA is separated (at least partially) from light DNA using CsCl gradient ultra centrifugation. Now, the challenge is to accurately determine the location of each taxon's DNA in each of the 2 gradients in order to identify which taxa 'shifted' in the labeled treatment gradient due to isotope incorporation. Prior to the rise of high throughput sequencing (HTS) methods, this task was very difficult due to the limited throughput and taxonomic resolution of molecular fingerprinting and Sanger sequencing. 
 
@@ -59,7 +64,7 @@ With high throughput sequencing, the taxonomic composition can be assessed at ma
 
 Now remember, we are trying to use HTS-SIP to identify 'BD shifts', which indicate isotope incorporation. This is done by comparing labeled-treatment gradients to their corresponding unlabeled control gradients. Optimally, we'd be able to measure the *absolute* abundance of each taxon's OTU in each gradient fraction in order to get an idea where the Gaussian distribution of that OTU's DNA is in the gradient. 
 
-The major challenge of analyzing HTS data is that the data is compositional, in that the total number of sequences in a sample does not provide any information on the total numbers of each taxon in the sample. This is why relative abundances of OTUs are shown in at least most microbiome papers, such as the relative abundance bar plots in A LOT of microbiome papers. Therefore, we have to try to determine the absolute abundance Gaussian distributions of each OTU in each gradient based on compositional 16S rRNA sequence data. Various HTS-SIP data analysis methods have be developed to address this challenge (e.g., HR-SIP and q-SIP). This R package was developed to easily implement on your own data, so that you can compare the results (and possible develop new methods). 
+The major challenge of analyzing HTS data is that the data is compositional, in that the total number of sequences in a sample does not provide any information on the total numbers of each taxon in the sample. This is why relative abundances of OTUs are shown in most microbiome papers. Therefore, we have to try to determine the absolute abundance Gaussian distributions of each OTU in each gradient based on compositional 16S rRNA sequence data. Various HTS-SIP data analysis methods have be developed to address this challenge (e.g., HR-SIP and q-SIP). This R package was developed to easily implement on your own data, so that you can compare the results (and possible develop new methods). 
 For more information on SIP and HTS-SIP, check out these references:
 
 * **DNA SIP**

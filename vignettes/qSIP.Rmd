@@ -2,12 +2,16 @@
 title: "q-SIP"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{q-SIP}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+***
 
 # Introduction
 
@@ -137,7 +141,7 @@ n_incorp = df_atomX_boot %>%
 cat('Number of incorporators:', n_incorp, '\n')
 ```
 
-It's time to plot the results!
+OK, let's plot the results.
 
 ```{r, fig.height=3, fig.width=7}
 
