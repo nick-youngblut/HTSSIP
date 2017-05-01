@@ -26,4 +26,3 @@ df_t = tss(df)
 apply(df_t, 2, sum)
 
 }
-

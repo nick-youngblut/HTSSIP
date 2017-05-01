@@ -19,4 +19,3 @@ numeric value: maximum molecular weight of fully-labeled DNA
 \description{
 See Hungate et al., 2015 for more details
 }
-

@@ -18,4 +18,3 @@ Given a character string a set of expression placeholders are matched. They
 are of the form \code{${...}} or optionally \code{$[f]{...}} where \code{f}
 is a valid format for \code{\link{sprintf}}.
 }
-

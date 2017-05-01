@@ -42,4 +42,3 @@ df_OTU = gradient_sim(locs, params)
 head(df_OTU)
 
 }
-

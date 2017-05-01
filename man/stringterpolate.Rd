@@ -24,4 +24,3 @@ include expression placeholders of the form \code{${expression}} or
 can be evaluated in the given environment, and \code{format} is a format
 specification valid for use with \code{\link{sprintf}}.
 }
-

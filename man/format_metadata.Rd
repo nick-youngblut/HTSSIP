@@ -26,4 +26,3 @@ metadata = format_metadata(physeq_S2D1, ex)
 }
 
 }
-

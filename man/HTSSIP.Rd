@@ -14,4 +14,3 @@ and high throughput sequence data (e.g., MiSeq of 16S rRNA amplicons).
 To learn more about HTSSIP, start with the vignettes:
 \code{browseVignettes(package = "HTSSIP")}
 }
-

@@ -10,4 +10,3 @@
 the other is the 13C-labeled substrate.
 }
 \keyword{data}
-

@@ -2,11 +2,11 @@
 title: "HTSSIP introduction"
 author: "Nick Youngblut"
 date: "`r Sys.Date()`"
-output: 
+output:
   rmarkdown::html_vignette:
     toc: true
 vignette: >
-  %\VignetteIndexEntry{HTSSIP introduction}
+  %\VignetteIndexEntry{BD shifts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

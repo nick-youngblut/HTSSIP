@@ -39,4 +39,3 @@ data(physeq_S2D2)
 get_treatment_params(physeq_S2D2, c('Substrate', 'Day'), "Substrate != '12C-Con'")
 
 }
-

@@ -39,4 +39,3 @@ atomX = qSIP_atom_excess(physeq_rep3_t,
                         treatment_rep='Replicate')
 
 }
-

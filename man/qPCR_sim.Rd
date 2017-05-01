@@ -68,4 +68,3 @@ df_qPCR = qPCR_sim(physeq_S2D2,
                 treat_sd_fun=treat_sd_fun)
 
 }
-

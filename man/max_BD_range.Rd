@@ -23,4 +23,3 @@ If BD (buoyant density) range size is negative,
 use BD_to_set value to set new BD_max. The \code{BD_to_set}
 determines the \code{BD_max} if BD range is negative
 }
-

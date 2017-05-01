@@ -16,4 +16,3 @@ numeric value (fractional G+C; Gi)
 \description{
 See Hungate et al., 2015 for more details
 }
-

@@ -15,4 +15,3 @@ numeric
 \description{
 Conducts conversion: as.character --> as.numeric
 }
-

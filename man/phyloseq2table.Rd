@@ -47,4 +47,3 @@ df_OTU = phyloseq2table(physeq_S2D1,
 head(df_OTU)
 
 }
-

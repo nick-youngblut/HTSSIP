@@ -17,4 +17,3 @@
   }
 }
 \keyword{data}
-

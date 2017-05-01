@@ -18,4 +18,3 @@ Integer with the posision of the matching brace.
 Given positions of opening and closing braces \code{match_brace} identifies
 the closing brace matching the first opening brace.
 }
-

@@ -21,4 +21,3 @@ numeric value: atom fraction excess (A)
 \description{
 See Hungate et al., 2015 for more details
 }
-

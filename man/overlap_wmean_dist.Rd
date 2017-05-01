@@ -16,4 +16,3 @@ a data.frame object of weighted mean distances
 \description{
 Calculating weighted mean beta-diversities of overlapping gradient fractions.
 }
-

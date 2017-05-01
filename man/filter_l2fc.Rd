@@ -19,4 +19,3 @@ filtered df_l2fc object
 \code{filter_l2fc} filters a l2fc table to 'best' sparsity cutoffs &
 bouyant density windows.
 }
-

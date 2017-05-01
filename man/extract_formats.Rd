@@ -17,4 +17,3 @@ An expression placeholder for string interpolation may optionally contain a
 format valid for \code{\link{sprintf}}. This function will extract such or
 default to "s" the format for strings.
 }
-

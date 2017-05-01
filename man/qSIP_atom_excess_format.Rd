@@ -21,4 +21,3 @@ numeric value: atom fraction excess (A)
 \description{
 Reformat a phyloseq object of qSIP_atom_excess analysis
 }
-

@@ -32,4 +32,3 @@ physeq_l = phyloseq_subset(physeq_S2D2, params, ex)
 physeq_l
 
 }
-

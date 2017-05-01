@@ -18,4 +18,3 @@ A character vector of replacement strings.
 The expression part of string interpolation matches are evaluated in a
 specified environment and formatted for replacement in the original string.
 }
-

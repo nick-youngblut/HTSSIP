@@ -17,4 +17,3 @@ An interpolation match object will contain both its wrapping \code{${ }} part
 and possibly a format. This extracts the expression parts and parses them to
 prepare them for evaluation.
 }
-

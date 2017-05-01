@@ -27,4 +27,3 @@ df_sample = phyloseq2df(physeq_S2D1, table_func=phyloseq::sample_data)
 head(df_sample)
 
 }
-
