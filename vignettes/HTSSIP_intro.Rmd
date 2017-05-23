@@ -202,13 +202,13 @@ With a list of phyloseq objects (1 list item per treatment-control comparison), 
 # References for methods in HTSSIP
 
 * **HTS-SIP data exploration**
-    * Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP) as described in Youngblut and Buckley *in review*
+    * Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP) as described in [Youngblut and Buckley 2017](http://biorxiv.org/content/early/2017/05/17/138719)
 
 * **HR-SIP**
     * High Resolution Stable Isotope Probing (HR-SIP) as described in [Pepe-Ranney et al., 2016](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4867679/)
 
 * **MW-HR-SIP**
-    * Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP) as described in Youngblut and Buckley *in review*
+    * Multiple window High Resolution Stable Isotope Probing (MW-HR-SIP) as described in [Youngblut and Buckley 2017](http://biorxiv.org/content/early/2017/05/17/138719)
 
 * **q-SIP**
     * Quantitative stable isotope probing (q-SIP) as described in [Hungate et al., 2015](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4592864/)
