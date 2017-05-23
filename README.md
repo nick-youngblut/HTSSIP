@@ -21,18 +21,18 @@ sequence data from nucleotide stable isotope probing
 
 ## Documentation
 
-A good place to start is the [HTSSIP introduction](https://cran.r-project.org/web/packages/HTSSIP/vignettes/HTSSIP_intro.html) vignette. 
+All documentation can be found on [CRAN](https://cran.r-project.org/package=HTSSIP).
 
-All documentation can be found on [CRAN](https://cran.r-project.org/web/packages/HTSSIP/index.html)
+A good place to start is the **HTSSIP introduction** vignette. 
 
 
 ## Reference 
 
-See `References` in the [HTSSIP introduction](https://cran.r-project.org/web/packages/HTSSIP/vignettes/HTSSIP_intro.html) vignette.
+See `References` in the **HTSSIP introduction** vignette.
 
 ## Installation
 
-To get the current released version from [CRAN](https://cran.r-project.org/web/packages/HTSSIP/index.html):
+To get the current released version from [CRAN](https://cran.r-project.org/package=HTSSIP):
 
 ```R
 install.packages("HTSSIP") 

@@ -68,12 +68,14 @@ phyloseq2df = function(physeq, table_func){
 #'                         sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'))
 #' head(df_OTU)
 #'
+#' \dontrun{
 #' # Including some columns from sample metadata & taxonomy
 #' df_OTU = phyloseq2table(physeq_S2D1,
 #'                         include_sample_data=TRUE,
 #'                         sample_col_keep=c('Buoyant_density', 'Substrate', 'Day'),
 #'                         include_tax_table=TRUE)
 #' head(df_OTU)
+#' }
 #'
 phyloseq2table = function(physeq,
                           include_sample_data=FALSE,
