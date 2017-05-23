@@ -7,7 +7,7 @@ Authors@R: c(
     person("Samuel", "Barnett", email="seb369@cornell.edu", role=c("ctb"))
     )
 Maintainer: Nicholas Youngblut <nyoungb2@gmail.com>
-Description: Functions for analyzing high throughtput sequencing 
+Description: Functions for analyzing high throughput sequencing 
     stable isotope probing (HTS-SIP) data.
     Analyses include high resolution stable isotope probing (HR-SIP),
     multi-window high resolution stable isotope probing (MW-HR-SIP), 
