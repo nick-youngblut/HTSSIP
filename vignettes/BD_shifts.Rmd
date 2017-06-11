@@ -136,8 +136,8 @@ Alright, let's plot the data!
 # formatting the treatment names to look a bit better as facet labels
 wmean = wmean %>%
   mutate(Substrate = gsub('.+(13C-[A-z]+).+', '\\1', .id),
-         Day = gsub('.+Day ==[ \']*([0-9]+).+', '\\1', .id),
-         Day = Day %>% reorder(Day %>% as.numeric))
+         Day = gsub('.+Day ==[ \']*([0-9]+).+', 'Day \\1', .id),
+         Day = Day %>% reorder(gsub('Day ', '', Day) %>% as.numeric))
 
 # plotting, with facetting by 13C-treatment
 ggplot(wmean, aes(BD_min.x, wmean_dist)) +

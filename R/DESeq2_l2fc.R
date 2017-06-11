@@ -82,7 +82,7 @@ DESeq2_l2fc = function(physeq, density_min, density_max, design,
   d$padj = stats::p.adjust(p, method = 'BH')
 
   # taxonomy data
-  TT = phyloseq::tax_table(physeq)
+  TT = phyloseq::tax_table(physeq, errorIfNULL=FALSE)
   if(!is.null(TT)){
     TT = as.data.frame(as.matrix(TT))
     TT$OTU = rownames(TT)
