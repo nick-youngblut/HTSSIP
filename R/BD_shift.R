@@ -209,6 +209,7 @@ overlap_wmean_dist = function(df_dist){
 #' @param weighted  Weighted Unifrac (if calculating Unifrac)
 #' @param fast  Fast calculation method
 #' @param normalized  Normalized abundances
+#' @param ex  Expression for selecting controls based on metadata
 #' @param parallel  Calculate in parallel
 #'
 #' @return a data.frame object of weighted mean distances
@@ -235,12 +236,13 @@ overlap_wmean_dist = function(df_dist){
 #' }
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
-                    fast=TRUE, normalized=FALSE, parallel=FALSE){
+                    fast=TRUE, normalized=FALSE, parallel=FALSE,
+                    ex="Substrate=='12C-Con'"){
   # wrapper function
   ## formatting metadata
   physeq = physeq_format(physeq)
-  metadata = format_metadata(physeq)
-  ## fraction overlpa
+  metadata = format_metadata(physeq, ex)
+  ## fraction overlap
   metadata = fraction_overlap(metadata)
   # Calculating distances
   physeq_d = phyloseq::distance(physeq,
