@@ -54,6 +54,7 @@ gradient_sim = function(locs, params,
 #' @param meta  Data.frame object of metadata to add to \code{sample_data} table.
 #' The data.frame object must have a 'Gradient' column, which is used for joining
 #' with \code{dplyr::left_join()}.
+#' @param sim_tree  Simulate a tree?
 #' @param parallel  Parallel processing. See \code{.parallel} option in
 #' \code{dplyr::mdply()} for more details.
 #'
@@ -90,6 +91,7 @@ HTSSIP_sim = function(locs, params,
                    responseModel='gaussian',
                    countModel='poisson',
                    meta=NULL,
+                   sim_tree=FALSE,
                    parallel=FALSE,
                    ...){
   # making & combining OTU tables (1 per gradient)
@@ -130,6 +132,15 @@ HTSSIP_sim = function(locs, params,
     phyloseq::otu_table(df_OTU, taxa_are_rows=TRUE),
     phyloseq::sample_data(df_meta)
   )
+
+  # simulating a tree
+  if(sim_tree==TRUE){
+    tree = ape::rtree(nrow(df_OTU))
+    tree$tip.label = rownames(df_OTU)
+    physeq = phyloseq::merge_phyloseq(physeq, tree)
+  } else {
+    tree = NULL
+  }
 
   return(physeq)
 }

@@ -181,6 +181,68 @@ overlap_wmean_dist = function(df_dist){
 }
 
 
+# permuting OTU abundance
+.perm_otu = function(physeq, replace=TRUE){
+  # permute
+  otu = phyloseq::otu_table(physeq) %>% as.data.frame
+  otu_names = rownames(otu)
+  samp_names = colnames(otu)
+  n_otu = nrow(otu)
+  n_samp = ncol(otu)
+  otu = otu %>% as.matrix
+  otu = otu[1:n_otu, base::sample(1:n_samp, n_samp, replace=replace)]
+  rownames(otu) = otu_names
+  colnames(otu) = samp_names
+  otu = phyloseq::otu_table(otu, taxa_are_rows=TRUE)
+  physeq = phyloseq::phyloseq(otu,
+                              phyloseq::sample_data(physeq, errorIfNULL=FALSE),
+                              phyloseq::phy_tree(physeq, errorIfNULL=FALSE))
+  return(physeq)
+}
+
+# sub-function for BD_shift
+.BD_shift = function(perm_id, physeq, method='unifrac', weighted=TRUE,
+                     fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
+                     parallel=FALSE){
+  # wrapper function
+  ## formatting metadata
+  physeq = physeq_format(physeq)
+  metadata = format_metadata(physeq, ex)
+  ## permuting OTU abundances (just control OTUs)
+  if(perm_id > 0){
+    metadata_ord = metadata %>% as.data.frame
+    rownames(metadata_ord) = metadata_ord$METADATA_ROWNAMES
+    metadata_ord = metadata_ord[phyloseq::sample_names(physeq),
+                                1:ncol(metadata_ord)]
+    physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
+    physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
+    physeq_treat = .perm_otu(physeq_treat)
+    physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
+  }
+  ## fraction overlap
+  metadata = fraction_overlap(metadata)
+  # Calculating distances
+  physeq_d = phyloseq::distance(physeq,
+                                method='unifrac',
+                                weighted=TRUE,
+                                fast=TRUE,
+                                normalized=FALSE,
+                                parallel=FALSE)
+  physeq_d = parse_dist(physeq_d)
+
+  # joining dataframes
+  physeq_d = dplyr::inner_join(physeq_d, metadata,
+                             c('sample.x'='METADATA_ROWNAMES.x',
+                               'sample.y'='METADATA_ROWNAMES.y'))
+
+  # calculating weighted mean distance
+  physeq_d_m = overlap_wmean_dist(physeq_d)
+
+  # return
+  return(physeq_d_m)
+}
+
+
 #' Assessing the magnitude of BD shifts with 16S rRNA community
 #' data by calculating the beta diversity between unlabeled control
 #' and labeled treatment gradient fraction communities.
@@ -210,7 +272,10 @@ overlap_wmean_dist = function(df_dist){
 #' @param fast  Fast calculation method
 #' @param normalized  Normalized abundances
 #' @param ex  Expression for selecting controls based on metadata
-#' @param parallel  Calculate in parallel
+#' @param a  The alpha for calculating confidence intervals
+#' @param nperm  Number of bootstrap permutations
+#' @param parallel_perm  Calculate bootstrap permutations in parallel
+#' @param parallel_dist  Calculate beta-diveristy distances in parallel
 #'
 #' @return a data.frame object of weighted mean distances
 #'
@@ -236,30 +301,50 @@ overlap_wmean_dist = function(df_dist){
 #' }
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
-                    fast=TRUE, normalized=FALSE, parallel=FALSE,
-                    ex="Substrate=='12C-Con'"){
-  # wrapper function
-  ## formatting metadata
-  physeq = physeq_format(physeq)
-  metadata = format_metadata(physeq, ex)
-  ## fraction overlap
-  metadata = fraction_overlap(metadata)
-  # Calculating distances
-  physeq_d = phyloseq::distance(physeq,
-                                method='unifrac',
-                                weighted=TRUE,
-                                fast=TRUE,
-                                normalized=FALSE,
-                                parallel=FALSE)
-  physeq_d = parse_dist(physeq_d)
+                    fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
+                    nperm=100, a=0.2,
+                    parallel_perm=FALSE, parallel_dist=FALSE){
 
-  # joining dataframes
-  physeq_d = dplyr::inner_join(physeq_d, metadata,
-                             c('sample.x'='METADATA_ROWNAMES.x',
-                               'sample.y'='METADATA_ROWNAMES.y'))
 
-  # calculating weighted mean distance
-  physeq_d_m = overlap_wmean_dist(physeq_d)
-  return(physeq_d_m)
+  # calculating unpermuted & permuted
+  df_perm_id = data.frame(perm_id = 0:nperm)
+  df_perm = plyr::mdply(df_perm_id, .BD_shift,
+                        physeq=physeq,
+                        method=method,
+                        weighted=weighted,
+                        fast=fast,
+                        normalized=normalized,
+                        ex=ex,
+                        parallel=parallel_dist,
+                        .parallel=parallel_perm)
+  ## parsing data
+  df_wmean = df_perm %>%
+    filter(perm_id == 0)
+  df_perm = df_perm %>%
+    filter(perm_id > 0)
+
+  # perm CI
+  mutate_call1 = lazyeval::interp(~ stats::quantile(wmean_dist, a/2, na.rm=TRUE),
+                                  wmean_dist = as.name("wmean_dist"))
+  mutate_call2 = lazyeval::interp(~ stats::quantile(wmean_dist, 1-a/2, na.rm=TRUE),
+                                  wmean_dist = as.name("wmean_dist"))
+  dots = stats::setNames(list(mutate_call1, mutate_call2), c("wmean_dist_CI_low", "wmean_dist_CI_high"))
+  ## calculating global CIs
+  df_perm_global = df_perm %>%
+    dplyr::group_by_() %>%
+    dplyr::summarize_(.dots=dots)
+  ## calculating CIs for each control fraction
+  df_perm = df_perm %>%
+    dplyr::group_by_("sample.x", "sample.y", "BD_min.x") %>%
+    dplyr::summarize_(.dots=dots)
+
+  # joining
+  df_wmean$wmean_dist_CI_low_global = df_perm_global$wmean_dist_CI_low[1]
+  df_wmean$wmean_dist_CI_high_global = df_perm_global$wmean_dist_CI_high[1]
+  df_wmean = dplyr::left_join(df_wmean, df_perm,
+                              c("sample.x", "sample.y", "BD_min.x"))
+
+  # return
+  return(df_wmean)
 }
 
