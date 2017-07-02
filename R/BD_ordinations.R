@@ -181,7 +181,7 @@ phyloseq_ord_plot = function(physeq_ord_df, title=NULL,
 #' @inheritParams physeq_list_betaDiv
 #' @inheritParams physeq_list_ord
 #' @inheritParams phyloseq_ord_plot
-#' @param plot  Return a plot (instead of )
+#' @param plot  Return a plot (instead of a data.frame of ordination data)
 #' @return If plot==FALSE, a data.frame object of beta-diversity values.
 #' If plot==TRUE, a glob object for plotting.
 #'

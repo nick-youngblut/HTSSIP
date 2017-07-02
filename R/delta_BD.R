@@ -83,7 +83,7 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   # total sum scaling
   df_OTU = df_OTU %>%
     dplyr::group_by_("SAMPLE_JOIN") %>%
-    dplyr::mutate_(Count = "Count / sum(Count)",
+    dplyr::mutate_(Count = "Count / sum(as.numeric(Count))",
                    Count = "ifelse(is.na(Count), 0, Count)") %>%
     dplyr::ungroup()
 
