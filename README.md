@@ -7,6 +7,7 @@ HTSSIP is an R package for analyzing high throughput
 sequence data from nucleotide stable isotope probing 
 (DNA- & RNA-SIP) experiments. 
 
+
 ## Available analyzes 
 
 * Identifying community-level isotope incorporatation
@@ -25,10 +26,15 @@ All documentation can be found on [CRAN](https://cran.r-project.org/package=HTSS
 
 A good place to start is the **HTSSIP introduction** vignette. 
 
+The manuscript describing HTSSIP is:
 
-## Reference 
+> Youngblut, Nicholas D., Samuel E. Barnett, and Daniel H. Buckley. 2017. “HTSSIP: An R Package for Analysis of High Throughput Sequencing Data from Nucleic Acid Stable Isotope Probing (SIP) Experiments.” bioRxiv. doi:10.1101/166009.
+
+
+## References 
 
 See `References` in the **HTSSIP introduction** vignette.
+
 
 ## Installation
 
