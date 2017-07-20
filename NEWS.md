@@ -1,6 +1,8 @@
-# HTSSIP 1.1.2
+# HTSSIP 1.2.0
 
-
+* added permutation test to BD_shift()
+* update function documentation
+* fixed a couple of small bugs
 
 # HTSSIP 1.1.1
 

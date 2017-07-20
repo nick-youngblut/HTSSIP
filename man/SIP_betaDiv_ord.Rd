@@ -20,7 +20,7 @@ SIP_betaDiv_ord(physeq_l, method = "unifrac", weighted = TRUE,
 
 \item{parallel}{Calculate in parallel}
 
-\item{plot}{Return a plot (instead of )}
+\item{plot}{Return a plot (instead of a data.frame of ordination data)}
 }
 \value{
 If plot==FALSE, a data.frame object of beta-diversity values.

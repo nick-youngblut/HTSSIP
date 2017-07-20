@@ -113,10 +113,12 @@ qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
 #' # tranforming values
 #' physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 #'
+#' \dontrun{
 #' # BD shift (Z) & atom excess (A)
 #' atomX = qSIP_atom_excess(physeq_rep3_t,
-#'                         control_expr='Treatment=="12C-Control"',
+#'                         control_expr='Treatment=="12C-Con"',
 #'                         treatment_rep='Replicate')
+#' }
 #'
 qSIP_atom_excess = function(physeq,
                             control_expr,
@@ -267,7 +269,7 @@ sample_W = function(df, n_sample){
 #' \dontrun{
 #' # BD shift (Z) & atom excess (A)
 #' atomX = qSIP_atom_excess(physeq_rep3_t,
-#'                         control_expr='Treatment=="12C-Control"',
+#'                         control_expr='Treatment=="12C-Con"',
 #'                         treatment_rep='Replicate')
 #'
 #' # bootstrapping in parallel

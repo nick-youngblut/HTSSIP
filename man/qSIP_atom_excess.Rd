@@ -33,9 +33,11 @@ Calculate atom fraction excess using q-SIP method
 # tranforming values
 physeq_rep3_t = OTU_qPCR_trans(physeq_rep3, physeq_rep3_qPCR)
 
+\dontrun{
 # BD shift (Z) & atom excess (A)
 atomX = qSIP_atom_excess(physeq_rep3_t,
                         control_expr='Treatment=="12C-Con"',
                         treatment_rep='Replicate')
+}
 
 }

@@ -266,6 +266,10 @@ overlap_wmean_dist = function(df_dist){
 #' calculated for each unlabeled control, and the percent overlap of
 #' each labeled treatment fraction is used to weight the mean.
 #'
+#' A permutation test is used to determine 'BD shift windows'. The permutation
+#' test consists of permuting OTU abundances in the treatments and calculating
+#' beta-diversity. A boostrap confidence interval is calculated from the replicates.
+#'
 #' @param physeq  phyloseq object
 #' @param method  See phyloseq::distance
 #' @param weighted  Weighted Unifrac (if calculating Unifrac)
@@ -307,7 +311,7 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
 
 
   # calculating unpermuted & permuted
-  df_perm_id = data.frame(perm_id = 0:nperm)
+  df_perm_id = data.frame('perm_id' = 0:nperm)
   df_perm = plyr::mdply(df_perm_id, .BD_shift,
                         physeq=physeq,
                         method=method,
@@ -319,9 +323,9 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                         .parallel=parallel_perm)
   ## parsing data
   df_wmean = df_perm %>%
-    filter(perm_id == 0)
+    filter_('perm_id == 0')
   df_perm = df_perm %>%
-    filter(perm_id > 0)
+    filter_('perm_id > 0')
 
   # perm CI
   mutate_call1 = lazyeval::interp(~ stats::quantile(wmean_dist, a/2, na.rm=TRUE),

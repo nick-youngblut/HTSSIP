@@ -96,8 +96,13 @@ phyloseq2table = function(physeq,
     df_meta$SAMPLE_JOIN = rownames(df_meta)
 
     if(! is.null(control_expr)){
+      # setting control
       df_meta = df_meta %>%
         dplyr::mutate_(IS_CONTROL = control_expr)
+      # check
+      if(all(df_meta$IS_CONTROL == FALSE)){
+        stop('control_expr is not valid; no samples selected as controls')
+      }
     }
 
     ## trimming
