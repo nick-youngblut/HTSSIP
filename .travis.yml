@@ -4,6 +4,14 @@ language: R
 sudo: false
 cache: packages
 
+env:
+  global:
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual --no-resave-data"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
+    - R_CHECK_TIME="TRUE"
+    - R_CHECK_TESTS="TRUE"
+    - _R_CHECK_TIMINGS_="0"
+
 bioc_packages:
   - DESeq2
   - phyloseq
@@ -13,4 +21,4 @@ warnings_are_errors: false
 r_github_packages:
   - nick-youngblut/HTSSIP
 
-install: travis_wait mvn install
+
