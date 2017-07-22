@@ -4,13 +4,8 @@ language: R
 sudo: false
 cache: packages
 
-env:
-  global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual --no-resave-data"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
-    - R_CHECK_TIME="TRUE"
-    - R_CHECK_TESTS="TRUE"
-    - _R_CHECK_TIMINGS_="0"
+r_build_args: --no-build-vignettes
+r_check_args: --no-build-vignettes
 
 bioc_packages:
   - DESeq2
