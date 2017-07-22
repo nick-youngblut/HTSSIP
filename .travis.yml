@@ -12,3 +12,5 @@ warnings_are_errors: false
 
 r_github_packages:
   - nick-youngblut/HTSSIP
+
+install: travis_wait mvn install
