@@ -57,11 +57,11 @@ test_that('BD_shift runs w/ default',{
   data(physeq_S2D2_l)
 
   # dataset 1
-  wmean = BD_shift(physeq_S2D2_l[[1]])
+  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=5)
   expect_wmean(wmean)
 
   # dataset 2
-  wmean = BD_shift(physeq_S2D2_l[[2]])
+  wmean = BD_shift(physeq_S2D2_l[[2]], nperm=5)
   expect_wmean(wmean)
 
   # ggplot
@@ -77,7 +77,7 @@ test_that('BD_shift runs w/ Bray-Curtis',{
   data(physeq_S2D2_l)
 
   # dataset 1
-  wmean = BD_shift(physeq_S2D2_l[[1]], method='bray')
+  wmean = BD_shift(physeq_S2D2_l[[1]], method='bray', nperm=5)
   expect_wmean(wmean)
 
   # ggplot

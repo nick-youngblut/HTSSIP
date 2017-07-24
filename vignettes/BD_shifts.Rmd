@@ -95,8 +95,10 @@ physeq_S2D2_l
 
 Now, let's just measure BD shift for just 1 subset (1 item in the list of phyloseq objects).
 
+>Note: we are just going to use 5 permutations to speed up the analysis. 
+
 ```{r BD_shift_wmean}
-wmean1 = BD_shift(physeq_S2D2_l[[2]])
+wmean1 = BD_shift(physeq_S2D2_l[[2]], nperm=5)
 cat('Subset:', names(physeq_S2D2_l)[2], '\n')
 wmean1 %>% head(n=3)
 ```
@@ -126,7 +128,7 @@ than at 'heavy' gradient fractions, where there's less taxa.
 Now let's run `BD_shift()` on all phyloseq objects in our list. We'll use `plyr::ldply()` for this because it preserves the list names in the resulting data.frame (list names are assigned to `.id` by default).
 
 ```{r wmean}
-wmean = plyr::ldply(physeq_S2D2_l, BD_shift)
+wmean = plyr::ldply(physeq_S2D2_l, BD_shift, nperm=5)
 wmean %>% head(n=3)
 ```
 
