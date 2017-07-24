@@ -16,8 +16,7 @@ warnings_are_errors: false
 r_github_packages:
   - nick-youngblut/HTSSIP
 
-
 script:
   - |
-    R CMD build --no-build-vignettes .
-    travis_wait 20 R CMD check --no-vignettes HTSSIP*tar.gz
+    R CMD build .
+    travis_wait 30 R CMD check --no-vignettes HTSSIP*tar.gz
