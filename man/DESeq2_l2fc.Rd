@@ -5,7 +5,8 @@
 \title{Calculating log2 fold change for HTS-SIP data.}
 \usage{
 DESeq2_l2fc(physeq, density_min, density_max, design, l2fc_threshold = 0.25,
-  sparsity_threshold = 0.25, sparsity_apply = "all")
+  sparsity_threshold = 0.25, sparsity_apply = "all",
+  size_factors = "geoMean")
 }
 \arguments{
 \item{physeq}{Phyloseq object}
@@ -26,6 +27,11 @@ The sparsity cutoff with the most rejected hypotheses is used.}
 
 \item{sparsity_apply}{Apply sparsity threshold to all gradient fraction samples ('all')
 or just heavy fraction samples ('heavy')}
+
+\item{size_factors}{Method of estimating size factors.
+'geoMean' is from (Pepe-Ranney et. al., 2016) and removes all zero-abundances from the calculation.
+'default' is the default for estimateSizeFactors.
+'iterate' is an alternative when every OTU has a zero in >=1 sample.}
 }
 \value{
 dataframe of HRSIP results
@@ -35,6 +41,10 @@ The phyloseq object will be filtered to 1) just OTUs
 that pass the sparsity cutoff 2) just samples in the user-defined
 'heavy' fractions. The log2 fold change (l2fc) is calculated
 between labeled treatment and control gradients.
+}
+\details{
+The 'use_geo_mean' parameter uses geometric means on all non-zero abundances
+for estimateSizeFactors instead of using the default log-tranformed geometric means.
 }
 \examples{
 data(physeq_S2D2)

@@ -1,9 +1,17 @@
+gm_mean = function(x, na.rm=TRUE){
+  # calculate the geometric mean
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+
 #' Calculating log2 fold change for HTS-SIP data.
 #'
 #' The phyloseq object will be filtered to 1) just OTUs
 #' that pass the sparsity cutoff 2) just samples in the user-defined
 #' 'heavy' fractions. The log2 fold change (l2fc) is calculated
 #' between labeled treatment and control gradients.
+#'
+#' The 'use_geo_mean' parameter uses geometric means on all non-zero abundances
+#' for estimateSizeFactors instead of using the default log-tranformed geometric means.
 #'
 #' @param physeq  Phyloseq object
 #' @param density_min  Minimum buoyant density of the 'heavy' gradient fractions
@@ -17,6 +25,10 @@
 #'   The sparsity cutoff with the most rejected hypotheses is used.
 #' @param sparsity_apply  Apply sparsity threshold to all gradient fraction samples ('all')
 #'   or just heavy fraction samples ('heavy')
+#' @param size_factors  Method of estimating size factors.
+#'   'geoMean' is from (Pepe-Ranney et. al., 2016) and removes all zero-abundances from the calculation.
+#'   'default' is the default for estimateSizeFactors.
+#'   'iterate' is an alternative when every OTU has a zero in >=1 sample.
 #' @return dataframe of HRSIP results
 #'
 #' @export
@@ -30,7 +42,7 @@
 #'
 DESeq2_l2fc = function(physeq, density_min, density_max, design,
                        l2fc_threshold=0.25, sparsity_threshold=0.25,
-                       sparsity_apply='all'){
+                       sparsity_apply='all', size_factors='geoMean'){
   # assertions
   l2fc_threshold = as.numeric(l2fc_threshold)
   stopifnot(l2fc_threshold >= 0 & l2fc_threshold <= 1)
@@ -63,18 +75,35 @@ DESeq2_l2fc = function(physeq, density_min, density_max, design,
   }
 
   # deseq
-  dds = phyloseq::phyloseq_to_deseq2(physeq, design)   # design=~Substrate
+  ## converting to dds object
+  dds = phyloseq::phyloseq_to_deseq2(physeq, design)    # example: design=~Substrate
+  ## estimating size factors
+  if(tolower(size_factors) == 'geomean'){
+    ## Calculate geometric means prior to estimate size factors
+    ### This method is not sensitive to zeros
+    geoMeans = apply(DESeq2::counts(dds), 1, gm_mean)
+    dds = DESeq2::estimateSizeFactors(dds, geoMeans = geoMeans)
+  } else
+  if(tolower(size_factors) == 'default'){
+    dds = DESeq2::estimateSizeFactors(dds)
+  } else
+  if(tolower(size_factors) == 'iterate'){
+    dds = DESeq2::estimateSizeFactors(dds, type='iterate')
+  } else {
+    stop('size_factors parameter not recognized')
+  }
+  ## deseq call
   dds = DESeq2::DESeq(dds, quiet = TRUE, fitType = "local")
   theta = l2fc_threshold
 
   # results
-  res = DESeq2::results(dds, independentFiltering=FALSE)
+  res = DESeq2::results(dds, independentFiltering = FALSE)
   res$OTU = rownames(res)
 
   # p-value
   beta = res$log2FoldChange
   betaSE = res$lfcSE
-  p = stats::pnorm(beta, theta, betaSE, lower.tail=FALSE)
+  p = stats::pnorm(beta, theta, betaSE, lower.tail = FALSE)
   res$p = p
   d = data.frame(res[, c('OTU','log2FoldChange', 'p')])
 
