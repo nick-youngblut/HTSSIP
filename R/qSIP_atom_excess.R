@@ -80,8 +80,8 @@ qSIP_atom_excess_format = function(physeq, control_expr, treatment_rep){
   # removing 'infinite' BD values
   tmp = colnames(df_OTU)
   df_OTU = df_OTU %>%
-    dplyr::mutate_(Buoyant_density = "HTSSIP::as.Num(Buoyant_density)",
-                   Count = "HTSSIP::as.Num(Count)") %>%
+    dplyr::mutate_(Buoyant_density = "as.character(as.numeric(Buoyant_density))",
+                   Count = "as.character(as.numeric(Count))") %>%
     dplyr::filter_('! is.infinite(Buoyant_density)') %>%
     dplyr::filter_('! is.na(Buoyant_density)') %>%
     as.data.frame

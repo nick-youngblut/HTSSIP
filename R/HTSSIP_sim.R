@@ -40,6 +40,7 @@ gradient_sim = function(locs, params,
   colnames(df_OTU) = gsub('^', 'OTU.', 1:nrow(params))
   #print(df_OTU)
   df_OTU$Buoyant_density = locs   #as.character(round(locs, digits=4))
+  df_OTU$Fraction = df_OTU$Buoyant_density %>% as.factor %>% as.numeric
   return(df_OTU)
 }
 
@@ -106,11 +107,12 @@ HTSSIP_sim = function(locs, params,
   # vary the BDs a bit
   x = stats::rnorm(nrow(df_OTU), mean=0, sd=0.002)
   df_OTU$Buoyant_density = as.Num(df_OTU$Buoyant_density) + x
-  df_OTU$Buoyant_density = round(df_OTU$Buoyant_density, digits=7)
+  df_OTU$Buoyant_density = round(df_OTU$Buoyant_density, digits=6)
 
   # metadata
-  X = c('Gradient', 'Buoyant_density')
+  X = c('Gradient', 'Buoyant_density', 'Fraction')
   df_meta = df_OTU[,X]
+  df_OTU$Fraction = NULL
 
   # adding to metadata
   if(!is.null(meta)){
@@ -119,7 +121,7 @@ HTSSIP_sim = function(locs, params,
   }
 
   # formatting OTU table
-  rownames(df_OTU) = apply(df_meta[,X], 1, paste, collapse="_")
+  rownames(df_OTU) = gsub(' ', '', apply(df_meta[,X], 1, paste, collapse="_"))
   df_OTU$Gradient = NULL
   df_OTU$Buoyant_density = NULL
   df_OTU = t(df_OTU)
@@ -144,3 +146,4 @@ HTSSIP_sim = function(locs, params,
 
   return(physeq)
 }
+

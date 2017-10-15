@@ -60,7 +60,6 @@ filter_l2fc = function(df_l2fc, padj_cutoff=0.1){
 #'   \item For each OTU, select the BD window with the greatest log2 fold change value
 #' }
 #'
-#'
 #' @param physeq  Phyloseq object
 #' @param design  \code{design} parameter used for DESeq2 analysis.
 #'   This is usually used to differentiate labeled-treatment and unlabeld-control samples.

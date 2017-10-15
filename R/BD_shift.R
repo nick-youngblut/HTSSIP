@@ -25,6 +25,8 @@ max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
 #' @param physeq  Phyloseq object
 #' @param ex  Expression for selecting the control samples to
 #' compare to the non-control samples.
+#' @param rep  Column specifying gradient replicates. If the column
+#' is not present, then all are considered "Replicate=1"
 #' @return a data.frame object of formatted metadata
 #'
 #'
@@ -35,19 +37,30 @@ max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
 #' metadata = format_metadata(physeq_S2D1, ex)
 #' }
 #'
-format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
+format_metadata = function(physeq, ex="Substrate=='12C-Con'", rep='Replicate'){
+  # converting phyloseq sample data to data.frame
   metadata = phyloseq2df(physeq, table_func=phyloseq::sample_data)
   metadata$METADATA_ROWNAMES = rownames(metadata)
 
+  # assertions
   stopifnot(all(c('Buoyant_density', 'Fraction') %in% colnames(metadata)))
 
+  # adding replicate (if provided)
+  if(is.null(rep)){
+    stop('rep cannot be null; it must be new or existing column name')
+  }
+  if(! rep %in% colnames(metadata)){
+    metadata[,rep] = 1
+  }
+
+  # formatting
   metadata = metadata %>%
     dplyr::mutate_(IS__CONTROL = ex) %>%
     dplyr::rename_('BD_min' = "Buoyant_density") %>%
-    dplyr::mutate_(Fraction = "HTSSIP::as.Num(Fraction)",
-                   BD_min = "HTSSIP::as.Num(BD_min)") %>%
+    dplyr::mutate_(Fraction = "as.numeric(as.character(Fraction))",
+                   BD_min = "as.numeric(as.character(BD_min))") %>%
     dplyr::arrange_("BD_min") %>%
-    dplyr::group_by_("IS__CONTROL") %>%
+    dplyr::group_by_("IS__CONTROL", rep) %>%
     dplyr::mutate_(BD_max = "lead(BD_min)",
                    BD_max = "ifelse(is.na(BD_max), BD_min, BD_max)",
                    BD_range = "BD_max - BD_min") %>%
@@ -60,7 +73,7 @@ format_metadata = function(physeq, ex = "Substrate=='12C-Con'"){
                            BD_to_set = metadata$median_BD_range)
   metadata = metadata %>%
     dplyr::mutate_(BD_range = "BD_max - BD_min") %>%
-    dplyr::select_("METADATA_ROWNAMES", "IS__CONTROL", "BD_min", "BD_max", "BD_range")
+    dplyr::select_("METADATA_ROWNAMES", rep, "IS__CONTROL", "BD_min", "BD_max", "BD_range")
 
   return(metadata)
 }
@@ -308,7 +321,6 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
                     nperm=100, a=0.2,
                     parallel_perm=FALSE, parallel_dist=FALSE){
-
 
   # calculating unpermuted & permuted
   df_perm_id = data.frame('perm_id' = 0:nperm)

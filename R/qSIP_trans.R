@@ -67,7 +67,7 @@ OTU_qPCR_trans = function(physeq, qPCR,
   df_OTU_col = colnames(phyloseq::otu_table(physeq))
   df_OTU = phyloseq2df(physeq, phyloseq::otu_table)
   df_OTU_rn = rownames(df_OTU)
-  df_OTU = as.data.frame(apply(df_OTU, 2, as.Num))
+  df_OTU = as.data.frame(apply(df_OTU, 2, HTSSIP::as.Num))
   rownames(df_OTU) = df_OTU_rn
 
   # sum scale transformation

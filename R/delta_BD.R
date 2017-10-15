@@ -4,7 +4,7 @@ lin_interp = function(df, BD_min, BD_max, n=20){
   stopifnot(!is.null(df$Count))
 
   # linear interpolation function
-  BDs = df$Buoyant_density %>% as.Num
+  BDs = as.Num(df$Buoyant_density)
   lin_fun = stats::approxfun(x=BDs, y=as.Num(df$Count))
 
   # BDs (x) for interplation of abundances (y)
@@ -88,7 +88,7 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
     dplyr::ungroup()
 
   # BD min/max
-  df_OTU$Buoyant_density = df_OTU$Buoyant_density %>% as.Num
+  df_OTU$Buoyant_density = as.Num(df_OTU$Buoyant_density)
   if(is.null(BD_min)){
     BD_min = df_OTU$Buoyant_density %>% min
   }

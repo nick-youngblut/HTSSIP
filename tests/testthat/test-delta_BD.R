@@ -1,3 +1,5 @@
+# test_file('~/dev/HTSSIP/tests/testthat/test-delta_BD.R')
+
 test_that('linear interpolation of abundances from BD values',{
   df = data.frame(
     Buoyant_density = seq(1.68, 1.76, 0.01),

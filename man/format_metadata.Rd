@@ -4,13 +4,16 @@
 \alias{format_metadata}
 \title{Format phyloseq metadata for calculating BD range overlaps.}
 \usage{
-format_metadata(physeq, ex = "Substrate=='12C-Con'")
+format_metadata(physeq, ex = "Substrate=='12C-Con'", rep = "Replicate")
 }
 \arguments{
 \item{physeq}{Phyloseq object}
 
 \item{ex}{Expression for selecting the control samples to
 compare to the non-control samples.}
+
+\item{rep}{Column specifying gradient replicates. If the column
+is not present, then all are considered "Replicate=1"}
 }
 \value{
 a data.frame object of formatted metadata
