@@ -55,9 +55,15 @@ mean beta diversity of overlapping labeled treatment gradients is
 calculated for each unlabeled control, and the percent overlap of
 each labeled treatment fraction is used to weight the mean.
 
-A permutation test is used to determine 'BD shift windows'. The permutation
+A permutation test is used to determine "BD shift windows". The permutation
 test consists of permuting OTU abundances in the treatments and calculating
-beta-diversity. A boostrap confidence interval is calculated from the replicates.
+beta-diversity (relative to the control). "BD shift windows" are specifically
+defined as ≥3 consecutive fractions with beta-diversities within the CI,
+indicating OTUs have shifted to “heavy” fractions and substantially
+increased beta-diversity.
+
+Note: for calculating Unifrac values, phyloseq will select
+a root at random if the input phylogeny is not rooted.
 }
 \examples{
 data(physeq_S2D2)

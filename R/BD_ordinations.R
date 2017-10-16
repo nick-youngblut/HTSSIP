@@ -3,6 +3,9 @@
 #' For each phyloseq object in a list, calculates beta-diversity
 #' between all samples using the phyloseq::distance function.
 #'
+#' Note: for calculating Unifrac values, phyloseq will select
+#' a root at random if the input phylogeny is not rooted.
+#'
 #' @param physeq_l  A list of phyloseq objects
 #' @param method  See phyloseq::distance
 #' @param weighted  Weighted Unifrac (if calculating Unifrac)

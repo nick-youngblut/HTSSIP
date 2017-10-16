@@ -12,7 +12,7 @@
 #'
 max_BD_range = function(BD_range, BD_min, BD_max, BD_to_set){
   # if BD_range is negative, use BD_to_set value to set new BD_max
-  if(BD_range <= 0){
+  if(is.infinite(BD_range) | is.na(BD_range) | BD_range <= 0){
     return(BD_min + BD_to_set)
   } else {
     return(BD_max)
@@ -54,6 +54,7 @@ format_metadata = function(physeq, ex="Substrate=='12C-Con'", rep='Replicate'){
   }
 
   # formatting
+  metadata$BD_min = NULL
   metadata = metadata %>%
     dplyr::mutate_(IS__CONTROL = ex) %>%
     dplyr::rename_('BD_min' = "Buoyant_density") %>%
@@ -279,9 +280,15 @@ overlap_wmean_dist = function(df_dist){
 #' calculated for each unlabeled control, and the percent overlap of
 #' each labeled treatment fraction is used to weight the mean.
 #'
-#' A permutation test is used to determine 'BD shift windows'. The permutation
+#' A permutation test is used to determine "BD shift windows". The permutation
 #' test consists of permuting OTU abundances in the treatments and calculating
-#' beta-diversity. A boostrap confidence interval is calculated from the replicates.
+#' beta-diversity (relative to the control). "BD shift windows" are specifically
+#' defined as ≥3 consecutive fractions with beta-diversities within the CI,
+#' indicating OTUs have shifted to “heavy” fractions and substantially
+#' increased beta-diversity.
+#'
+#' Note: for calculating Unifrac values, phyloseq will select
+#' a root at random if the input phylogeny is not rooted.
 #'
 #' @param physeq  phyloseq object
 #' @param method  See phyloseq::distance

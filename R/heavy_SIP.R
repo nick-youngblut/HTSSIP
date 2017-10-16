@@ -108,7 +108,7 @@
 heavy_SIP = function(physeq,
                      ex="Substrate=='12C-Con'",
                      rep='Replicate',
-                     light_window=c(1.7, 1.72),
+                     light_window=c(1.68, 1.70),
                      heavy_window=c(1.73, 1.75),
                      comparison=c('H', 'H-v-L', 'H-v-H'),
                      hypo_test=c('binary', 't-test', 'wilcox'),
