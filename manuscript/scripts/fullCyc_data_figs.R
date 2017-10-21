@@ -1,3 +1,9 @@
+#--- Notes ---#
+# using fullCyc dataset subset for generating figures
+
+
+#--- init ---#
+#--- init ---#
 library(dplyr)
 library(ggplot2)
 devtools::load_all('.')
@@ -72,7 +78,7 @@ wmean_m = wmean %>%
   mutate(Substrate = gsub('.+(13C-[A-z]+).+', '\\1', .id),
          Day = gsub('.+Day ==[ \']*([0-9]+).+', 'Day \\1', .id),
          Day = Day %>% reorder(gsub('Day ', '', Day) %>% as.numeric),
-         BD_shift = wmean_dist >= wmean_dist_CI_low) %>%
+         BD_shift = wmean_dist >= wmean_dist_CI_high) %>%
   arrange(Day, Substrate, BD_min.x) %>%
   group_by(Day, Substrate) %>%
   mutate(window = (BD_shift == TRUE & lag(BD_shift) == TRUE & lag(BD_shift, 2) == TRUE) |
@@ -99,6 +105,7 @@ p_shift = ggplot(wmean_m, aes(BD_min.x, wmean_dist)) +
   theme(title = element_text(size=14),
         axis.text.x = element_text(angle=45, hjust=1))
 p_shift
+
 
 # control vs control
 ## calculating BD shift

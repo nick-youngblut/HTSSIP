@@ -1,4 +1,4 @@
-#--- Description ---#
+#--- Notes ---#
 # Simulating data with HTSSIP functions and conducting analyses
 # using the simulated data
 # NOTE: see `SIPSim_genome10.R` for alternative version of Fig3

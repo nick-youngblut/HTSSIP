@@ -195,8 +195,8 @@ overlap_wmean_dist = function(df_dist){
 }
 
 
-# permuting OTU abundance
-.perm_otu = function(physeq, replace=TRUE){
+# permuting OTU abundance across samples
+.perm_otu = function(physeq, replace=FALSE){
   # permute
   otu = phyloseq::otu_table(physeq) %>% as.data.frame
   otu_names = rownames(otu)
@@ -204,6 +204,7 @@ overlap_wmean_dist = function(df_dist){
   n_otu = nrow(otu)
   n_samp = ncol(otu)
   otu = otu %>% as.matrix
+  otu = otu[1:n_otu, base::sample(1:n_samp, n_samp, replace=replace)]
   otu = otu[1:n_otu, base::sample(1:n_samp, n_samp, replace=replace)]
   rownames(otu) = otu_names
   colnames(otu) = samp_names
@@ -214,27 +215,74 @@ overlap_wmean_dist = function(df_dist){
   return(physeq)
 }
 
+# creating a list of overlapping fractions; overlap determined by control
+.overlap_fracs = function(cont_frac_id, metadata_overlap){
+  treat_fracs = metadata_overlap[metadata_overlap$METADATA_ROWNAMES.x == cont_frac_id,
+                                 'METADATA_ROWNAMES.y']
+  fracs = unique(c(cont_frac_id, treat_fracs))
+  return(fracs)
+}
+
+# permuting overlapping fractions; overlapping treatments for each control fraction
+.perm_overlap = function(frac_ids, physeq, metadata_ord){
+  physeq_sub = phyloseq::prune_samples(metadata_ord$METADATA_ROWNAMES %in% frac_ids,
+                                       physeq)
+  physeq_sub = .perm_otu(physeq_sub)
+  return(physeq_sub)
+}
+
+
+
 # sub-function for BD_shift
 .BD_shift = function(perm_id, physeq, method='unifrac', weighted=TRUE,
                      fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
+                     perm_method = c('overlap', 'treatment'),
                      parallel=FALSE){
+  # param assertions
+  perm_method = perm_method[1]
+
   # wrapper function
   ## formatting metadata
   physeq = physeq_format(physeq)
   metadata = format_metadata(physeq, ex)
-  ## permuting OTU abundances (just control OTUs)
+
+  ## fraction overlap
+  metadata_overlap = fraction_overlap(metadata)
+
+  ## permuting OTU abundances in treatment fractions
   if(perm_id > 0){
+    # ordering metadata
     metadata_ord = metadata %>% as.data.frame
     rownames(metadata_ord) = metadata_ord$METADATA_ROWNAMES
     metadata_ord = metadata_ord[phyloseq::sample_names(physeq),
                                 1:ncol(metadata_ord)]
-    physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
-    physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
-    physeq_treat = .perm_otu(physeq_treat)
-    physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
+    # permutation method
+    if(perm_method == 'overlap'){
+      # list of overlapping fractions
+      cont_fracs = unique(metadata_overlap$METADATA_ROWNAMES.x)
+      frac_ids = sapply(cont_fracs, .overlap_fracs, metadata_overlap=metadata_overlap)
+      # parsing overlapping treatment fractions with each control
+      physeq_l = lapply(frac_ids, .perm_overlap,
+                          physeq=physeq, metadata_ord=metadata_ord)
+      physeq_l[[length(physeq_l)+1]] = physeq  # for adding samples missing from perm
+      # merging phyloseq objects back together
+      n_samp = phyloseq::nsamples(physeq)
+      n_tax = phyloseq::ntaxa(physeq)
+      physeq = do.call(phyloseq::merge_phyloseq, physeq_l)
+      ## assertions
+      stopifnot(phyloseq::nsamples(physeq) == n_samp)
+      stopifnot(phyloseq::ntaxa(physeq) == n_tax)
+    } else
+    if(perm_method == 'treatment'){
+      physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
+      physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
+      physeq_treat = .perm_otu(physeq_treat)
+      physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
+    } else {
+      stop(sprintf('perm_method not recognized: %s', perm_method))
+    }
   }
-  ## fraction overlap
-  metadata = fraction_overlap(metadata)
+
   # Calculating distances
   physeq_d = phyloseq::distance(physeq,
                                 method='unifrac',
@@ -245,7 +293,7 @@ overlap_wmean_dist = function(df_dist){
   physeq_d = parse_dist(physeq_d)
 
   # joining dataframes
-  physeq_d = dplyr::inner_join(physeq_d, metadata,
+  physeq_d = dplyr::inner_join(physeq_d, metadata_overlap,
                              c('sample.x'='METADATA_ROWNAMES.x',
                                'sample.y'='METADATA_ROWNAMES.y'))
 
@@ -297,6 +345,7 @@ overlap_wmean_dist = function(df_dist){
 #' @param normalized  Normalized abundances
 #' @param ex  Expression for selecting controls based on metadata
 #' @param a  The alpha for calculating confidence intervals
+#' @param perm_method  "BD shift window" permutation method. See description.
 #' @param nperm  Number of bootstrap permutations
 #' @param parallel_perm  Calculate bootstrap permutations in parallel
 #' @param parallel_dist  Calculate beta-diveristy distances in parallel
@@ -326,7 +375,7 @@ overlap_wmean_dist = function(df_dist){
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
-                    nperm=100, a=0.2,
+                    nperm=100, a=0.1, perm_method=c('overlap', 'treatment'),
                     parallel_perm=FALSE, parallel_dist=FALSE){
 
   # calculating unpermuted & permuted
@@ -338,13 +387,18 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                         fast=fast,
                         normalized=normalized,
                         ex=ex,
+                        perm_method=perm_method[1],
                         parallel=parallel_dist,
                         .parallel=parallel_perm)
   ## parsing data
+  ### actual data
   df_wmean = df_perm %>%
-    filter_('perm_id == 0')
+    dplyr::filter_('perm_id == 0') %>%
+    dplyr::distinct_('sample.x', .keep_all=TRUE) %>%
+    dplyr::select_('-dplyr::ends_with(".y")')
+  ### permuted dataset
   df_perm = df_perm %>%
-    filter_('perm_id > 0')
+    dplyr::filter_('perm_id > 0')
 
   # perm CI
   mutate_call1 = lazyeval::interp(~ stats::quantile(wmean_dist, a/2, na.rm=TRUE),
@@ -358,14 +412,17 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
     dplyr::summarize_(.dots=dots)
   ## calculating CIs for each control fraction
   df_perm = df_perm %>%
-    dplyr::group_by_("sample.x", "sample.y", "BD_min.x") %>%
+    dplyr::group_by_("sample.x", "BD_min.x") %>%
     dplyr::summarize_(.dots=dots)
+
+  # assertion that permutation should have same samples as real
+  stopifnot(all(df_wmean$sample.x %in% df_perm$sample.x))
 
   # joining
   df_wmean$wmean_dist_CI_low_global = df_perm_global$wmean_dist_CI_low[1]
   df_wmean$wmean_dist_CI_high_global = df_perm_global$wmean_dist_CI_high[1]
   df_wmean = dplyr::left_join(df_wmean, df_perm,
-                              c("sample.x", "sample.y", "BD_min.x"))
+                              c("sample.x", "BD_min.x"))
 
   # return
   return(df_wmean)

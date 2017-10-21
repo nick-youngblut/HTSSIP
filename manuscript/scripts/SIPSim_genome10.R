@@ -1,3 +1,9 @@
+#--- Notes ---#
+#  Used SIPSim to simulate phyloseq object for 10 genomes
+#
+
+
+#--- init ---#
 library(dplyr)
 library(tidyr)
 library(ggplot2)
