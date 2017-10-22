@@ -100,6 +100,9 @@ format_metadata = function(physeq, ex="Substrate=='12C-Con'", rep='Replicate'){
 #' }
 #'
 perc_overlap = function(x.start, x.end, y.start, y.end){
+#  if(x.start == y.start & x.end == y.end){
+#    return(100)
+#  }
   x.len = abs(x.end - x.start)
   # largest start
   max.start = max(c(x.start, y.start))
@@ -135,7 +138,7 @@ fraction_overlap = function(metadata){
   stopifnot(nrow(meta_treat) > 0)
 
   # merging; calculating fraction overlap; filtering
-  metadata_j = merge(meta_cont, meta_treat, by=NULL)
+  metadata_j = base::merge(meta_cont, meta_treat, by=NULL)
   metadata_j$perc_overlap = mapply(perc_overlap,
                                    metadata_j$BD_min.x,
                                    metadata_j$BD_max.x,
@@ -143,7 +146,6 @@ fraction_overlap = function(metadata){
                                    metadata_j$BD_max.y)
   metadata_j = dplyr::filter(metadata_j, perc_overlap > 0)
   stopifnot(nrow(metadata_j) > 0)
-
   return(metadata_j)
 }
 
@@ -184,11 +186,12 @@ parse_dist = function(d){
 #' @return a data.frame object of weighted mean distances
 #'
 overlap_wmean_dist = function(df_dist){
+
   # calculating weighted mean distance
   df_dist_s = df_dist %>%
     dplyr::group_by_("sample.x", "BD_min.x") %>%
     dplyr::mutate_(n_over_fracs = "n()",
-                  wmean_dist = "stats::weighted.mean(distance, perc_overlap)") %>%
+                   wmean_dist = "stats::weighted.mean(distance, perc_overlap)") %>%
     dplyr::ungroup() %>%
     dplyr::distinct_("sample.x", "wmean_dist", .keep_all=TRUE)
   return(df_dist_s)
@@ -196,7 +199,9 @@ overlap_wmean_dist = function(df_dist){
 
 
 # permuting OTU abundance across samples
-.perm_otu = function(physeq, replace=FALSE){
+.perm_otu = function(physeq, replace=FALSE, adjacent=FALSE,
+                     template=NULL, metadata=NULL, n_lead=3){
+
   # permute
   otu = phyloseq::otu_table(physeq) %>% as.data.frame
   otu_names = rownames(otu)
@@ -204,14 +209,61 @@ overlap_wmean_dist = function(df_dist){
   n_otu = nrow(otu)
   n_samp = ncol(otu)
   otu = otu %>% as.matrix
-  otu = otu[1:n_otu, base::sample(1:n_samp, n_samp, replace=replace)]
-  otu = otu[1:n_otu, base::sample(1:n_samp, n_samp, replace=replace)]
-  rownames(otu) = otu_names
-  colnames(otu) = samp_names
-  otu = phyloseq::otu_table(otu, taxa_are_rows=TRUE)
-  physeq = phyloseq::phyloseq(otu,
-                              phyloseq::sample_data(physeq, errorIfNULL=FALSE),
-                              phyloseq::phy_tree(physeq, errorIfNULL=FALSE))
+  # if template, expanding OTU table to match template
+  if(!is.null(template)){
+    n_samp = phyloseq::otu_table(template) %>% ncol
+    otu = otu[,base::sample(1:ncol(otu), n_samp, replace=TRUE)]
+  }
+
+  # permute
+  if(adjacent == TRUE){
+    if(is.null(metadata)){
+      stop('metadata cannot be null for "adjacent"')
+    }
+    # ordering by BD_min
+    metadata = metadata[metadata$METADATA_ROWNAMES %in%
+                          colnames(phyloseq::otu_table(template)),]
+    colnames(otu) = colnames(phyloseq::otu_table(template))
+    metadata = metadata %>%
+      dplyr::group_by_('Replicate') %>%
+      dplyr::mutate_(Fraction = 'as.numeric(as.factor(BD_min))') %>%
+      dplyr::ungroup() %>%
+      dplyr::arrange_('Fraction')
+    otu = otu[,metadata$METADATA_ROWNAMES] %>% t
+
+    # permutating across just adjacent samples
+    n_rep = metadata$Replicate %>% unique %>% length
+    strata = rep(1:nrow(otu), each=n_rep * n_lead)[1:nrow(otu)]
+    if(strata[length(strata)] != strata[length(strata)-1]){
+      strata[length(strata)] = strata[length(strata)-1]
+    }
+    otu = vegan::permatfull(otu,
+                            fixedmar="both", shuffle="samp",
+                            strata=strata, times=1)
+    otu = otu$perm[[1]] %>% t
+  } else {
+    # permuting across all samples ('ind' by vegan orientation)
+    otu = vegan::permatfull(otu, fixedmar="both", shuffle="ind", times=1)
+    otu = otu$perm[[1]]
+  }
+
+  # re-making phyloseq object
+  if(is.null(template)){
+    rownames(otu) = otu_names
+    colnames(otu) = samp_names
+    otu = phyloseq::otu_table(otu, taxa_are_rows=TRUE)
+    physeq = phyloseq::phyloseq(otu,
+                                phyloseq::sample_data(physeq, errorIfNULL=FALSE),
+                                phyloseq::phy_tree(physeq, errorIfNULL=FALSE))
+  } else {
+    rownames(otu) = phyloseq::otu_table(template) %>% rownames
+    colnames(otu) = phyloseq::otu_table(template) %>% colnames
+    otu = phyloseq::otu_table(otu, taxa_are_rows=TRUE)
+    physeq = phyloseq::phyloseq(otu,
+                                phyloseq::sample_data(template, errorIfNULL=FALSE),
+                                phyloseq::phy_tree(template, errorIfNULL=FALSE))
+  }
+  # return
   return(physeq)
 }
 
@@ -236,7 +288,7 @@ overlap_wmean_dist = function(df_dist){
 # sub-function for BD_shift
 .BD_shift = function(perm_id, physeq, method='unifrac', weighted=TRUE,
                      fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
-                     perm_method = c('overlap', 'treatment'),
+                     perm_method = c('control', 'treatment', 'overlap', 'adjacent'),
                      parallel=FALSE){
   # param assertions
   perm_method = perm_method[1]
@@ -257,7 +309,14 @@ overlap_wmean_dist = function(df_dist){
     metadata_ord = metadata_ord[phyloseq::sample_names(physeq),
                                 1:ncol(metadata_ord)]
     # permutation method
-    if(perm_method == 'overlap'){
+    if(perm_method == 'adjacent'){ # null treatment = permuting OTU abundances among adjacent controls
+      physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
+      physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
+      physeq_treat = .perm_otu(physeq_control, adjacent=TRUE,
+                               template=physeq_treat, metadata=metadata_ord)
+      physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
+    } else
+    if(perm_method == 'overlap'){ # permuting OTU abundances across overlapping control & treatment
       # list of overlapping fractions
       cont_fracs = unique(metadata_overlap$METADATA_ROWNAMES.x)
       frac_ids = sapply(cont_fracs, .overlap_fracs, metadata_overlap=metadata_overlap)
@@ -273,12 +332,18 @@ overlap_wmean_dist = function(df_dist){
       stopifnot(phyloseq::nsamples(physeq) == n_samp)
       stopifnot(phyloseq::ntaxa(physeq) == n_tax)
     } else
-    if(perm_method == 'treatment'){
+    if(perm_method == 'control'){ # permuting OTU abundances across all treatment samples
+      physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
+      physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
+      physeq_treat = .perm_otu(physeq_control, template=physeq_treat)
+      physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
+    } else
+    if(perm_method == 'treatment'){ # permuting OTU abundances across all treatment samples
       physeq_control = phyloseq::prune_samples(metadata_ord$IS__CONTROL==TRUE, physeq)
       physeq_treat = phyloseq::prune_samples(metadata_ord$IS__CONTROL==FALSE, physeq)
       physeq_treat = .perm_otu(physeq_treat)
       physeq = phyloseq::merge_phyloseq(physeq_control, physeq_treat)
-    } else {
+      } else {
       stop(sprintf('perm_method not recognized: %s', perm_method))
     }
   }
@@ -299,6 +364,7 @@ overlap_wmean_dist = function(df_dist){
 
   # calculating weighted mean distance
   physeq_d_m = overlap_wmean_dist(physeq_d)
+
 
   # return
   return(physeq_d_m)
@@ -328,15 +394,27 @@ overlap_wmean_dist = function(df_dist){
 #' calculated for each unlabeled control, and the percent overlap of
 #' each labeled treatment fraction is used to weight the mean.
 #'
-#' A permutation test is used to determine "BD shift windows". The permutation
-#' test consists of permuting OTU abundances in the treatments and calculating
-#' beta-diversity (relative to the control). "BD shift windows" are specifically
-#' defined as ≥3 consecutive fractions with beta-diversities within the CI,
-#' indicating OTUs have shifted to “heavy” fractions and substantially
-#' increased beta-diversity.
+#' A permutation test is used to determine "BD shift windows".
+#' OTU abundances are permuted, and beta-diversity is calculated.
+#' The permutations are used to calculate confidence intervals.
+#' The possible permutation methods are:
+#' \itemize{
+#'  \item{"treatment" = }{
+#'  OTU abundances are permuted among all treatment samples.
+#'  Thus, a "homogenized" treatment gradient null model.
+#'  }
+#'  \item{"overlap" = }{
+#'  OTU abundances are permuted among overlapping control & treatment fractions.
+#'  Thus, is beta-diversity higher than if the overlapping treatment & control
+#'  samples were homogenized. This method tends to be too permisive.
+#'  }
+#'  \item{"adjacent" = }{
+#'  The null "treatment" communities are generated by permuting OTU abundances
+#'  among adjacent control fractions. Thus, null model is local gradient region
+#'  was homogenized.
+#'  }
+#' }
 #'
-#' Note: for calculating Unifrac values, phyloseq will select
-#' a root at random if the input phylogeny is not rooted.
 #'
 #' @param physeq  phyloseq object
 #' @param method  See phyloseq::distance
@@ -375,7 +453,8 @@ overlap_wmean_dist = function(df_dist){
 #'
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
-                    nperm=100, a=0.1, perm_method=c('overlap', 'treatment'),
+                    perm_method=c('control', 'treatment', 'overlap', 'adjacent'),
+                    nperm=100, a=0.1,
                     parallel_perm=FALSE, parallel_dist=FALSE){
 
   # calculating unpermuted & permuted
@@ -414,9 +493,6 @@ BD_shift = function(physeq, method='unifrac', weighted=TRUE,
   df_perm = df_perm %>%
     dplyr::group_by_("sample.x", "BD_min.x") %>%
     dplyr::summarize_(.dots=dots)
-
-  # assertion that permutation should have same samples as real
-  stopifnot(all(df_wmean$sample.x %in% df_perm$sample.x))
 
   # joining
   df_wmean$wmean_dist_CI_low_global = df_perm_global$wmean_dist_CI_low[1]

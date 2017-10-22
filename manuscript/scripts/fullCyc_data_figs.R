@@ -3,7 +3,6 @@
 
 
 #--- init ---#
-#--- init ---#
 library(dplyr)
 library(ggplot2)
 devtools::load_all('.')
@@ -72,13 +71,15 @@ p_ord_cont
 # treatment vs control
 ## calculating BD shift
 doParallel::registerDoParallel(ncores)
-wmean = plyr::ldply(physeq_S2D2_l, BD_shift, parallel_perm=TRUE)
+wmean = plyr::ldply(physeq_S2D2_l, BD_shift,
+                    perm_method='control',
+                    parallel_perm=TRUE)
 ## formatting
 wmean_m = wmean %>%
   mutate(Substrate = gsub('.+(13C-[A-z]+).+', '\\1', .id),
          Day = gsub('.+Day ==[ \']*([0-9]+).+', 'Day \\1', .id),
          Day = Day %>% reorder(gsub('Day ', '', Day) %>% as.numeric),
-         BD_shift = wmean_dist >= wmean_dist_CI_high) %>%
+         BD_shift = wmean_dist > wmean_dist_CI_high) %>%
   arrange(Day, Substrate, BD_min.x) %>%
   group_by(Day, Substrate) %>%
   mutate(window = (BD_shift == TRUE & lag(BD_shift) == TRUE & lag(BD_shift, 2) == TRUE) |
@@ -89,13 +90,13 @@ wmean_m = wmean %>%
 
 ## plotting, with facetting by 13C-treatment
 x_lab = bquote('Buoyant density (g '* ml^-1*')')
-#y_lims = c(0, round(max(wmean_m$wmean_dist)+0.005, 2))
+y_lims = c(0, 0.38)
 y_lims = c(0, round(max(wmean_m$wmean_dist_CI_high)+0.005, 2))
 p_shift = ggplot(wmean_m, aes(BD_min.x, wmean_dist)) +
   geom_line(alpha=0.3) +
   geom_linerange(aes(ymin=wmean_dist_CI_low,
                      ymax=wmean_dist_CI_high),
-                 alpha=0.2) +
+                 size=0.7, alpha=0.3) +
   geom_point(aes(color=BD_shift)) +
   scale_y_continuous(limits=y_lims) +
   scale_color_discrete('Gradient\nfraction\nin BD shift\nwindow?') +
@@ -111,12 +112,13 @@ p_shift
 ## calculating BD shift
 doParallel::registerDoParallel(ncores)
 wmean = plyr::ldply(physeq_CR2_l, BD_shift,
+                    perm_method='control',
                     parallel_perm=TRUE,
                     ex="Microcosm_replicate=='2'")
 ## formatting
 wmean_m = wmean %>%
   mutate(Substrate = '12C-Con, Rep2 vs\n12C-Con, Rep1',
-         BD_shift = wmean_dist > wmean_dist_CI_low) %>%
+         BD_shift = wmean_dist > wmean_dist_CI_high) %>%
   arrange(Substrate, BD_min.x) %>%
   group_by(Substrate) %>%
   mutate(window = (BD_shift == TRUE & lag(BD_shift) == TRUE & lag(BD_shift, 2) == TRUE) |
@@ -156,8 +158,11 @@ p_explr
 
 outF = file.path(outDir, 'BD-ord_BD-shift.pdf')
 ggsave(outF, p_explr, width=10, height=8.75)
+cat('File written:', outF, '\n')
 outF = file.path(outDir, 'BD-ord_BD-shift.png')
 ggsave(outF, p_explr, width=10, height=8.75)
+cat('File written:', outF, '\n')
+
 
 # p_explr = cowplot::ggdraw() +
 #   cowplot::draw_plot(p_ord, 0, .4, 1, .6) +
@@ -168,6 +173,7 @@ ggsave(outF, p_explr, width=10, height=8.75)
 # ggsave(outF, p_explr, width=6, height=7)
 # outF = file.path(outDir, 'BD-ord_BD-shift.png')
 # ggsave(outF, p_explr, width=6, height=7)
+
 
 
 

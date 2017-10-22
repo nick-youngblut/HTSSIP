@@ -280,12 +280,12 @@ incorp_res = HRSIP_res %>%
                 HRSIP_incorp, MWHRSIP_incorp, qSIP_incorp) %>%
   dplyr::mutate(OTU_num = gsub('OTU.', '', OTU) %>% as.character %>% as.numeric,
                 OTU = OTU %>% reorder(OTU_num),
-                method = ifelse(method=='heavySIP_incorp', 'heavy-SIP', method),
+                method = ifelse(method=='heavySIP_incorp', 'Mann-Whitney', method),
                 method = ifelse(method=='qSIP_incorp', 'q-SIP', method),
                 method = ifelse(method=='HRSIP_incorp', 'HR-SIP', method),
                 method = ifelse(method=='MWHRSIP_incorp', 'MW-HR-SIP', method),
                 method = factor(method, levels=c('q-SIP', 'MW-HR-SIP',
-                                                 'HR-SIP', 'heavy-SIP')))
+                                                 'HR-SIP', 'Mann-Whitney')))
 
 p_incorp = ggplot(incorp_res, aes(OTU, method, fill=incorp_status)) +
   geom_tile() +
@@ -356,9 +356,9 @@ p_shift
 
 #--- combining plots ---#
 p_comb = cowplot::ggdraw() +
-  cowplot::draw_plot(p_abund,  0.01, 0.35, 0.99, 0.65) +
-  cowplot::draw_plot(p_incorp, 0, 0.20, 0.96, 0.15) +
-  cowplot::draw_plot(p_shift,  0.02, 0.00, 0.92, 0.20) +
+  cowplot::draw_plot(p_abund,  0.015, 0.35, 0.98, 0.65) +
+  cowplot::draw_plot(p_incorp, 0, 0.20, 0.965, 0.15) +
+  cowplot::draw_plot(p_shift,  0.035, 0.00, 0.91, 0.20) +
   cowplot::draw_plot_label(c('A)', 'B)', 'C)'),
                            c(0, 0, 0),
                            c(1, 0.37, 0.20), size = 11)
@@ -366,9 +366,9 @@ p_comb
 
 ## saving
 outF = file.path(outDir, 'sim-data_abund_incorp_shift.pdf')
-ggsave(outF, p_comb, width=8, height=7)
+ggsave(outF, p_comb, width=9, height=7)
 cat('File written:', outF, '\n')
 outF = file.path(outDir, 'sim-data_abund_incorp_shift.png')
-ggsave(outF, p_comb, width=8, height=7)
+ggsave(outF, p_comb, width=9, height=7)
 cat('File written:', outF, '\n')
 
