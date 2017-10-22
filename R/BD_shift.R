@@ -234,9 +234,11 @@ overlap_wmean_dist = function(df_dist){
     # permutating across just adjacent samples
     n_rep = metadata$Replicate %>% unique %>% length
     strata = rep(1:nrow(otu), each=n_rep * n_lead)[1:nrow(otu)]
+    ## dealing with edge cases
     if(strata[length(strata)] != strata[length(strata)-1]){
       strata[length(strata)] = strata[length(strata)-1]
     }
+    ## permuting
     otu = vegan::permatfull(otu,
                             fixedmar="both", shuffle="samp",
                             strata=strata, times=1)
@@ -284,8 +286,8 @@ overlap_wmean_dist = function(df_dist){
 }
 
 
-
-# sub-function for BD_shift
+# Calculating BD shift beta-diversity values
+# @return a data.frame object of weighted mean distances
 .BD_shift = function(perm_id, physeq, method='unifrac', weighted=TRUE,
                      fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
                      perm_method = c('control', 'treatment', 'overlap', 'adjacent'),
@@ -399,6 +401,13 @@ overlap_wmean_dist = function(df_dist){
 #' The permutations are used to calculate confidence intervals.
 #' The possible permutation methods are:
 #' \itemize{
+#'  \item{"control" = }{
+#'  OTU abundances are permuted among all control samples,
+#'  and these new samples are used as a null treatment.
+#'  Thus, this provides a baseline beta-diversity distribution
+#'  that would result from comparing the control fractions to
+#'  a randomly shuffled version of themselves.
+#'  }
 #'  \item{"treatment" = }{
 #'  OTU abundances are permuted among all treatment samples.
 #'  Thus, a "homogenized" treatment gradient null model.
@@ -454,8 +463,7 @@ overlap_wmean_dist = function(df_dist){
 BD_shift = function(physeq, method='unifrac', weighted=TRUE,
                     fast=TRUE, normalized=FALSE, ex="Substrate=='12C-Con'",
                     perm_method=c('control', 'treatment', 'overlap', 'adjacent'),
-                    nperm=100, a=0.1,
-                    parallel_perm=FALSE, parallel_dist=FALSE){
+                    nperm=100, a=0.1, parallel_perm=FALSE, parallel_dist=FALSE){
 
   # calculating unpermuted & permuted
   df_perm_id = data.frame('perm_id' = 0:nperm)

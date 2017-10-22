@@ -147,7 +147,6 @@ qSIP_atom_excess = function(physeq,
       dplyr::group_by_('IS_CONTROL', 'OTU', treatment_rep) %>%
       dplyr::summarize_(W = "stats::weighted.mean(Buoyant_density, Count, na.rm=TRUE)") %>%
       dplyr::ungroup()
-    print(df_OTU_W)
   }
 
   df_OTU_s = df_OTU_W %>%

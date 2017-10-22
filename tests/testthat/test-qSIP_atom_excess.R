@@ -1,3 +1,5 @@
+# test_file('~/dev/HTSSIP/tests/testthat/test-qSIP_atom_excess.R')
+
 test_that('qSIP_BD_shift working', {
   skip_on_cran()
 

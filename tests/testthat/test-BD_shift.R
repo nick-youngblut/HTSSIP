@@ -1,3 +1,5 @@
+# test_file('~/dev/HTSSIP/tests/testthat/test-BD_shift.R')
+
 test_that('Percent overlap is working',{
   x = perc_overlap(0, 1, 0, 0.5)
   expect_equal(x, 50)
@@ -9,7 +11,7 @@ test_that('Percent overlap is working',{
 
 test_that('parse_dist is working',{
   skip_on_cran()
-
+  # calculating beta-diversity values
   physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
                              method='unifrac',
                              weighted=TRUE,
@@ -19,20 +21,6 @@ test_that('parse_dist is working',{
   expect_is(physeq_S2D2_d, 'data.frame')
 })
 
-
-# test_that('parse_dist is working',{
-#   skip_on_cran()
-#
-#   physeq_S2D2_d = phyloseq::distance(physeq_S2D2,
-#                              method='unifrac',
-#                              weighted=TRUE,
-#                              fast=TRUE,
-#                              normalized=FALSE)
-#   physeq_S2D2_d = parse_dist(physeq_S2D2_d)
-#   wmean = overlap_wmean_dist(physeq_S2D2_d)
-#   expect_is(wmean, 'data.frame')
-#
-# })
 
 expect_wmean = function(wmean){
   expect_is(wmean, 'data.frame')
@@ -57,11 +45,11 @@ test_that('BD_shift runs w/ default',{
   data(physeq_S2D2_l)
 
   # dataset 1
-  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=5)
+  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=3)
   expect_wmean(wmean)
 
   # dataset 2
-  wmean = BD_shift(physeq_S2D2_l[[2]], nperm=5)
+  wmean = BD_shift(physeq_S2D2_l[[2]], nperm=3)
   expect_wmean(wmean)
 
   # ggplot
@@ -70,10 +58,20 @@ test_that('BD_shift runs w/ default',{
   expect_is(p, 'ggplot')
 })
 
+test_that('BD_shift runs with differing permutation methods',{
+  skip_on_cran()
+  data(physeq_S2D2_l)
+
+  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=3, perm_method='treatment')
+  expect_wmean(wmean)
+  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=3, perm_method='adjacent')
+  expect_wmean(wmean)
+  wmean = BD_shift(physeq_S2D2_l[[1]], nperm=3, perm_method='overlap')
+  expect_wmean(wmean)
+})
+
 test_that('BD_shift runs w/ Bray-Curtis',{
   skip_on_cran()
-
-  ## basic call
   data(physeq_S2D2_l)
 
   # dataset 1

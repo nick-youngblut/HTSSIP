@@ -7,9 +7,9 @@ data by calculating the beta diversity between unlabeled control
 and labeled treatment gradient fraction communities.}
 \usage{
 BD_shift(physeq, method = "unifrac", weighted = TRUE, fast = TRUE,
-  normalized = FALSE, ex = "Substrate=='12C-Con'", nperm = 100, a = 0.1,
-  perm_method = c("treatment", "overlap", "adjacent"),
-  parallel_perm = FALSE, parallel_dist = FALSE)
+  normalized = FALSE, ex = "Substrate=='12C-Con'",
+  perm_method = c("control", "treatment", "overlap", "adjacent"),
+  nperm = 100, a = 0.1, parallel_perm = FALSE, parallel_dist = FALSE)
 }
 \arguments{
 \item{physeq}{phyloseq object}
@@ -24,11 +24,11 @@ BD_shift(physeq, method = "unifrac", weighted = TRUE, fast = TRUE,
 
 \item{ex}{Expression for selecting controls based on metadata}
 
+\item{perm_method}{"BD shift window" permutation method. See description.}
+
 \item{nperm}{Number of bootstrap permutations}
 
 \item{a}{The alpha for calculating confidence intervals}
-
-\item{perm_method}{"BD shift window" permutation method. See description.}
 
 \item{parallel_perm}{Calculate bootstrap permutations in parallel}
 
@@ -58,8 +58,18 @@ mean beta diversity of overlapping labeled treatment gradients is
 calculated for each unlabeled control, and the percent overlap of
 each labeled treatment fraction is used to weight the mean.
 
-A permutation test is used to determine "BD shift windows". There are
+A permutation test is used to determine "BD shift windows".
+OTU abundances are permuted, and beta-diversity is calculated.
+The permutations are used to calculate confidence intervals.
+The possible permutation methods are:
 \itemize{
+ \item{"control" = }{
+ OTU abundances are permuted among all control samples,
+ and these new samples are used as a null treatment.
+ Thus, this provides a baseline beta-diversity distribution
+ that would result from comparing the control fractions to
+ a randomly shuffled version of themselves.
+ }
  \item{"treatment" = }{
  OTU abundances are permuted among all treatment samples.
  Thus, a "homogenized" treatment gradient null model.

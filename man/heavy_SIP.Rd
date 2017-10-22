@@ -45,7 +45,7 @@ or just heavy fraction samples ('heavy')}
 details.}
 }
 \value{
-a data.frame object of comparisons; one per OTU
+a data.frame object of hypothesis test results
 }
 \description{
 Compare taxon abundances in 'heavy' fractions versus specific controls.
@@ -65,13 +65,19 @@ t-tests), the hypothesis testing usually did not account for the compositional
 nature of sequence data (relative abundances).
 
 Here, "heavy-SIP" can define incorporators as either:
-
-1. 'H' = any taxa IN the "heavy" fractions of the labeled treatment gradients
-2. 'H-v-L' = any taxa IN the "heavy" fractions of the labeled treatment and NOT
-present in the "heavy" fractions of the control
-3. 'H-v-H' = any taxa IN the "heavy" fractions of the labeled treatment and NOT
-present in the "light" fractions of the labeled treatment
-
+\itemize{
+ \item{"H" =}{
+ Any taxa IN the "heavy" fractions of the labeled treatment gradients
+ }
+ \item{"H-v-L" =}{
+ Any taxa IN the "heavy" fractions of the labeled treatment and NOT
+ present in the "heavy" fractions of the control
+ }
+ \item{"H-v-H" =}{
+ Any taxa IN the "heavy" fractions of the labeled treatment and NOT
+ present in the "light" fractions of the labeled treatment
+ }
+}
 Instead of binary comparisions (presence/absence),
 one-tailed t-tests or Wilcoxon Rank Sum tests can be used to assess
 differential abundance between "heavy" and controls. The hypothesis

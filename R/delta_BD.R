@@ -105,7 +105,6 @@ delta_BD = function(physeq, control_expr, n=20, BD_min=NULL, BD_max=NULL){
   ## calculation
   df_OTU = df_OTU %>%
     # linear interpolation for each OTU in each gradient
-    #head() %>% print %>%
     dplyr::group_by_("IS_CONTROL", "OTU") %>%
     tidyr::nest_(key_col='data',
                  nest_cols=nest_cols) %>%
