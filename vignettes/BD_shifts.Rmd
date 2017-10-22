@@ -47,8 +47,8 @@ of weighting the beta diversity based on gradient fraction overlap. For instance
 if 2 labeled-treatment fractions overlapped 1 control fraction by 40% and 60%,
 then the final beta diversity value would be the weighted average of 
 treatment fraction 1 (40% weight) and treatment fraction 2 (60% weight). 
-Note that this makes all beta diversity values (and their
-associated buoyant densities) relative to the control. 
+Note that this makes all beta diversity values (and their associated buoyant 
+densities) relative to the control. 
 
 The following analysis measures these community-wide BD shifts with the following:
 
@@ -60,6 +60,13 @@ are calculated.
 beta diversity is calculated between the gradient fraction communities. 
 1. The weighted mean beta diversity (weighted by % fraction overlap) is calculated.
 1. The resulting data.frame can then easily plotted with ggplot. 
+
+Moreover, a permutation test is conducted to identify "BD shift windows",
+which are regions of high beta-diversity that likley resulted from BD shifts
+of taxa in the treatment (and not in the unlabeled control). The method
+involves permuting OTU abundances (HTSSIP offers multiple permutation methods; 
+see `BD_shift()`), an re-calculating weighted beta-diversity values among
+overlapping fractions in the treatment versus the control. 
 
 ## Dataset
 
@@ -98,19 +105,21 @@ Now, let's just measure BD shift for just 1 subset (1 item in the list of phylos
 >Note: we are just going to use 5 permutations to speed up the analysis. 
 
 ```{r BD_shift_wmean}
-wmean1 = BD_shift(physeq_S2D2_l[[2]], nperm=5)
+wmean1 = BD_shift(physeq_S2D2_l[[2]], nperm=10)
 cat('Subset:', names(physeq_S2D2_l)[2], '\n')
 wmean1 %>% head(n=3)
 ```
 
-Note that the `sample.x` column is all 12C-Con control samples, while the comparison column (`sample.y`) is the treatment gradient fraction samples.
+Note that the `sample.x` column is all 12C-Con control samples, while the comparison column (`sample.y`) is the treatment gradient fraction samples. The "wmean_dist_CI_[low/high]" 
+columns list the CI intervals (calculated by the permutation test). The "wmean_dist_CI_*global" columns define the CI interval for all gradient fractions.
 
 **OK.** Let's plot the results!
 
 ```{r plot_wmean, fig.height=3.5, fig.width=7}
-x_lab = 'Buoyant density (g/ml^-1)'
+x_lab = bquote('Buoyant density (g '* ml^-1*')')
 y_lab = 'Weighted mean of\nweighted-Unifrac distances'
 ggplot(wmean1, aes(BD_min.x, wmean_dist)) +
+  geom_line(alpha=0.7) +
   geom_point() +
   labs(x=x_lab, y=y_lab, title='Beta diversity of 13C-treatment relative to 12C-Con') +
   theme_bw() 
@@ -122,6 +131,44 @@ Note the 2 spikes in beta diversity. The 2nd spike is larger than the first,
 which is likely due to more taxa at the 'light' gradient fractions (1st spike),
 so a loss of a few taxa (due to BD shifting) impacts beta diveristy less
 than at 'heavy' gradient fractions, where there's less taxa. 
+
+### Identifying BD shift windows
+
+Let's identify the BD shift windows. "BD shift" fractions are those greater than
+the bootstrap CI. To reduce potential noice, I'm going to define BD shift windows
+as 3 consecutive "BD shift" fractions.
+
+```{r wmean_m}
+wmean1_m = wmean1 %>%
+  mutate(BD_shift = wmean_dist > wmean_dist_CI_high) %>%
+  arrange(BD_min.x) %>%
+  mutate(window = (BD_shift == TRUE & lag(BD_shift) == TRUE & lag(BD_shift, 2) == TRUE) |
+                  (BD_shift == TRUE & lag(BD_shift) == TRUE & lead(BD_shift) == TRUE) |
+                  (BD_shift == TRUE & lead(BD_shift) == TRUE & lead(BD_shift, 2) == TRUE),
+         BD_shift = BD_shift == TRUE & window == TRUE,
+         BD_shift = ifelse(is.na(BD_shift), FALSE, BD_shift))
+
+wmean1_m %>% head(n=3)
+```
+
+
+```{r wmean_m_plot, fig.height=3.5, fig.width=7}
+x_lab = bquote('Buoyant density (g '* ml^-1*')')
+y_lab = 'Weighted mean of\nweighted-Unifrac distances'
+ggplot(wmean1_m, aes(BD_min.x, wmean_dist)) +
+  geom_line(alpha=0.7) +
+  geom_linerange(aes(ymin=wmean_dist_CI_low,
+                     ymax=wmean_dist_CI_high),
+                 alpha=0.3) +
+  geom_point(aes(color=BD_shift)) +
+  scale_color_discrete('Gradient\nfraction\nin BD shift\nwindow?') +
+  labs(x=x_lab, y=y_lab, title='Beta diversity of 13C-treatment relative to 12C-Con') +
+  theme_bw() 
+```
+
+The line ranges represent the bootstrap CIs. This permutation test helps to non-subjectively identify BD shift windows, where beta-diversity is higher than expected under the null model.
+
+Note: more permutations should be used for real analyses. 
 
 ## Calculating BD shift for all treatments
 
@@ -141,10 +188,25 @@ wmean = wmean %>%
          Day = gsub('.+Day ==[ \']*([0-9]+).+', 'Day \\1', .id),
          Day = Day %>% reorder(gsub('Day ', '', Day) %>% as.numeric))
 
+# calculating BD shift windows
+wmean = wmean %>%
+  mutate(BD_shift = wmean_dist > wmean_dist_CI_high) %>%
+  arrange(Substrate, BD_min.x) %>%
+  group_by(Substrate) %>%
+  mutate(window = (BD_shift == TRUE & lag(BD_shift) == TRUE & lag(BD_shift, 2) == TRUE) |
+                  (BD_shift == TRUE & lag(BD_shift) == TRUE & lead(BD_shift) == TRUE) |
+                  (BD_shift == TRUE & lead(BD_shift) == TRUE & lead(BD_shift, 2) == TRUE),
+         BD_shift = BD_shift == TRUE & window == TRUE,
+         BD_shift = ifelse(is.na(BD_shift), FALSE, BD_shift)) %>%
+  ungroup()
+
 # plotting, with facetting by 13C-treatment
 ggplot(wmean, aes(BD_min.x, wmean_dist)) +
-  geom_point() +
-  geom_line() +
+  geom_line(alpha=0.7) +
+  geom_linerange(aes(ymin=wmean_dist_CI_low,
+                     ymax=wmean_dist_CI_high),
+                 alpha=0.3) +
+  geom_point(aes(color=BD_shift)) +
   labs(x=x_lab, y=y_lab, 
        title='Beta diversity of 13C-treatments relative to 12C-Con') +
   facet_grid(Day ~ Substrate) +

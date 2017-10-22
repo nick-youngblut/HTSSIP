@@ -17,7 +17,7 @@
 
 # t.test wrapper
 .t_test = function(x, y, alternative){
-  z = t.test(x, y, alternative=alternative)
+  z = stats::t.test(x, y, alternative=alternative)
   stat = as.numeric(z$statistic)
   p = as.numeric(z$p.value)
   return(c(stat, p))
@@ -25,7 +25,7 @@
 
 # wilcox.test wrapper
 .wilcox_test = function(x, y, alternative){
-  z = wilcox.test(x, y, alternative=alternative)
+  z = stats::wilcox.test(x, y, alternative=alternative)
   stat = as.numeric(z$statistic)
   p = as.numeric(z$p.value)
   return(c(stat, p))
@@ -208,9 +208,9 @@ heavy_SIP = function(physeq,
     df_h = phyloseq::otu_table(physeq_treat_heavy) %>%
       as.matrix %>%
       as.data.frame %>% t
-    df_h = aggregate(df_h,
-                     list(Replicate = Replicate),
-                     agg_func)
+    df_h = stats::aggregate(df_h,
+                            list(Replicate = Replicate),
+                            agg_func)
     ## light fractions, per replicate
     metadata_treat_light = metadata[metadata$METADATA_ROWNAMES %in%
                                     phyloseq::sample_names(physeq_treat_light),]
@@ -228,7 +228,7 @@ heavy_SIP = function(physeq,
                                              alternative=alternative[1]))
     res = res %>% t %>% as.data.frame
     colnames(res) = c('statistic', 'p')
-    res$padj = p.adjust(res$p, padj_method)
+    res$padj = stats::p.adjust(res$p, padj_method)
     return(res)
   } else
   if(comparison == 'H-v-H'){

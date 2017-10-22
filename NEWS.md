@@ -1,3 +1,8 @@
+# HTSSIP 1.3.0
+
+* added heavy_SIP() function for conducting historically used SIP analysis methods
+* altered and expanded the permutation methods used for BD_shift()
+
 # HTSSIP 1.2.0
 
 * added permutation test to BD_shift()
