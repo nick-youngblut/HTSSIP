@@ -218,9 +218,9 @@ heavy_SIP = function(physeq,
     df_l = phyloseq::otu_table(physeq_treat_light) %>%
       as.matrix %>%
       as.data.frame %>% t
-    df_l = aggregate(df_l,
-                     list(Replicate = Replicate),
-                     agg_func)
+    df_l = stats::aggregate(df_l,
+                            list(Replicate = Replicate),
+                            agg_func)
 
     # applying statistical test
     otus = colnames(df_h)[2:ncol(df_h)]
@@ -246,9 +246,9 @@ heavy_SIP = function(physeq,
     df_ht = phyloseq::otu_table(physeq_treat_heavy) %>%
       as.matrix %>%
       as.data.frame %>% t
-    df_ht = aggregate(df_ht,
-                     list(Replicate = Replicate),
-                     agg_func)
+    df_ht = stats::aggregate(df_ht,
+                             list(Replicate = Replicate),
+                             agg_func)
     ## heavy control fractions, per replicate
     metadata_control_heavy = metadata[metadata$METADATA_ROWNAMES %in%
                                       phyloseq::sample_names(physeq_control_heavy),]
@@ -256,9 +256,9 @@ heavy_SIP = function(physeq,
     df_hc = phyloseq::otu_table(physeq_control_heavy) %>%
       as.matrix %>%
       as.data.frame %>% t
-    df_hc = aggregate(df_hc,
-                     list(Replicate = Replicate),
-                     agg_func)
+    df_hc = stats::aggregate(df_hc,
+                             list(Replicate = Replicate),
+                             agg_func)
 
     # applying statistical test
     otus = colnames(df_ht)[2:ncol(df_ht)]
@@ -266,7 +266,7 @@ heavy_SIP = function(physeq,
                                              alternative=alternative[1]))
     res = res %>% t %>% as.data.frame
     colnames(res) = c('statistic', 'p')
-    res$padj = p.adjust(res$p, method=padj_method)
+    res$padj = stats::p.adjust(res$p, method=padj_method)
     return(res)
   } else {
     stop('comparison not recognized')
