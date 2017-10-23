@@ -9,4 +9,9 @@
 
 ### There was no WARNINGS
 
-### There were no NOTES
+### There was one NOTE
+
+* checking installed package size ... NOTE
+  installed size is  5.1Mb
+  sub-directories of 1Mb or more:
+    data   4.0Mb
